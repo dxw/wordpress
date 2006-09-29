@@ -31,6 +31,7 @@ require_once('admin-header.php');
 
 <?php
 $themes = get_themes();
+foreach ( $themes as $k => $v ) if ( strtolower($v['Status']) == 'hidden' ) unset($themes[$k]);
 $ct = current_theme_info();
 ?>
 
