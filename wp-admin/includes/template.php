@@ -4,35 +4,73 @@
 // Big Mess
 //
 
-// Dandy new recursive multiple category stuff.
-function cat_rows( $parent = 0, $level = 0, $categories = 0 ) {
-	if ( !$categories ) {
+// Ugly recursive category stuff.
+function cat_rows( $parent = 0, $level = 0, $categories = 0, $page = 1, $per_page = 20 ) {
+	$count = 0;
+	_cat_rows($categories, $count, $parent, $level, $page, $per_page);
+}
+
+function _cat_rows( $categories, &$count, $parent = 0, $level = 0, $page = 1, $per_page = 20 ) {
+	if ( empty($categories) ) {
 		$args = array('hide_empty' => 0);
 		if ( !empty($_GET['s']) )
 			$args['search'] = $_GET['s'];
 		$categories = get_categories( $args );
 	}
 
+	if ( !$categories )
+		return false;
+
 	$children = _get_term_hierarchy('category');
 
-	if ( $categories ) {
-		ob_start();
-		foreach ( $categories as $category ) {
-			if ( $category->parent == $parent) {
-				echo "\t" . _cat_row( $category, $level );
-				if ( isset($children[$category->term_id]) )
-					cat_rows( $category->term_id, $level +1, $categories );
+	$start = ($page - 1) * $per_page;
+	$end = $start + $per_page;
+	$i = -1;
+	ob_start();
+	foreach ( $categories as $category ) {
+		if ( $count >= $end )
+			break;
+
+		$i++;
+
+		if ( $category->parent != $parent )
+			continue;
+
+		// If the page starts in a subtree, print the parents.
+		if ( $count == $start && $category->parent > 0 ) {
+			$my_parents = array();
+			$my_parent = $category->parent;
+			while ( $my_parent) {
+				$my_parent = get_category($my_parent);
+				$my_parents[] = $my_parent;
+				if ( !$my_parent->parent )
+					break;
+				$my_parent = $my_parent->parent;
+			}
+			$num_parents = count($my_parents);
+			while( $my_parent = array_pop($my_parents) ) {
+				echo "\t" . _cat_row( $my_parent, $level - $num_parents );
+				$num_parents--;
 			}
 		}
-		$output = ob_get_contents();
-		ob_end_clean();
 
-		$output = apply_filters('cat_rows', $output);
+		if ( $count >= $start )
+			echo "\t" . _cat_row( $category, $level );
 
-		echo $output;
-	} else {
-		return false;
+		unset($categories[$i]); // Prune the working set		
+		$count++;
+
+		if ( isset($children[$category->term_id]) )
+			_cat_rows( $categories, $count, $category->term_id, $level + 1, $page, $per_page );
+
 	}
+
+	$output = ob_get_contents();
+	ob_end_clean();
+
+	$output = apply_filters('cat_rows', $output);
+
+	echo $output;
 }
 
 function _cat_row( $category, $level, $name_override = false ) {
@@ -360,7 +398,7 @@ function wp_manage_pages_columns() {
  * display one row if the page doesn't have any children
  * otherwise, display the row and its children in subsequent rows
  */
-function display_page_row( $page, &$children_pages, $level = 0 ) {
+function display_page_row( $page, $level = 0 ) {
 	global $post;
 	static $class;
 
@@ -484,66 +522,104 @@ foreach ($posts_columns as $column_name=>$column_display_name) {
    </tr>
 
 <?php
-
-	if ( ! $children_pages )
-		return true;
-
-	for ( $i = 0; $i < count($children_pages); $i++ ) {
-
-		$child = $children_pages[$i];
-
-		if ( $child->post_parent == $id ) {
-			array_splice($children_pages, $i, 1);
-			display_page_row($child, $children_pages, $level+1);
-			$i = -1; //as numeric keys in $children_pages are not preserved after splice
-		}
-	}
 }
 
 /*
  * displays pages in hierarchical order
  */
-function page_rows( $pages ) {
-	if ( ! $pages )
+
+function page_rows($pages, $pagenum = 1, $per_page = 20) {
+	$level = 0;
+
+	if ( ! $pages ) {
 		$pages = get_pages( array('sort_column' => 'menu_order') );
 
-	if ( ! $pages )
-		return false;
+		if ( ! $pages )
+			return false;
+	}
 
 	// splice pages into two parts: those without parent and those with parent
-
 	$top_level_pages = array();
 	$children_pages  = array();
 
-	foreach ( $pages as $page ) {
-
-		// catch and repair bad pages
-		if ( $page->post_parent == $page->ID ) {
-			$page->post_parent = 0;
-			$wpdb->query( $wpdb->prepare("UPDATE $wpdb->posts SET post_parent = '0' WHERE ID = %d", $page->ID) );
-			clean_page_cache( $page->ID );
+	// If searching, ignore hierarchy and treat everything as top level, otherwise split
+	// into top level and children
+	if ( empty($_GET['s']) )  {
+		foreach ( $pages as $page ) {
+			// catch and repair bad pages
+			if ( $page->post_parent == $page->ID ) {
+				$page->post_parent = 0;
+				$wpdb->query( $wpdb->prepare("UPDATE $wpdb->posts SET post_parent = '0' WHERE ID = %d", $page->ID) );
+				clean_page_cache( $page->ID );
+			}
+	
+			if ( 0 == $page->post_parent )
+				$top_level_pages[] = $page;
+			else
+				$children_pages[] = $page;
 		}
 
-		if ( 0 == $page->post_parent )
-			$top_level_pages[] = $page;
-		else
-			$children_pages[] = $page;
+		$pages = &$top_level_pages;
 	}
 
-	foreach ( $top_level_pages as $page )
-		display_page_row($page, $children_pages, 0);
+	$count = 0;
+	$start = ($pagenum - 1) * $per_page;
+	$end = $start + $per_page;
+	foreach ( $pages as $page ) {
+		if ( $count >= $end )
+			break;
 
-	/*
-	 * display the remaining children_pages which are orphans
-	 * having orphan requires parental attention
-	 */
-	 if ( count($children_pages) > 0 ) {
-	 	$empty_array = array();
-	 	foreach ( $children_pages as $orphan_page ) {
-			clean_page_cache( $orphan_page->ID);
-			display_page_row( $orphan_page, $empty_array, 0 );
+		$i++;
+
+		if ( $count >= $start )
+			echo "\t" . display_page_row( $page, $level );
+
+		$count++;
+
+		if ( isset($children_pages) )
+			_page_rows( $children_pages, $count, $page->ID, $level + 1, $pagenum, $per_page );
+	}
+}
+
+function _page_rows( $pages, &$count, $parent, $level, $pagenum, $per_page ) {
+	$start = ($pagenum - 1) * $per_page;
+	$end = $start + $per_page;
+	$i = -1;
+	foreach ( $pages as $page ) {
+		if ( $count >= $end )
+			break;
+
+		$i++;
+
+		if ( $page->post_parent != $parent )
+			continue;
+
+		// If the page starts in a subtree, print the parents.
+		if ( $count == $start && $page->post_parent > 0 ) {
+			$my_parents = array();
+			$my_parent = $page->post_parent;
+			while ( $my_parent) {
+				$my_parent = get_post($my_parent);
+				$my_parents[] = $my_parent;
+				if ( !$my_parent->post_parent )
+					break;
+				$my_parent = $my_parent->post_parent;
+			}
+			$num_parents = count($my_parents);
+			while( $my_parent = array_pop($my_parents) ) {
+				echo "\t" . display_page_row( $my_parent, $level - $num_parents );
+				$num_parents--;
+			}
 		}
-	 }
+
+		if ( $count >= $start )
+			echo "\t" . display_page_row( $page, $level );
+
+		unset($pages[$i]); // Prune the working set		
+		$count++;
+
+		_page_rows( $pages, $count, $page->ID, $level + 1, $pagenum, $per_page );
+	}
 }
 
 function user_row( $user_object, $style = '', $role = '' ) {
