@@ -713,14 +713,9 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 
 	if ( current_user_can( 'edit_post', $post->ID ) ) {
 		$post_link = "<a href='" . get_comment_link() . "'>";
-
 		$post_link .= get_the_title($comment->comment_post_ID) . '</a>';
-			
-		$edit_link_start = "<a class='row-title' href='comment.php?action=editcomment&amp;c={$comment->comment_ID}' title='" . __('Edit comment') . "'>";
-		$edit_link_end = '</a>';
 	} else {
 		$post_link = get_the_title($comment->comment_post_ID);
-		$edit_link_start = $edit_link_end ='';
 	}
 	
 	$author_url = get_comment_author_url();
@@ -747,7 +742,8 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
     <td class="check-column"><?php if ( current_user_can('edit_post', $comment->comment_post_ID) ) { ?><input type="checkbox" name="delete_comments[]" value="<?php echo $comment->comment_ID; ?>" /><?php } ?></td>
 <?php endif; ?>
     <td class="comment">
-    <p class="comment-author"><strong><?php echo $edit_link_start; comment_author(); echo $edit_link_end; ?></strong><br />
+    <?php if ( 'detail' == $mode ) comment_text(); ?>
+    <p class="comment-author"><strong><?php comment_author(); ?></strong> |
     <?php if ( !empty($author_url) ) : ?>
     <a href="<?php echo $author_url ?>"><?php echo $author_url_display; ?></a> |
     <?php endif; ?>
@@ -758,34 +754,34 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
     <a href="edit-comments.php?s=<?php comment_author_IP() ?>&amp;mode=detail"><?php comment_author_IP() ?></a>
 	<?php endif; //current_user_can?>    
     </p>
-   	<?php if ( 'detail' == $mode ) comment_text(); ?>
-   	<p><?php printf(__('From %1$s, %2$s'), $post_link, $ptime) ?></p>
-    </td>
-    <td><?php comment_date(__('Y/m/d')); ?></td>
-    <td class="action-links">
 <?php
-
 	$actions = array();
 
-		$actions['approve']   = "<a href='$approve_url' class='dim:the-comment-list:comment-$comment->comment_ID:unapproved:e7e7d3:e7e7d3' title='" . __( 'Approve this comment' ) . "'>" . __( 'Approve' ) . '</a> | ';
-		$actions['unapprove'] = "<a href='$unapprove_url' class='dim:the-comment-list:comment-$comment->comment_ID:unapproved:e7e7d3:e7e7d3' title='" . __( 'Unapprove this comment' ) . "'>" . __( 'Unapprove' ) . '</a> | ';
+	$actions['approve']   = "<a href='$approve_url' class='dim:the-comment-list:comment-$comment->comment_ID:unapproved:e7e7d3:e7e7d3' title='" . __( 'Approve this comment' ) . "'>" . __( 'Approve' ) . '</a> | ';
+	$actions['unapprove'] = "<a href='$unapprove_url' class='dim:the-comment-list:comment-$comment->comment_ID:unapproved:e7e7d3:e7e7d3' title='" . __( 'Unapprove this comment' ) . "'>" . __( 'Unapprove' ) . '</a> | ';
 
-		// we're looking at list of only approved or only unapproved comments
-		if ( 'moderated' == $comment_status ) {
-			$actions['approve'] = "<a href='$approve_url' class='delete:the-comment-list:comment-$comment->comment_ID:e7e7d3:action=dim-comment' title='" . __( 'Approve this comment' ) . "'>" . __( 'Approve' ) . '</a> | ';
-			unset($actions['unapprove']);
-		} elseif ( 'approved' == $comment_status ) {
-			$actions['unapprove'] = "<a href='$unapprove_url' class='delete:the-comment-list:comment-$comment->comment_ID:e7e7d3:action=dim-comment' title='" . __( 'Unapprove this comment' ) . "'>" . __( 'Unapprove' ) . '</a> | ';
-			unset($actions['approve']);
-		}
+	// we're looking at list of only approved or only unapproved comments
+	if ( 'moderated' == $comment_status ) {
+		$actions['approve'] = "<a href='$approve_url' class='delete:the-comment-list:comment-$comment->comment_ID:e7e7d3:action=dim-comment' title='" . __( 'Approve this comment' ) . "'>" . __( 'Approve' ) . '</a> | ';
+		unset($actions['unapprove']);
+	} elseif ( 'approved' == $comment_status ) {
+		$actions['unapprove'] = "<a href='$unapprove_url' class='delete:the-comment-list:comment-$comment->comment_ID:e7e7d3:action=dim-comment' title='" . __( 'Unapprove this comment' ) . "'>" . __( 'Unapprove' ) . '</a> | ';
+		unset($actions['approve']);
+	}
 
 	if ( current_user_can('edit_post', $comment->comment_post_ID) ) {
+		$actions['edit']      = "<a href='comment.php?action=editcomment&amp;c={$comment->comment_ID}' title='" . __('Edit comment') . "'>". __('Edit') . '</a> | ';
 		$actions['spam']      = "<a href='$spam_url' class='delete:the-comment-list:comment-$comment->comment_ID::spam=1' title='" . __( 'Mark this comment as spam' ) . "'>" . __( 'Spam' ) . '</a> | ';
 		$actions['delete']    = "<a href='$delete_url' class='delete:the-comment-list:comment-$comment->comment_ID delete'>" . __('Delete') . '</a>';
 		foreach ( $actions as $action => $link )
 			echo "<span class='$action'>$link</span>";
 	}
 	?>
+    </td>
+    <td><?php comment_date(__('Y/m/d \a\t g:ia')); ?></td>
+    <td>
+    "<?php echo $post_link ?>"<br/>
+    <?php echo get_the_time(__('Y/m/d \a\t g:ia')); ?>
 	</td>
   </tr>
 	<?php
