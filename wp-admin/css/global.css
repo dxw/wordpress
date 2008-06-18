@@ -172,11 +172,8 @@ th.check-column + th, th.check-column + td {
 }
 
 .wrap, .updated, .error {
-	margin: 0;
-	margin-left: 15px;
-	margin-right: 15px;
+	margin: 0 15px;
 	padding: 0;
-	max-width: 980px;
 }
 
 .updated, .error {
