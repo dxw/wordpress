@@ -115,6 +115,10 @@ if ( isset($_GET['posted']) && $_GET['posted'] ) : $_GET['posted'] = (int) $_GET
 endif;
 ?>
 
+<p id="big-add-button">
+	<a href="post-new.php" class="button"><?php _e( 'Write New Post' ); ?></a>
+</p>
+
 <p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Posts' ); ?>:</label>
 	<input type="text" id="post-search-input" name="s" value="<?php the_search_query(); ?>" />

@@ -8,80 +8,51 @@
 $awaiting_mod = wp_count_comments();
 $awaiting_mod = $awaiting_mod->moderated;
 
-$top_menu = array();
+$top_menu = $top_submenu = $menu = $submenu = array();
+
 $top_menu[5] = array( __('My Account'), 'read', 'profile.php' );
 $top_menu[10] = array( __('My Dashboard'), 'read', 'index.php' );
 $top_menu[15] = array( __('New Post'), 'edit_posts', 'post-new.php' );
 $top_menu[20] = array( sprintf( __('Comments (%s)'), "<span id='awaiting-mod' class='count-$awaiting_mod'><span class='comment-count'>" . number_format_i18n($awaiting_mod) . "</span></span>" ), 'edit_posts', 'edit-comments.php' );
 $top_menu[25] = array( __('Help'), 'read', 'index.php?help' ); // place holder
 
-$top_submenu = array();
 $top_submenu['profile.php'][5] = array( __('Something'), 'read', 'profile.php?something' ); // place holder
 
-$menu[0] = array(__('Dashboard'), 'read', 'index.php');
 
-if (strpos($_SERVER['REQUEST_URI'], 'edit-pages.php') !== false)
-	$menu[5] = array(__('Write'), 'edit_pages', 'page-new.php');
-elseif (strpos($_SERVER['REQUEST_URI'], 'link-manager.php') !== false)
-	$menu[5] = array(__('Write'), 'manage_links', 'link-add.php');
-else
-	$menu[5] = array(__('Write'), 'edit_posts', 'post-new.php');
+$menu[0] = array( __('Dashboard'), 'read', 'index.php' );
 
-if (strpos($_SERVER['REQUEST_URI'], 'page-new.php') !== false)
-	$menu[10] = array(__('Manage'), 'edit_pages', 'edit-pages.php');
-elseif (strpos($_SERVER['REQUEST_URI'], 'link-add.php') !== false)
-	$menu[10] = array(__('Manage'), 'manage_links', 'link-manager.php');
-else
-	$menu[10] = array(__('Manage'), 'edit_posts', 'edit.php');
+$menu[5] = array( __('Content'), 'edit_posts', 'edit.php' );
+	$submenu['edit.php'][5]  = array( __('Posts'), 'edit_posts', 'edit.php' );
+	$submenu['edit.php'][10] = array( __('Comments'), 'edit_posts', 'edit-comments.php' );
+	$submenu['edit.php'][15] = array( __('Media Library'), 'upload_files', 'upload.php' );
+	$submenu['edit.php'][20] = array( __('Links'), 'manage_links', 'link-manager.php' );
+	$submenu['edit.php'][25] = array( __('Pages'), 'edit_pages', 'edit-pages.php' );
 
-$menu[15] = array(__('Design'), 'switch_themes', 'themes.php');
-$menu[20] = array( sprintf( __('Comments %s'), "<span id='awaiting-mod' class='count-$awaiting_mod'><span class='comment-count'>" . number_format_i18n($awaiting_mod) . "</span></span>" ), 'edit_posts', 'edit-comments.php');
-$menu[30] = array(__('Settings'), 'manage_options', 'options-general.php');
-$menu[35] = array(__('Plugins'), 'activate_plugins', 'plugins.php');
-if ( current_user_can('edit_users') )
-	$menu[40] = array(__('Users'), 'edit_users', 'users.php');
-else
-	$menu[40] = array(__('Profile'), 'read', 'profile.php');
+$menu[10] = array( __('Templates'), 'switch_themes', 'themes.php' );
+	$submenu['themes.php'][5]  = array(__('Themes'), 'switch_themes', 'themes.php');
+	$submenu['themes.php'][10] = array(__('Theme Editor'), 'edit_themes', 'theme-editor.php');
 
-$_wp_real_parent_file['post.php'] = 'post-new.php'; // Back-compat
-$submenu['post-new.php'][5] = array(__('Post'), 'edit_posts', 'post-new.php');
-$submenu['post-new.php'][10] = array(__('Page'), 'edit_pages', 'page-new.php');
-$submenu['post-new.php'][15] = array(__('Link'), 'manage_links', 'link-add.php');
+$menu[15] = array( __('Utilities'), 'read', 'users.php' ); // placeholder - should be inbox
+	$submenu['users.php'][5]  = array( __('Inbox'), 'read', 'inbox.php' );
+	$submenu['users.php'][10] = array( __('Tags'), 'manage_categories', 'edit-tags.php' );
+	$submenu['users.php'][15] = array( __('Categories'), 'manage_categories', 'categories.php' );
+	$submenu['users.php'][20] = array( __('Link Categories'), 'manage_categories', 'edit-link-categories.php' );
+	$submenu['users.php'][25] = array( __('Users'), 'edit_users', 'users.php' );
+	$submenu['users.php'][30] = array( __('Import'), 'import', 'import.php' );
+	$submenu['users.php'][35] = array( __('Export'), 'import', 'export.php' );
+	$submenu['users.php'][40] = array( __('Settings'), 'manage_options', 'options-general.php' );
+		$_wp_real_parent_file['options-general.php'] = 'users.php';
+		$submenu['options-general.php'][10] = array( __('General'), 'manage_options', 'options-general.php' );
+		$submenu['options-general.php'][15] = array( __('Writing'), 'manage_options', 'options-writing.php' );
+		$submenu['options-general.php'][20] = array( __('Reading'), 'manage_options', 'options-reading.php' );
+		$submenu['options-general.php'][25] = array( __('Discussion'), 'manage_options', 'options-discussion.php' );
+		$submenu['options-general.php'][30] = array( __('Privacy'), 'manage_options', 'options-privacy.php' );
+		$submenu['options-general.php'][35] = array( __('Permalinks'), 'manage_options', 'options-permalink.php' );
+		$submenu['options-general.php'][40] = array( __('Miscellaneous'), 'manage_options', 'options-misc.php' );
 
-$submenu['edit-comments.php'][5] = array(__('Comments'), 'edit_posts', 'edit-comments.php');
-
-$submenu['edit.php'][5] = array(__('Posts'), 'edit_posts', 'edit.php');
-$submenu['edit.php'][10] = array(__('Pages'), 'edit_pages', 'edit-pages.php');
-$submenu['edit.php'][15] = array(__('Links'), 'manage_links', 'link-manager.php');
-$submenu['edit.php'][20] = array(__('Categories'), 'manage_categories', 'categories.php');
-$submenu['edit.php'][25] = array(__('Tags'), 'manage_categories', 'edit-tags.php');
-$submenu['edit.php'][30] = array(__('Link Categories'), 'manage_categories', 'edit-link-categories.php');
-$submenu['edit.php'][35] = array(__('Media Library'), 'upload_files', 'upload.php');
-$submenu['edit.php'][40] = array(__('Import'), 'import', 'import.php');
-$submenu['edit.php'][45] = array(__('Export'), 'import', 'export.php');
-
-if ( current_user_can('edit_users') ) {
-	$_wp_real_parent_file['profile.php'] = 'users.php'; // Back-compat for plugins adding submenus to profile.php.
-	$submenu['users.php'][5] = array(__('Authors &amp; Users'), 'edit_users', 'users.php');
-	$submenu['users.php'][10] = array(__('Your Profile'), 'read', 'profile.php');
-} else {
-	$_wp_real_parent_file['users.php'] = 'profile.php';
-	$submenu['profile.php'][5] = array(__('Your Profile'), 'read', 'profile.php');
-}
-
-$submenu['options-general.php'][10] = array(__('General'), 'manage_options', 'options-general.php');
-$submenu['options-general.php'][15] = array(__('Writing'), 'manage_options', 'options-writing.php');
-$submenu['options-general.php'][20] = array(__('Reading'), 'manage_options', 'options-reading.php');
-$submenu['options-general.php'][25] = array(__('Discussion'), 'manage_options', 'options-discussion.php');
-$submenu['options-general.php'][30] = array(__('Privacy'), 'manage_options', 'options-privacy.php');
-$submenu['options-general.php'][35] = array(__('Permalinks'), 'manage_options', 'options-permalink.php');
-$submenu['options-general.php'][40] = array(__('Miscellaneous'), 'manage_options', 'options-misc.php');
-
-$submenu['plugins.php'][5] = array(__('Plugins'), 'activate_plugins', 'plugins.php');
-$submenu['plugins.php'][10] = array(__('Plugin Editor'), 'edit_plugins', 'plugin-editor.php');
-
-$submenu['themes.php'][5] = array(__('Themes'), 'switch_themes', 'themes.php');
-$submenu['themes.php'][10] = array(__('Theme Editor'), 'edit_themes', 'theme-editor.php');
+$menu[20] = array( __('Plugins'), 'activate_plugins', 'plugins.php' );
+	$submenu['plugins.php'][5]  = array( __('Plugins'), 'activate_plugins', 'plugins.php' );
+	$submenu['plugins.php'][10] = array( __('Plugin Editor'), 'edit_plugins', 'plugin-editor.php' );
 
 do_action('_admin_menu');
 

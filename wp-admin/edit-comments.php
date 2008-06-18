@@ -2,7 +2,6 @@
 require_once('admin.php');
 
 $title = __('Edit Comments');
-$parent_file = 'edit-comments.php';
 wp_enqueue_script( 'admin-comments' );
 wp_enqueue_script('admin-forms');
 

@@ -9,6 +9,9 @@ include('admin-header.php');
 ?>
 
 <div class="wrap">
+<ul class="wp-menu">
+<?php $aray = array(); _wp_menu_output( $submenu['options-general.php'], $array ); ?>
+</ul>
 <h2><?php _e('Miscellaneous Settings') ?></h2>
 <form method="post" action="options.php">
 <?php wp_nonce_field('update-options') ?>

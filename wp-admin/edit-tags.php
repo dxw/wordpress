@@ -2,7 +2,6 @@
 require_once('admin.php');
 
 $title = __('Tags');
-$parent_file = 'edit.php';
 
 wp_reset_vars(array('action', 'tag'));
 

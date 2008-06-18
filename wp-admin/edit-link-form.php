@@ -1,11 +1,11 @@
 <?php
 if ( ! empty($link_id) ) {
-	$heading = __('Edit Link');
+	$heading = sprintf( __( '<a href="%s">Links</a> / Edit Link' ), 'link-manager.php' );
 	$submit_text = __('Save Changes');
 	$form = '<form name="editlink" id="editlink" method="post" action="link.php">';
 	$nonce_action = 'update-bookmark_' . $link_id;
 } else {
-	$heading = __('Add Link');
+	$heading = sprintf( __( '<a href="%s">Links</a> / Add New Link' ), 'link-manager.php' );
 	$submit_text = __('Add Link');
 	$form = '<form name="addlink" id="addlink" method="post" action="link.php">';
 	$nonce_action = 'add-bookmark';

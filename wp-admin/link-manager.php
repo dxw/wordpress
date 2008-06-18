@@ -75,7 +75,11 @@ if ( isset($_GET['deleted']) ) {
 <div class="wrap">
 
 <form id="posts-filter" action="" method="get">
-<h2><?php printf( __( 'Manage Links (<a href="%s">add new</a>)' ), 'link-add.php' ); ?></h2>
+<h2><?php _e( 'Manage Links' ); ?></h2>
+
+<p id="big-add-button">
+	<a href="link-add.php" class="button"><?php _e( 'Add New Link' ); ?></a>
+</p>
 
 <p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Links' ); ?>:</label>

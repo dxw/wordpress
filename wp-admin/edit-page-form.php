@@ -42,7 +42,12 @@ if ( 0 != $post_ID && $sendto == get_permalink($post_ID) )
 
 <form name="post" action="page.php" method="post" id="post">
 <div class="wrap">
-<h2><?php _e('Write Page') ?></h2>
+<h2><?php
+	if ( !isset($post_ID) || 0 == $post_ID )
+		printf( __( '<a href="%s">Pages</a> / Write New Page' ), 'edit-pages.php' );
+	else
+		printf( __( '<a href="%s">Pages</a> / Edit Page' ), 'edit-pages.php' );
+?></h2>
 
 <?php
 wp_nonce_field($nonce_action);

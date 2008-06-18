@@ -2,7 +2,6 @@
 require_once('admin.php');
 
 $title = __('Categories');
-$parent_file = 'edit.php';
 
 wp_reset_vars(array('action', 'cat'));
 

@@ -33,7 +33,6 @@ if ( isset($_GET['deleteit']) && isset($_GET['delete']) ) {
 }
 
 $title = __('Link Categories');
-$parent_file = 'edit.php';
 
 wp_enqueue_script( 'admin-categories' );
 wp_enqueue_script('admin-forms');

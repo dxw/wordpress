@@ -40,7 +40,12 @@ if ( !isset($post_ID) || 0 == $post_ID ) {
 <?php endif; ?>
 
 <div class="wrap">
-<h2><?php _e('Write Post') ?></h2>
+<h2><?php
+	if ( !isset($post_ID) || 0 == $post_ID)
+		printf( __( '<a href="%s">Posts</a> / Write New Post' ), 'edit.php' );
+	else
+		printf( __( '<a href="%s">Posts</a> / Edit Post' ), 'edit.php' );
+?></h2>
 <?php
 
 if ( !isset($post_ID) || 0 == $post_ID)
