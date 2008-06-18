@@ -1,5 +1,5 @@
-</div><!-- wpbody -->
-</div><!-- wpcontent -->
+<br class="clear" /></div></div><!-- wpbody-content wpbody -->
+<br class="clear" /></div><!-- wpcontent -->
 </div><!-- wpwrap -->
 <div id="footer">
 <p><?php

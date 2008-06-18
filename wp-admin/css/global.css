@@ -1,5 +1,25 @@
-/* styles for use by people extending the WordPress interface */
+/* 2 column liquid layout */
+div#wpbody {
+	float: right;
+	clear: right;
+	width: 100%;
+	margin-left: -210px;
+}
 
+div#wpbody-content {
+	margin-left: 200px;
+	border-width: 1px 0 0 1px;
+	border-style: solid;
+}
+
+ul#adminmenu {
+	float: left;
+	clear: left;
+	width: 190px; /* + 10 padding */
+	position: relative;
+}
+
+/* styles for use by people extending the WordPress interface */
 
 body	{
 	margin: 0;
