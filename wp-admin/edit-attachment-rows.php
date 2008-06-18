@@ -97,7 +97,7 @@ foreach($posts_columns as $column_name=>$column_display_name) {
 					$title = $parent_title;
 			}
 			?>
-			<td><strong><a href="post.php?action=edit&amp;post=<?php echo $post->post_parent; ?>"><?php echo $title ?></a></strong></td>
+			<td><strong><a href="post.php?action=edit&amp;post=<?php echo $post->post_parent; ?>"><?php echo $title ?></a></strong>, <?php echo get_the_time(__('Y/m/d')); ?></td>
 			<?php
 		} else {
 			?>
@@ -123,9 +123,12 @@ foreach($posts_columns as $column_name=>$column_display_name) {
 		<?php
 		break;
 
-	case 'location':
+	case 'actions':
 		?>
-		<td><a href="<?php the_permalink(); ?>"><?php _e('Permalink'); ?></a></td>
+		<td>
+		<a href="media.php?action=edit&amp;attachment_id=<?php the_ID(); ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $att_title)); ?>"><?php _e('Edit'); ?></a> |
+		<a href="<?php the_permalink(); ?>"><?php _e('Get permalink'); ?></a>
+		</td>
 		<?php
 		break;
 

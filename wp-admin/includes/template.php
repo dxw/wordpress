@@ -369,7 +369,7 @@ function wp_manage_media_columns() {
 	$posts_columns['date'] = _c('Date Added|media column header');
 	$posts_columns['parent'] = _c('Appears with|media column header');
 	$posts_columns['comments'] = '<div class="vers"><img alt="Comments" src="images/comment-grey-bubble.png" /></div>';
-	$posts_columns['location'] = _c('Location|media column header');
+	$posts_columns['actions'] = _c('Actions|media column header');
 	$posts_columns = apply_filters('manage_media_columns', $posts_columns);
 
 	return $posts_columns;
