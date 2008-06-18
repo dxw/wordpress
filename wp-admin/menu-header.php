@@ -16,7 +16,7 @@ function _wp_menu_output( &$menu, &$submenu, $submenu_as_parent = true ) {
 			$class[] = 'wp-has-submenu';
 		if ( ( strcmp($self, $item[2]) == 0 && empty($parent_file) ) || ( $parent_file && $item[2] == $parent_file ) ) {
 			if ( !empty($submenu[$item[2]]) )
-				$class[] = 'wp-has-current-submenu';
+				$class[] = 'wp-has-current-submenu wp-menu-open';
 			else
 				$class[] = 'current';
 		}

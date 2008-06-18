@@ -641,6 +641,10 @@ a.view-comment-post-link {
 	padding: 0;
 }
 
+#dashmenu li.wp-menu-open .wp-submenu, #adminmenu li.wp-menu-open .wp-submenu {
+	display: block;
+}
+
 #dashmenu {
 	margin: 0 0 0 10px;
 	background: url(images/logo-ghost.png) no-repeat top left;
@@ -670,7 +674,7 @@ a.view-comment-post-link {
 
 #adminmenu {
 	margin: 0;
-	padding: 10px 0 10px 10px;
+	padding: 10px 0 0 10px;
 	list-style: none;
 }
 
@@ -681,16 +685,22 @@ a.view-comment-post-link {
 }
 
 #adminmenu li .wp-submenu li {
-	padding: 0 0 0 30px;
+	padding: 0 0 0 15px;
 }
 
-#adminmenu li.wp-has-current-submenu .wp-submenu {
-	display: block;
+#adminmenu li.wp-has-submenu > a {
+	background-image: url(images/menu-closed.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+}
+
+#adminmenu li.wp-menu-open > a {
+	background-image: url(images/menu-open.png);
 }
 
 #adminmenu a {
 	font-size: 16px;
-	padding: 5px 7px;
+	padding: 5px 7px 5px 18px;
 	line-height: 30px;
 }
 

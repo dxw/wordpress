@@ -42,4 +42,12 @@ jQuery(document).ready( function() {
 	}
 }(jQuery));
 
+jQuery( function($) {
+	$('li.wp-has-submenu > a').click( function() {
+		$(this).parent().toggleClass( 'wp-menu-open' );
+		return false;
+	} );
+
+} );
+
 jQuery(function(){jQuery('#media-buttons a').tTips();});
