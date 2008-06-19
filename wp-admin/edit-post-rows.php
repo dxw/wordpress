@@ -83,8 +83,19 @@ foreach($posts_columns as $column_name=>$column_display_name) {
 		<td><strong><?php if ( current_user_can( 'edit_post', $post->ID ) ) { ?><a class="row-title" href="post.php?action=edit&amp;post=<?php the_ID(); ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $title)); ?>"><?php echo $title ?></a><?php } else { echo $title; } ?></strong>
 		<?php
 		if ( !empty($post->post_password) ) { _e(' &#8212; <strong>Protected</strong>'); } elseif ('private' == $post->post_status) { _e(' &#8212; <strong>Private</strong>'); }
-		if ( 'excerpt' == $mode )
+		if ( 'excerpt' == $mode ) {
 			the_excerpt();
+			$actions = array();
+			$actions['edit'] = '<a href="post.php?action=edit&amp;post=' . $post->ID . '">' . __('Edit') . '</a>';
+			$actions['delete'] = "<a class='submitdelete' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post->ID", 'delete-post_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete') . "</a>";
+			$action_count = count($actions);
+			$i = 0;
+			foreach ( $actions as $action => $link ) {
+				++$i;
+				( $i == $action_count ) ? $sep = '' : $sep = ' | ';
+				echo "<span class='$action'>$link$sep</span>";
+			}
+		}
 		?>
 		</td>
 		<?php
