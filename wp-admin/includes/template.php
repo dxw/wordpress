@@ -341,14 +341,14 @@ function tag_rows( $page = 1, $pagesize = 20, $searchterms = '' ) {
 function wp_manage_posts_columns() {
 	$posts_columns = array();
 	$posts_columns['cb'] = '<input type="checkbox" />';
+	$posts_columns['title'] = __('Title');
 	if ( 'draft' === $_GET['post_status'] )
 		$posts_columns['modified'] = __('Modified');
 	elseif ( 'pending' === $_GET['post_status'] )
 		$posts_columns['modified'] = __('Submitted');
 	else
 		$posts_columns['date'] = __('Date');
-	$posts_columns['title'] = __('Title');
-	$posts_columns['author'] = __('Author');
+	//$posts_columns['author'] = __('Author');
 	$posts_columns['categories'] = __('Categories');
 	$posts_columns['tags'] = __('Tags');
 	if ( !in_array($_GET['post_status'], array('pending', 'draft', 'future')) )

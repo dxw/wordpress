@@ -44,6 +44,10 @@ require_once('admin-header.php');
 if ( !isset( $_GET['paged'] ) )
 	$_GET['paged'] = 1;
 
+if ( empty($_GET['mode']) )
+	$mode = 'list';
+else
+	$mode = attribute_escape($_GET['mode']);
 ?>
 
 <div class="wrap">
@@ -124,6 +128,13 @@ endif;
 	<input type="text" id="post-search-input" name="s" value="<?php the_search_query(); ?>" />
 	<input type="submit" value="<?php _e( 'Search Posts' ); ?>" class="button" />
 </p>
+
+<input type="hidden" name="mode" value="<?php echo $mode; ?>" />
+
+<ul class="view-switch">
+	<li <?php if ( 'list' == $mode ) echo "class='current'" ?>><a href="<?php echo clean_url(add_query_arg('mode', 'list', $_SERVER['REQUEST_URI'])) ?>"><?php _e('List View') ?></a></li>
+	<li <?php if ( 'excerpt' == $mode ) echo "class='current'" ?>><a href="<?php echo clean_url(add_query_arg('mode', 'excerpt', $_SERVER['REQUEST_URI'])) ?>"><?php _e('Excerpt View') ?></a></li>
+</ul>
 
 <div class="tablenav">
 
