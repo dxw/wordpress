@@ -9,7 +9,7 @@ include('./admin-header.php');
 
 <div class="wrap">
 <ul class="wp-menu">
-<?php $aray = array(); _wp_menu_output( $submenu['options-general.php'], $array ); ?>
+<?php $array = array(); _wp_menu_output( $submenu['options-general.php'], $array ); unset($array); ?>
 </ul>
 <h2><?php _e('Privacy Settings') ?></h2>
 <form method="post" action="options.php">

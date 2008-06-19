@@ -110,7 +110,7 @@ else
 
 <div class="wrap">
 <ul class="wp-menu">
-<?php $aray = array(); _wp_menu_output( $submenu['options-general.php'], $array ); ?>
+<?php $array = array(); _wp_menu_output( $submenu['options-general.php'], $array ); unset($array); ?>
 </ul>
   <h2><?php _e('Customize Permalink Structure') ?></h2>
 <form name="form" action="options-permalink.php" method="post">
