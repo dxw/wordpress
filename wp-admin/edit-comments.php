@@ -5,7 +5,7 @@ $title = __('Edit Comments');
 wp_enqueue_script( 'admin-comments' );
 wp_enqueue_script('admin-forms');
 
-if ( !empty( $_REQUEST['delete_comments'] ) ) {
+if ( !empty( $_REQUEST['delete_comments'] ) && isset($_REQUEST['action']) ) {
 	check_admin_referer('bulk-comments');
 
 	$comments_deleted = $comments_approved = $comments_unapproved = $comments_spammed = 0;
@@ -14,16 +14,16 @@ if ( !empty( $_REQUEST['delete_comments'] ) ) {
 		$post_id = (int) $wpdb->get_var( $wpdb->prepare( "SELECT comment_post_ID FROM $wpdb->comments WHERE comment_ID = %d", $comment) );
 		if ( !current_user_can('edit_post', $post_id) )
 			continue;
-		if ( !empty( $_REQUEST['spamit'] ) ) {
+		if ( $_REQUEST['action'] == 'markspam' ) {
 			wp_set_comment_status($comment, 'spam');
 			$comments_spammed++;
-		} elseif ( !empty( $_REQUEST['deleteit'] ) ) {
+		} elseif ( $_REQUEST['action'] == 'delete' ) {
 			wp_set_comment_status($comment, 'delete');
 			$comments_deleted++;
-		} elseif ( !empty( $_REQUEST['approveit'] ) ) {
+		} elseif ( $_REQUEST['action'] == 'approve' ) {
 			wp_set_comment_status($comment, 'approve');
 			$comments_approved++;
-		} elseif ( !empty( $_REQUEST['unapproveit'] ) ) {
+		} elseif ( $_REQUEST['action'] == 'unapprove' ) {
 			wp_set_comment_status($comment, 'hold');
 			$comments_unapproved++;
 		}
@@ -164,16 +164,20 @@ if ( $page_links )
 ?>
 
 <div class="alignleft">
+<select name="action">
+<option value="" selected>Actions</option>
 <?php if ( 'approved' != $comment_status ): ?>
-<input type="submit" value="<?php _e('Approve'); ?>" name="approveit" class="button-secondary" />
+<option value="approve"><?php _e('Approve'); ?>
 <?php endif; ?>
-<input type="submit" value="<?php _e('Mark as Spam'); ?>" name="spamit" class="button-secondary" />
+<option value="markspam"><?php _e('Mark as Spam'); ?></option>
 <?php if ( 'moderated' != $comment_status ): ?>
-<input type="submit" value="<?php _e('Unapprove'); ?>" name="unapproveit" class="button-secondary" />
+<option value="unapprove"><?php _e('Unapprove'); ?></option>
 <?php endif; ?>
-<input type="submit" value="<?php _e('Delete'); ?>" name="deleteit" class="button-secondary delete" />
+<option value="delete"><?php _e('Delete'); ?></option>
+</select>
 <?php do_action('manage_comments_nav', $comment_status); ?>
 <?php wp_nonce_field('bulk-comments'); ?>
+<input type="submit" name="doaction" value="Apply" class="button-secondary apply" />
 </div>
 
 <br class="clear" />
