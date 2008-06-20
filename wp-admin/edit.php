@@ -1,24 +1,32 @@
 <?php
 require_once('admin.php');
 
-// Handle bulk deletes
-if ( isset($_GET['deleteit']) && isset($_GET['delete']) ) {
-	check_admin_referer('bulk-posts');
-	foreach( (array) $_GET['delete'] as $post_id_del ) {
-		$post_del = & get_post($post_id_del);
+// Handle bulk actions
+if ( isset($_GET['action']) && $_GET['action'] != 'Actions' ) {
+	switch ( $_GET['action'] ) {
+		case 'delete':
+			if ( isset($_GET['post']) ) {
+				check_admin_referer('bulk-posts');
+				foreach( (array) $_GET['post'] as $post_id_del ) {
+					$post_del = & get_post($post_id_del);
 
-		if ( !current_user_can('delete_post', $post_id_del) )
-			wp_die( __('You are not allowed to delete this post.') );
+					if ( !current_user_can('delete_post', $post_id_del) )
+						wp_die( __('You are not allowed to delete this post.') );
 
-		if ( $post_del->post_type == 'attachment' ) {
-			if ( ! wp_delete_attachment($post_id_del) )
-				wp_die( __('Error in deleting...') );
-		} else {
-			if ( !wp_delete_post($post_id_del) )
-				wp_die( __('Error in deleting...') );
-		}
+					if ( $post_del->post_type == 'attachment' ) {
+						if ( ! wp_delete_attachment($post_id_del) )
+							wp_die( __('Error in deleting...') );
+					} else {
+						if ( !wp_delete_post($post_id_del) )
+							wp_die( __('Error in deleting...') );
+					}
+				}
+			}
+			break;
+		case 'edit':
+			// TODO: Decide what to do here - add bulk edit feature, or just disallow if >1 post selected
+			break;
 	}
-
 	$sendback = wp_get_referer();
 	if (strpos($sendback, 'post.php') !== false) $sendback = admin_url('post-new.php');
 	elseif (strpos($sendback, 'attachments.php') !== false) $sendback = admin_url('attachments.php');
@@ -151,7 +159,12 @@ if ( $page_links )
 ?>
 
 <div class="alignleft">
-<input type="submit" value="<?php _e('Delete'); ?>" name="deleteit" class="button-secondary delete" />
+<select name="action">
+<option value="" selected><?php _e('Actions'); ?></option>
+<option value="delete"><?php _e('Delete'); ?></option>
+<option value="edit"><?php _e('Edit'); ?></option>
+</select>
+<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" class="button-secondary action" />
 <?php wp_nonce_field('bulk-posts'); ?>
 <?php
 if ( !is_singular() ) {
