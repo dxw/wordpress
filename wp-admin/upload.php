@@ -1,5 +1,7 @@
 <?php
 require_once('admin.php');
+add_thickbox();
+wp_enqueue_script('media-upload');
 
 if (!current_user_can('upload_files'))
 	wp_die(__('You do not have permission to upload files.'));
@@ -123,6 +125,10 @@ if (isset($_GET['message'])) : ?>
 <?php $_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 endif;
 ?>
+
+<p id="big-add-button">
+	<a href="media-upload.php?TB_iframe=true" class="button thickbox"><?php _e( 'Add Media' ); ?></a>
+</p>
 
 <p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Media' ); ?>:</label>
