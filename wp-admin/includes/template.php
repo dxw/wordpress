@@ -780,7 +780,7 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
     </td>
     <td><?php comment_date(__('Y/m/d \a\t g:ia')); ?></td>
     <td>
-    "<?php echo $post_link ?>"<br/>
+    "<?php echo $post_link ?>" <?php echo sprintf('(%s comments)', $post->comment_count); ?><br/>
     <?php echo get_the_time(__('Y/m/d \a\t g:ia')); ?>
 	</td>
   </tr>
