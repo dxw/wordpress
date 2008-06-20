@@ -37,8 +37,18 @@ function wp_dashboard_setup() {
 
 
 	// QuickPress Widget
+	if ( 'post' === strtolower( $_SERVER['REQUEST_METHOD'] ) && isset( $_POST['action'] ) && 0 === strpos( $_POST['action'], 'post-quickpress' ) ) {
+		$view = get_permalink( $_POST['post_ID'] );
+		$edit = clean_url( get_edit_post_link( $_POST['post_ID'] ) );
+		if ( 'post-quickpress-publish' == $_POST['action'] )
+			$notice = sprintf( __( 'Post Published. <a href="%s">View post</a> | <a href="%s">Edit post</a>' ), clean_url( $view ), $edit );
+		else
+			$notice = sprintf( __( 'Draft Saved. <a href="%s">Preview post</a> | <a href="%s">Edit post</a>' ), clean_url( add_query_arg( 'preview', 1, $view ) ), $edit );
+	} else {
+		$notice = '';
+	}
 	wp_register_sidebar_widget( 'dashboard_quick_press', __( 'QuickPress' ), 'wp_dashboard_quick_press',
-		array( 'width' => 'half', 'height' => 'double' )
+		array( 'width' => 'half', 'height' => 'double', 'notice' => $notice )
 	);
 
 	// Incoming Links Widget
@@ -297,7 +307,7 @@ function wp_dashboard_quick_press( $sidebar_args ) {
 		<p><?php _e('Separate tags with commas'); ?></p>
 
 		<p class="submit">
-			<input type="hidden" name="action" value="post-quickpress" />
+			<input type="hidden" name="action" id="quickpost-action" value="post-quickpress-save" />
 			<?php wp_nonce_field('add-post'); ?>
 			<input type="submit" name="save" id="save-post" class="button" value="<?php _e('Save'); ?>" />
 			<input type="submit" name="publish" id="publish" accesskey="p" class="button button-highlighted" value="<?php _e('Publish'); ?>" />
@@ -346,14 +356,26 @@ function wp_dashboard_quick_press_js() {
 <script type="text/javascript">
 /* <![CDATA[ */
 var quickPressLoad = function($) {
+	var act = $('#quickpost-action');
 	var t = $('#quick-press').submit( function() {
-		t.load( t.attr( 'action' ) + ' #quick-press', t.serializeArray(), function() {
-			quickPressLoad($);
+		var head = $('#dashboard_quick_press div.dashboard-widget').children( 'div').hide().end().children('h3');
+		head.html( '<span>' + head.html() + '</span><img src="images/loading.gif" style="margin-top: 6px; float: right" /><br class="clear" />' );
+
+		if ( 'post' == act.val() ) { act.val( 'post-quickpress-publish' ); }
+
+		if ( 'undefined' != typeof tinyMCE ) {
+			tinyMCE.get('quickpress-content').save();
+			tinyMCE.get('quickpress-content').remove();
+		}
+
+		$('#dashboard_quick_press').load( t.attr( 'action' ) + ' #dashboard_quick_press div.dashboard-widget', t.serializeArray(), function() {
 			if ( 'undefined' != typeof wpTeenyMCEInit && $.isFunction( wpTeenyMCEInit ) ) { wpTeenyMCEInit(); }
+			quickPressLoad($);
 		} );
 		return false;
 	} );
-	$('#publish').click( function() { t.append( "<input type='hidden' name='publish' value='publish' />" ); } );
+
+	$('#publish').click( function() { act.val( 'post-quickpress-publish' ); } );
 };
 jQuery( quickPressLoad );
 /* ]]> */
