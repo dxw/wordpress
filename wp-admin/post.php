@@ -57,13 +57,20 @@ if ( isset( $_POST['deletepost'] ) )
 	$action = 'delete';
 
 switch($action) {
+case 'post-quickpress':
+	require_once(ABSPATH . 'wp-admin/includes/dashboard.php');
+	add_filter( 'wp_dashboard_widgets', create_function( '$a', 'return array( "dashboard_quick_press" );' ) );
+	wp_dashboard_setup();
+	wp_dashboard();
+	// no break
 case 'postajaxpost':
 case 'post':
 	check_admin_referer('add-post');
 
-	$post_ID = 'post' == $action ? write_post() : edit_post();
+	$post_ID = 'postajaxpost' == $action ? edit_post() : write_post();
 
-	redirect_post($post_ID);
+	if ( 'post-quickpress' !== $action )
+		redirect_post($post_ID);
 	exit();
 	break;
 

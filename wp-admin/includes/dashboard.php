@@ -35,6 +35,12 @@ function wp_dashboard_setup() {
 		array( 'all_link' => 'edit-comments.php', 'notice' => $notice, 'width' => 'half' )
 	);
 
+
+	// QuickPress Widget
+	wp_register_sidebar_widget( 'dashboard_quick_press', __( 'QuickPress' ), 'wp_dashboard_quick_press',
+		array( 'width' => 'half', 'height' => 'double' )
+	);
+
 	// Incoming Links Widget
 	if ( !isset( $widget_options['dashboard_incoming_links'] ) ) {
 		$update = true;
@@ -131,6 +137,7 @@ function wp_dashboard_setup() {
 
 	// Hard code the sidebar's widgets and order
 	$dashboard_widgets = array();
+	$dashboard_widgets[] = 'dashboard_quick_press';
 	$dashboard_widgets[] = 'dashboard_recent_comments';
 	$dashboard_widgets[] = 'dashboard_incoming_links';
 	$dashboard_widgets[] = 'dashboard_primary';
@@ -140,6 +147,10 @@ function wp_dashboard_setup() {
 
 	// Filter widget order
 	$dashboard_widgets = apply_filters( 'wp_dashboard_widgets', $dashboard_widgets );
+	if ( in_array( 'dashboard_quick_press', $dashboard_widgets ) ) {
+		add_action( 'admin_head', 'wp_teeny_mce' );
+		add_action( 'admin_head', 'wp_dashboard_quick_press_js' );
+	}
 
 	$wp_dashboard_sidebars = array( 'wp_dashboard' => $dashboard_widgets, 'array_version' => 3.5 );
 
@@ -256,6 +267,100 @@ function wp_dashboard_dynamic_sidebar_params( $params ) {
 
 
 /* Dashboard Widgets */
+
+function wp_dashboard_quick_press( $sidebar_args ) {
+	extract( $sidebar_args, EXTR_SKIP );
+
+	echo $before_widget;
+
+	echo $before_title;
+	echo $widget_name;
+	echo $after_title;
+
+?>
+
+	<form name="post" action="<?php echo clean_url( admin_url( 'post.php' ) ); ?>" method="post" id="quick-press">
+		<h3><label for="title"><?php _e('Title') ?></label></h3>
+		<div class="input-text-wrap">
+			<input type="text" name="post_title" id="title" autocomplete="off" />
+		</div>
+
+		<h3><label for="content"><?php _e('Post') ?></label></h3>
+		<div class="textarea-wrap">
+			<textarea name="content" id="quickpress-content" class="mceEditor" rows="3" cols="15"></textarea>
+		</div>
+
+		<h3><label for="tags-input"><?php _e('Tags') ?></label></h3>
+		<div class="input-text-wrap">
+			<input type="text" name="tags_input" id="tags-input" />
+		</div>
+		<p><?php _e('Separate tags with commas'); ?></p>
+
+		<p class="submit">
+			<input type="hidden" name="action" value="post-quickpress" />
+			<?php wp_nonce_field('add-post'); ?>
+			<input type="submit" name="save" id="save-post" class="button" value="<?php _e('Save'); ?>" />
+			<input type="submit" name="publish" id="publish" accesskey="p" class="button button-highlighted" value="<?php _e('Publish'); ?>" />
+		</p>
+
+<?php
+	$drafts_query = new WP_Query( array(
+		'post_type' => 'post',
+		'what_to_show' => 'posts',
+		'post_status' => 'draft',
+		'author' => $GLOBALS['current_user']->ID,
+		'posts_per_page' => 5,
+		'orderby' => 'modified',
+		'order' => 'DESC'
+	) );
+
+	if ( $drafts_query->posts ) :
+		$list = array();
+		foreach ( $drafts_query->posts as $draft ) {
+			$url = get_edit_post_link( $draft->ID );
+			$title = get_the_title( $draft->ID );
+			$list[] = "<a href='$url' title='" . sprintf( __( 'Edit "%s"' ), attribute_escape( $title ) ) . "'>$title</a>";
+		}
+?>
+
+		<h3><?php _e('Recent Drafts'); ?></h3>
+		<p id='recent-drafts'>
+			<?php echo join( ', ', $list ); ?>
+		</p>
+
+<?php
+
+	endif; // drafts
+
+?>
+
+	</form>
+
+<?php
+
+	echo $after_widget;
+}
+
+function wp_dashboard_quick_press_js() {
+?>
+<script type="text/javascript">
+/* <![CDATA[ */
+var quickPressLoad = function($) {
+	var t = $('#quick-press').submit( function() {
+		t.load( t.attr( 'action' ) + ' #quick-press', t.serializeArray(), function() {
+			quickPressLoad($);
+			if ( 'undefined' != typeof wpTeenyMCEInit && $.isFunction( wpTeenyMCEInit ) ) { wpTeenyMCEInit(); }
+		} );
+		return false;
+	} );
+	$('#publish').click( function() { t.append( "<input type='hidden' name='publish' value='publish' />" ); } );
+};
+jQuery( quickPressLoad );
+/* ]]> */
+</script>
+<?php
+}
+
 
 function wp_dashboard_recent_comments( $sidebar_args ) {
 	global $comment;

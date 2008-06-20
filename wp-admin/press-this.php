@@ -233,61 +233,20 @@ if($_REQUEST['ajax'] == 'photo') { ?>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
 	<title><?php _e('Press This') ?></title>
 
-	<script type="text/javascript" src="../wp-includes/js/tinymce/tiny_mce.js"></script>
 <?php
 	add_thickbox();
 	wp_enqueue_style('press-this');
 	wp_enqueue_style( 'colors' );
-	wp_enqueue_script('post');
+	wp_enqueue_script( 'post' );
+
+	wp_teeny_mce();
 
 	do_action('admin_print_styles');
 	do_action('admin_print_scripts');
 	do_action('admin_head');
 ?>
-	<script type="text/javascript">
-	<?php if ( user_can_richedit() ) { 
-		$language = ( '' == get_locale() ) ? 'en' : strtolower( substr(get_locale(), 0, 2) );
-		// Add TinyMCE languages
-		@include_once( dirname(__FILE__).'/../wp-includes/js/tinymce/langs/wp-langs.php' );
-		if ( isset($strings) ) echo $strings; ?>
-			(function() {
-				var base = tinymce.baseURL, sl = tinymce.ScriptLoader, ln = "<?php echo $language; ?>";
-
-				sl.markDone(base + '/langs/' + ln + '.js');
-				sl.markDone(base + '/themes/advanced/langs/' + ln + '.js');
-				sl.markDone(base + '/themes/advanced/langs/' + ln + '_dlg.js');
-			})();
-			
-			tinyMCE.init({
-				mode: "textareas",
-				editor_selector: "mceEditor",
-				language : "<?php echo $language; ?>",
-				width: "100%",
-				theme : "advanced",
-				theme_advanced_buttons1 : "bold,italic,underline,blockquote,separator,strikethrough,bullist,numlist,undo,redo,link,unlink",
-				theme_advanced_buttons2 : "",
-				theme_advanced_buttons3 : "",
-				theme_advanced_toolbar_location : "top",
-				theme_advanced_toolbar_align : "left",
-				theme_advanced_statusbar_location : "bottom",
-				theme_advanced_resizing : true,
-				theme_advanced_resize_horizontal : false,
-				skin : "wp_theme",
-				dialog_type : "modal",
-				relative_urls : false,
-				remove_script_host : false,
-				convert_urls : false,
-				apply_source_formatting : false,
-				remove_linebreaks : false,
-				accessibility_focus : false,
-				tab_focus : ":next",
-				plugins : "safari,inlinepopups",
-				entities : "38,amp,60,lt,62,gt",
-				force_p_newlines : true
-			});
-    <?php } ?>
-
-    jQuery('#tags-input').hide();
+<script type="text/javascript">
+	jQuery('#tags-input').hide();
 
 	tag_update_quickclicks();
 

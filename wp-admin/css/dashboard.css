@@ -55,6 +55,38 @@
 	font-weight: bold;
 }
 
+form .input-text-wrap {
+	border-style: solid;
+	border-width: 1px;
+	padding: 2px 3px;
+	border-color: #CCCCCC;
+}
+
+form .input-text-wrap input {
+	border: 0pt none;
+	outline-color: -moz-use-text-color;
+	outline-style: none;
+	outline-width: medium;
+	padding: 0pt;
+	width: 100%;
+	border-style: solid;
+	color: #333333;
+}
+
+form .textarea-wrap {
+	border-style: solid;
+	border-width: 1px;
+	padding: 0;
+	border-color: #CCCCCC;
+}
+
+form .textarea-wrap textarea {
+	border: 0pt none;
+}
+
+
+
+
 /* Widgets */
 
 div#dashboard-widgets-wrap {

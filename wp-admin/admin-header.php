@@ -1,10 +1,6 @@
 <?php
 @header('Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset'));
 if (!isset($_GET["page"])) require_once('admin.php');
-if ( $editing ) {
-	if ( user_can_richedit() )
-		wp_enqueue_script( 'wp_tiny_mce' );
-}
 wp_enqueue_script( 'wp-gears' );
 
 $min_width_pages = array( 'post.php', 'post-new.php', 'page.php', 'page-new.php', 'widgets.php', 'comment.php', 'link.php' );
