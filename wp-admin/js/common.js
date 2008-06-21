@@ -44,7 +44,7 @@ jQuery(document).ready( function() {
 
 jQuery( function($) {
 	$('li.wp-has-submenu > a').click( function() {
-		$(this).parent().toggleClass( 'wp-menu-open' );
+		$(this).siblings('ul').slideToggle();
 		return false;
 	} );
 
