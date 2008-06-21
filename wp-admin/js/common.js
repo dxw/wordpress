@@ -43,8 +43,8 @@ jQuery(document).ready( function() {
 }(jQuery));
 
 jQuery( function($) {
-	$('li.wp-has-submenu > a').click( function() {
-		$(this).siblings('ul').slideToggle();
+	jQuery('li.wp-has-submenu > a').click( function() {
+		jQuery(this).siblings('ul').slideToggle();
 		return false;
 	} );
 
