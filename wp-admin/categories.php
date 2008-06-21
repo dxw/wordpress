@@ -5,7 +5,7 @@ $title = __('Categories');
 
 wp_reset_vars(array('action', 'cat'));
 
-if ( isset($_GET['deleteit']) && isset($_GET['delete']) )
+if ( $_GET['action'] == 'delete' && isset($_GET['delete']) )
 	$action = 'bulk-delete';
 
 switch($action) {
@@ -153,7 +153,11 @@ if ( $page_links )
 ?>
 
 <div class="alignleft">
-<input type="submit" value="<?php _e('Delete'); ?>" name="deleteit" class="button-secondary delete" />
+<select name="action">
+<option value="" selected><?php _e('Actions'); ?></option>
+<option value="delete"><?php _e('Delete'); ?></option>
+</select>
+<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" class="button-secondary action" />
 <?php wp_nonce_field('bulk-categories'); ?>
 </div>
 

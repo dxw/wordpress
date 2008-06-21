@@ -1,32 +1,34 @@
 <?php
 require_once('admin.php');
 
-// Handle bulk deletes
-if ( isset($_GET['deleteit']) && isset($_GET['delete']) ) {
+// Handle bulk actions
+if ( isset($_GET['action']) && isset($_GET['delete']) ) {
 	check_admin_referer('bulk-link-categories');
 
 	if ( !current_user_can('manage_categories') )
 		wp_die(__('Cheatin&#8217; uh?'));
+	
+	if ( $_GET['action'] == 'delete' ) {
+		foreach( (array) $_GET['delete'] as $cat_ID ) {
+			$cat_name = get_term_field('name', $cat_ID, 'link_category');
 
-	foreach( (array) $_GET['delete'] as $cat_ID ) {
-		$cat_name = get_term_field('name', $cat_ID, 'link_category');
+			// Don't delete the default cats.
+			if ( $cat_ID == get_option('default_link_category') )
+				wp_die(sprintf(__("Can&#8217;t delete the <strong>%s</strong> category: this is the default one"), $cat_name));
 
-		// Don't delete the default cats.
-		if ( $cat_ID == get_option('default_link_category') )
-			wp_die(sprintf(__("Can&#8217;t delete the <strong>%s</strong> category: this is the default one"), $cat_name));
+			wp_delete_term($cat_ID, 'link_category');
+		}
 
-		wp_delete_term($cat_ID, 'link_category');
+		$location = 'edit-link-categories.php';
+		if ( $referer = wp_get_referer() ) {
+			if ( false !== strpos($referer, 'edit-link-categories.php') )
+				$location = $referer;
+		}
+
+		$location = add_query_arg('message', 6, $location);
+		wp_redirect($location);
+		exit();
 	}
-
-	$location = 'edit-link-categories.php';
-	if ( $referer = wp_get_referer() ) {
-		if ( false !== strpos($referer, 'edit-link-categories.php') )
-			$location = $referer;
-	}
-
-	$location = add_query_arg('message', 6, $location);
-	wp_redirect($location);
-	exit();
 } elseif ( !empty($_GET['_wp_http_referer']) ) {
 	 wp_redirect(remove_query_arg(array('_wp_http_referer', '_wpnonce'), stripslashes($_SERVER['REQUEST_URI'])));
 	 exit;
@@ -89,7 +91,11 @@ if ( $page_links )
 ?>
 
 <div class="alignleft">
-<input type="submit" value="<?php _e('Delete'); ?>" name="deleteit" class="button-secondary delete" />
+<select name="action">
+<option value="" selected><?php _e('Actions'); ?></option>
+<option value="delete"><?php _e('Delete'); ?></option>
+</select>
+<input type="submit" value="<?php _e('Apply'); ?>" name="doaction" class="button-secondary action" />
 <?php wp_nonce_field('bulk-link-categories'); ?>
 </div>
 
