@@ -127,9 +127,11 @@ endif; ?>
 <form id="posts-filter" action="" method="get">
 	<h2><?php _e('Manage Tags'); ?></h2>
 
+<?php if ( current_user_can('manage_categories') ) : ?>
 <p id="big-add-button">
 	<a href="#addtag" class="button"><?php _e('Add New Tag'); ?></a>
 </p>
+<?php endif; ?>
 
 <p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Tags' ); ?>:</label>
