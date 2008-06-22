@@ -56,10 +56,12 @@ endif; ?>
 <div class="wrap">
 
 <form id="posts-filter" action="" method="get">
-<?php if ( current_user_can('manage_categories') ) : ?>
-	<h2><?php printf(__('Manage Link Categories (<a href="%s">add new</a>)'), '#addcat') ?> </h2>
-<?php else : ?>
 	<h2><?php _e('Manage Link Categories') ?> </h2>
+
+<?php if ( current_user_can('manage_categories') ) : ?>
+<p id="big-add-button">
+	<a href="#addcat" class="button"><?php _e('Add New Category'); ?></a>
+</p>
 <?php endif; ?>
 
 <p id="post-search">

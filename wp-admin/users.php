@@ -284,6 +284,13 @@ echo implode(' |</li>', $role_links) . '</li>';
 unset($role_links);
 ?>
 </ul>
+
+<?php if ( current_user_can('create_users') ) : ?>
+<p id="big-add-button">
+	<a href="#add-new-user" class="button"><?php _e('Add New User'); ?></a>
+</p>
+<?php endif; ?>
+
 	<p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Users' ); ?>:</label>
 	<input type="text" id="post-search-input" name="usersearch" value="<?php echo attribute_escape($wp_user_search->search_term); ?>" />
