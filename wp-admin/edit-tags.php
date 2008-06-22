@@ -125,11 +125,11 @@ endif; ?>
 <div class="wrap">
 
 <form id="posts-filter" action="" method="get">
-<?php if ( current_user_can('manage_categories') ) : ?>
-	<h2><?php printf(__('Manage Tags (<a href="%s">add new</a>)'), '#addtag') ?> </h2>
-<?php else : ?>
-	<h2><?php _e('Manage Tags') ?> </h2>
-<?php endif; ?>
+	<h2><?php _e('Manage Tags'); ?></h2>
+
+<p id="big-add-button">
+	<a href="#addtag" class="button"><?php _e('Add New Tag'); ?></a>
+</p>
 
 <p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Tags' ); ?>:</label>
