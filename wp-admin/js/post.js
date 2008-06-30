@@ -71,6 +71,29 @@ jQuery(document).ready( function() {
 	// postboxes
 	add_postbox_toggles('post');
 
+	var postingMetaBox = false; // post once, not once per sortable
+	jQuery('.meta-box-sortables').sortable( {
+		connectWith: [ '.meta-box-sortables' ],
+		handle: 'h3',
+		update: function() {
+			if ( postingMetaBox ) {
+				return;
+			}
+			postingMetaBox = true;
+			var postVars = {
+				action: 'meta-box-order',
+				_ajax_nonce: jQuery('#meta-box-order-nonce').val(),
+				page: 'post'
+			}
+			jQuery('.meta-box-sortables').each( function() {
+				postVars["order[" + this.id.split('-')[0] + "]"] = jQuery(this).sortable( 'toArray' ).join(',');
+			} );
+			jQuery.post( postboxL10n.requestFile, postVars, function() {
+				postingMetaBox = false;
+			} );
+		}
+	} );
+
 	// Editable slugs
 	make_slugedit_clickable();
 

@@ -930,6 +930,14 @@ table.form-table td .updated {
 
 /* Post Screen */
 
+.meta-box-sortables {
+	min-height: 50px;
+}
+
+.postbox {
+	position: relative;
+}
+
 #tagsdiv #newtag {
 	margin-right: 5px;
 	width: 16em;
@@ -1133,8 +1141,8 @@ table.form-table td .updated {
 	background-repeat: no-repeat;
 	display: block;
 	height: 37px;
-	margin-left: -21px;
-	margin-top: -10px;
+	margin-left: -14px;
+	margin-top: -3px;
 	overflow: hidden;
 	position: absolute;
 	text-indent: -9999px;
@@ -1161,7 +1169,7 @@ table.form-table td .updated {
 	background-position: 4px 15px;
 }
 
-.submitbox {
+#side-info-column {
 	width: 220px;
 	float: right;
 }
