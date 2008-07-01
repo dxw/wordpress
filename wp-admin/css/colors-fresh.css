@@ -60,7 +60,7 @@ strong .post-com-count span {
 	background-color: #2583ad;
 }
 
-ul#category-tabs li.ui-tabs-selected, .button-secondary, #quicktags, #login form .submit input {
+#post-body ul#category-tabs li.ui-tabs-selected, .button-secondary, #quicktags, #login form .submit input {
 	background-color: #cee1ef !important;
 }
 
