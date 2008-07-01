@@ -1618,3 +1618,9 @@ fieldset {
 	border-color: #555;
 	background-color: #ccc;
 }
+
+.settings-toggle {
+	text-align: right;
+	margin-right: 7px;
+	font-size: 12px;
+}

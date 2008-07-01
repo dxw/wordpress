@@ -119,6 +119,11 @@ function wp_dashboard_setup() {
 	);
 
 
+	wp_register_sidebar_widget( 'dashboard_inbox', __( 'Inbox' ), 'wp_dashboard_inbox',
+		array( 'all_link' => 'inbox.php', 'height' => 'double' )
+	);
+
+
 		/* Dashboard Widget Template
 		wp_register_sidebar_widget( $widget_id (unique slug) , $widget_title, $output_callback,
 			array(
@@ -148,12 +153,15 @@ function wp_dashboard_setup() {
 
 	// Hard code the sidebar's widgets and order
 	$dashboard_widgets = array();
+	$dashboard_widgets[] = 'dashboard_inbox';
 	$dashboard_widgets[] = 'dashboard_quick_press';
+/*
 	$dashboard_widgets[] = 'dashboard_recent_comments';
 	$dashboard_widgets[] = 'dashboard_incoming_links';
 	$dashboard_widgets[] = 'dashboard_primary';
 	if ( current_user_can( 'activate_plugins' ) )
 		$dashboard_widgets[] = 'dashboard_plugins';
+*/
 	$dashboard_widgets[] = 'dashboard_secondary';
 
 	// Filter widget order
@@ -390,6 +398,59 @@ jQuery( quickPressLoad );
 <?php
 }
 
+
+function wp_dashboard_inbox( $sidebar_args ) {
+	extract( $sidebar_args, EXTR_SKIP );
+
+	echo $before_widget;
+
+	echo $before_title;
+	echo $widget_name;
+	echo $after_title;
+
+?>
+
+	<style type="text/css">
+		#inbox-filter ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		#inbox-filter ul input[type=checkbox] {
+			float: left;		
+		}
+		#inbox-filter ul p {
+			margin-left: 20px;
+		}
+	</style>
+
+
+	<form id="inbox-filter" action="" method="get">
+		<p><input type="submit" value="Archive" name="archive" class="button"></p>
+		<ul>
+
+<?php	foreach ( wp_get_inbox_items() as $k => $item ) : ?>
+
+			<li id="message-<?php echo $k; ?>">
+				<input type="checkbox" name="messages[]" value="<?php echo $k; ?>" class="checkbox" />
+				<p><?php
+					echo $item->text;
+					if ( strlen( $item->text ) > 180 )
+						echo ' <a class="inbox-more" href="#">more...</a>';;
+				?><br />
+				-- <cite><?php echo $item->from; ?></cite>, <?php echo "$item->date, $item->time"; ?>
+				</p>
+			</li>
+
+<?php	endforeach; ?>
+
+		</ul>
+	</form>
+
+<?php
+
+	echo $after_widget;
+}
 
 function wp_dashboard_recent_comments( $sidebar_args ) {
 	global $comment;
@@ -674,3 +735,4 @@ function wp_dashboard_rss_control( $args ) {
 }
 
 ?>
+

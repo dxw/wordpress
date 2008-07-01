@@ -34,42 +34,26 @@ require_once('admin-header.php');
 	</tr>
 	</thead>
 	<tbody>
-	<tr id="message-15">
-		<th scope="col" class="check-column"><input type="checkbox" name="messages[]" value="15" /></td>
-		<td>
-			Your take on the evolution of Dr. Who is ridiculous. The fact that the actors are getting younger has nothing to do with Gallifrey lore, and everything to do with celebrity culture.
-			<br/><a class="inbox-more" href="#"><?php _e('more...'); ?></a>
-		</td>
-		<td><a href="#link-to-comment"><abbr title="2008/09/06 at 4:19pm">2008/09/06</abbr></a></td>
-		<td>
-			l. monroe
-			<br/>on "<a href="#">Post</a>"
-		</td>
+
+<?php foreach ( wp_get_inbox_items() as $k => $item ) : ?>
+	
+	<tr id="message-<?php echo $k; ?>">
+		<th scope="col" class="check-column"><input type="checkbox" name="messages[]" value="<?php echo $k; ?>" /></td>
+		<td><?php
+			echo $item->text;
+			if ( strlen( $item->text ) > 180 )
+				echo '<br/><a class="inbox-more" href="#">more...</a>';
+		?></td>
+		<td><a href="#link-to-comment"><abbr title="<?php echo "$item->date at $item->time"; ?>"><?php echo $item->date; ?></abbr></a></td>
+		<td><?php
+			echo $item->from;
+			if ( 'comment' == 'type' )
+				echo '<br/>on "<a href="#">Post</a>"';
+		?></td>
 	</tr>
-	<tr id="message-14">
-		<th scope="col" class="check-column"><input type="checkbox" name="messages[]" value="14" /></td>
-		<td><strong>Announcement: WordPress introduces new features for mobile blogging.</strong></td>
-		<td><abbr title="2008/09/06 at 3:24pm">2008/09/06</abbr></td>
-		<td><em>WordPress.org</em></td>
-	</tr>
-	<tr id="message-12">
-		<th scope="col" class="check-column"><input type="checkbox" name="messages[]" value="12" /></td>
-		<td>Great review. You left out a few things, but maybe you were trying to avoid spoilers? Will check back later in a week.</td>
-		<td><a href="#link-to-comment"><abbr title="2008/09/06 at 2:46pm">2008/09/06</abbr></a></td>
-		<td>
-			matt
-			<br/>on "<a href="#">Post</a>"
-		</td>
-	</tr>
-	<tr id="message-11">
-		<th scope="col" class="check-column"><input type="checkbox" name="messages[]" value="11" /></td>
-		<td>nice picture!</td>
-		<td><a href="#link-to-comment"><abbr title="2008/08/06 at 3:17pm">2008/08/06</abbr></a></td>
-		<td>
-			caped crusader
-			<br/>on "<a href="#">some post</a>"
-		</td>
-	</tr>
+
+<?php endforeach; ?>
+
 </table>
 </form>
 <div class="tablenav"></div>
