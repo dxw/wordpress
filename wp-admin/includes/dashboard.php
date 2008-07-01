@@ -50,6 +50,17 @@ function wp_dashboard_setup() {
 	wp_register_sidebar_widget( 'dashboard_quick_press', __( 'QuickPress' ), 'wp_dashboard_quick_press',
 		array( 'all_link' => array( 'edit.php?post_status=draft', __('View All Drafts') ), 'width' => 'half', 'height' => 'double', 'notice' => $notice )
 	);
+	wp_register_widget_control( 'dashboard_quick_press', __( 'QuickPress' ), 'wp_dashboard_empty_control',
+		array( 'widget_id' => 'dashboard_quick_press' )
+	);
+
+	// Inbox Widget
+	wp_register_sidebar_widget( 'dashboard_inbox', __( 'Inbox' ), 'wp_dashboard_inbox',
+		array( 'all_link' => 'inbox.php', 'height' => 'double' )
+	);
+	wp_register_widget_control( 'dashboard_inbox', __( 'Inbox' ), 'wp_dashboard_empty_control',
+		array( 'widget_id' => 'dashboard_inbox' )
+	);
 
 	// Incoming Links Widget
 	if ( !isset( $widget_options['dashboard_incoming_links'] ) || !isset( $widget_options['dashboard_incoming_links']['home'] ) || $widget_options['dashboard_incoming_links']['home'] != get_option('home') ) {
@@ -116,11 +127,6 @@ function wp_dashboard_setup() {
 	);
 	wp_register_widget_control( 'dashboard_secondary', __( 'Secondary Feed' ), 'wp_dashboard_rss_control', array(),
 		array( 'widget_id' => 'dashboard_secondary', 'form_inputs' => array( 'show_summary' => false, 'show_author' => false, 'show_date' => false ) )
-	);
-
-
-	wp_register_sidebar_widget( 'dashboard_inbox', __( 'Inbox' ), 'wp_dashboard_inbox',
-		array( 'all_link' => 'inbox.php', 'height' => 'double' )
 	);
 
 
@@ -703,6 +709,10 @@ function wp_dashboard_empty( $sidebar_args, $callback = false ) {
 }
 
 /* Dashboard Widgets Controls. Ssee also wp_dashboard_empty() */
+
+// Temp
+function wp_dashboard_empty_control() {
+}
 
 // Calls widget_control callback
 function wp_dashboard_trigger_widget_control( $widget_control_id = false ) {
