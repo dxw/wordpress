@@ -8,12 +8,14 @@
 $awaiting_mod = wp_count_comments();
 $awaiting_mod = $awaiting_mod->moderated;
 
+$inbox_num = count( wp_get_inbox_items() );
+
 $top_menu = $top_submenu = $menu = $submenu = array();
 
 $top_menu[5] = array( __('My Account'), 'read', 'profile.php' );
 $top_menu[10] = array( __('My Dashboard'), 'read', 'index.php' );
 $top_menu[15] = array( __('New Post'), 'edit_posts', 'post-new.php' );
-$top_menu[20] = array( sprintf( __('Comments (%s)'), "<span id='awaiting-mod' class='count-$awaiting_mod'><span class='comment-count'>" . number_format_i18n($awaiting_mod) . "</span></span>" ), 'edit_posts', 'edit-comments.php' );
+$top_menu[20] = array( sprintf( __('Inbox (%s)'), "<span id='inbox-num' class='count-$inbox_num'><span class='inbox-count'>" . number_format_i18n($inbox_num) . "</span></span>" ), 'edit_posts', 'inbox.php' );
 $top_menu[25] = array( __('Help'), 'read', 'index.php?help' ); // place holder
 
 $top_submenu['profile.php'][5] = array( __('Something'), 'read', 'profile.php?something' ); // place holder

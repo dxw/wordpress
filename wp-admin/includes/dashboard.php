@@ -433,7 +433,9 @@ function wp_dashboard_inbox( $sidebar_args ) {
 		jQuery( function($) {
 			$('#inbox-filter').submit( function() { return false; } )
 				.find( ':button' ).click( function() {
-					$(':checked').parent().slideUp();
+					$(':checked').parent().slideUp( 'normal', function() {
+						$('.inbox-count').text( $('#inbox-filter li:visible').size().toString() );
+					} );
 				} );
 		} );
 	</script>
