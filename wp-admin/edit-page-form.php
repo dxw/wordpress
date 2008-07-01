@@ -60,7 +60,7 @@ list_meta($metadata);
 <p><?php _e('Custom fields can be used to add extra metadata to a post that you can <a href="http://codex.wordpress.org/Using_Custom_Fields" target="_blank">use in your theme</a>.'); ?></p>
 <?php
 }
-add_meta_box('pagecustomdiv', __('Custom Fields'), 'page_custom_meta_box', 'page', 'advanced', 'core');
+add_meta_box('pagecustomdiv', __('Custom Fields'), 'page_custom_meta_box', 'page', 'normal', 'core');
 
 function page_comments_status_meta_box($post){
 ?>
@@ -72,7 +72,7 @@ function page_comments_status_meta_box($post){
 <p><?php _e('These settings apply to this page only. &#8220;Pings&#8221; are <a href="http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments" target="_blank">trackbacks and pingbacks</a>.'); ?></p>
 <?php 
 }
-add_meta_box('pagecommentstatusdiv', __('Comments &amp; Pings'), 'page_comments_status_meta_box', 'page', 'advanced', 'core');
+add_meta_box('pagecommentstatusdiv', __('Comments &amp; Pings'), 'page_comments_status_meta_box', 'page', 'normal', 'core');
 
 function page_password_meta_box($post){
 ?>
@@ -80,14 +80,14 @@ function page_password_meta_box($post){
 <p><?php _e('Setting a password will require people who visit your blog to enter the above password to view this page and its comments.'); ?></p>
 <?php
 }
-add_meta_box('pagepassworddiv', __('Password Protect This Page'), 'page_password_meta_box', 'page', 'advanced', 'core');
+add_meta_box('pagepassworddiv', __('Password Protect This Page'), 'page_password_meta_box', 'page', 'normal', 'core');
 
 function page_slug_meta_box($post){
 ?>
 <label class="hidden" for="post_name"><?php _e('Page Slug') ?></label><input name="post_name" type="text" size="13" id="post_name" value="<?php echo attribute_escape( $post->post_name ); ?>" />
 <?php
 }
-add_meta_box('pageslugdiv', __('Page Slug'), 'page_slug_meta_box', 'page', 'advanced', 'core');
+add_meta_box('pageslugdiv', __('Page Slug'), 'page_slug_meta_box', 'page', 'normal', 'core');
 
 function page_parent_meta_box($post){
 ?>
@@ -99,7 +99,7 @@ function page_parent_meta_box($post){
 <p><?php _e('You can arrange your pages in hierarchies, for example you could have an &#8220;About&#8221; page that has &#8220;Life Story&#8221; and &#8220;My Dog&#8221; pages under it. There are no limits to how deeply nested you can make pages.'); ?></p>
 <?php
 }
-add_meta_box('pageparentdiv', __('Page Parent'), 'page_parent_meta_box', 'page', 'advanced', 'core');
+add_meta_box('pageparentdiv', __('Page Parent'), 'page_parent_meta_box', 'page', 'normal', 'core');
 
 if ( 0 != count( get_page_templates() ) ) {
 	function page_template_meta_box($post){
@@ -111,7 +111,7 @@ if ( 0 != count( get_page_templates() ) ) {
 <p><?php _e('Some themes have custom templates you can use for certain pages that might have additional features or custom layouts. If so, you&#8217;ll see them above.'); ?></p>
 <?php
 	}
-	add_meta_box('pagetemplatediv', __('Page Template'), 'page_template_meta_box', 'page', 'advanced', 'core');
+	add_meta_box('pagetemplatediv', __('Page Template'), 'page_template_meta_box', 'page', 'normal', 'core');
 }
 
 function page_order_meta_box($post){
@@ -120,7 +120,7 @@ function page_order_meta_box($post){
 <p><?php _e('Pages are usually ordered alphabetically, but you can put a number above to change the order pages appear in. (We know this is a little janky, it&#8217;ll be better in future releases.)'); ?></p>
 <?php
 }
-add_meta_box('pageorderdiv', __('Page Order'), 'page_order_meta_box', 'page', 'advanced', 'core');
+add_meta_box('pageorderdiv', __('Page Order'), 'page_order_meta_box', 'page', 'normal', 'core');
 
 
 $authors = get_editable_user_ids( $current_user->id ); // TODO: ROLE SYSTEM
@@ -136,7 +136,7 @@ if ( $authors && count( $authors ) > 1 ) {
 <label class="hidden" for="post_author_override"><?php _e('Page Author'); ?></label><?php wp_dropdown_users( array('include' => $authors, 'name' => 'post_author_override', 'selected' => empty($post->ID) ? $user_ID : $post->post_author) ); ?>
 <?php
 	}
-	add_meta_box('pageauthordiv', __('Page Author'), 'page_author_meta_box', 'page', 'advanced', 'core');
+	add_meta_box('pageauthordiv', __('Page Author'), 'page_author_meta_box', 'page', 'normal', 'core');
 }
 
 
@@ -144,7 +144,7 @@ if ( isset($post_ID) && 0 < $post_ID && wp_get_post_revisions( $post_ID ) ) :
 function page_revisions_meta_box($post) {
 	wp_list_post_revisions();
 }
-add_meta_box('revisionsdiv', __('Page Revisions'), 'page_revisions_meta_box', 'page', 'advanced', 'core');
+add_meta_box('revisionsdiv', __('Page Revisions'), 'page_revisions_meta_box', 'page', 'normal', 'core');
 endif;
 
 ?>
@@ -157,6 +157,16 @@ endif;
 	else
 		printf( __( '<a href="%s">Pages</a> / Edit Page' ), 'edit-pages.php' );
 ?></h2>
+
+<p id="big-add-button">
+<span id="previewview">
+<?php if ( 'publish' == $post->post_status ) { ?>
+<a class="button" href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank"  tabindex="4"><?php _e('View this Page'); ?></a>
+<?php } elseif ( 'edit' == $action ) { ?>
+<a class="button" href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank" tabindex="4"><?php _e('Preview this Page'); ?></a>
+<?php } ?>
+</span>
+</p>
 
 <?php
 wp_nonce_field($nonce_action);
@@ -179,20 +189,7 @@ else
 ?>" />
 <?php if ( 'draft' != $post->post_status ) wp_original_referer_field(true, 'previous'); ?>
 
-<div id="poststuff">
-
-<div id="side-info-column">
-
-<div class="submitbox" id="submitpage">
-
-<div id="previewview">
-<?php if ( 'publish' == $post->post_status ) { ?>
-<a href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank"  tabindex="4"><?php _e('View this Page'); ?></a>
-<?php } elseif ( 'edit' == $action ) { ?>
-<a href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank" tabindex="4"><?php _e('Preview this Page'); ?></a>
-<?php } ?>
-</div>
-
+<!-- TODO
 <div class="inside">
 <p><strong><label for='post_status'><?php _e('Publish Status') ?></label></strong></p>
 <p>
@@ -214,68 +211,7 @@ if ( current_user_can('publish_pages') OR ( $post->post_status == 'publish' AND 
 <p><label for="post_status_private" class="selectit"><input id="post_status_private" name="post_status" type="checkbox" value="private" <?php checked($post->post_status, 'private'); ?> tabindex='4' /> <?php _e('Keep this page private') ?></label></p>
 <?php endif; ?>
 
-<?php
-if ($post_ID) {
-	if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
-		$stamp = __('Scheduled for:<br />%1$s at %2$s');
-	} else if ( 'publish' == $post->post_status ) { // already published
-		$stamp = __('Published on:<br />%1$s at %2$s');
-	} else if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
-		$stamp = __('Publish immediately');
-	} else { // draft, 1 or more saves, date specified
-		$stamp = __('Publish on:<br />%1$s at %2$s');
-	}
-	$date = mysql2date(get_option('date_format'), $post->post_date);
-	$time = mysql2date(get_option('time_format'), $post->post_date);
-} else { // draft (no saves, and thus no date specified)
-	$stamp = __('Publish immediately');
-	$date = mysql2date(get_option('date_format'), current_time('mysql'));
-	$time = mysql2date(get_option('time_format'), current_time('mysql'));
-}
-?>
-<p class="curtime"><?php printf($stamp, $date, $time); ?>
-&nbsp;<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex='4'><?php _e('Edit') ?></a></p>
-
-<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
-
-</div>
-
-<p class="submit">
-<input type="submit" name="save" class="button button-highlighted" value="<?php _e('Save'); ?>" tabindex="4" />
-<?php
-if ( !in_array( $post->post_status, array('publish', 'future') ) || 0 == $post_ID ) {
-?>
-<?php if ( current_user_can('publish_pages') ) : ?>
-	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Publish') ?>" />
-<?php else : ?>
-	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Submit for Review') ?>" />
-<?php endif; ?>
-<?php
-}
-
-if ( ('edit' == $action) && current_user_can('delete_page', $post_ID) )
-	echo "<a class='submitdelete' href='" . wp_nonce_url("page.php?action=delete&amp;post=$post_ID", 'delete-page_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this page '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;page') . "</a>";
-?>
-<br class="clear" />
-<?php if ($post_ID): ?>
-<?php if ( $last_id = get_post_meta($post_ID, '_edit_last', true) ) {
-	$last_user = get_userdata($last_id);
-	printf(__('Last edited by %1$s on %2$s at %3$s'), wp_specialchars( $last_user->display_name ), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
-} else {
-	printf(__('Last edited on %1$s at %2$s'), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
-}
-?>
-<br class="clear" />
-<?php endif; ?>
-<span id="autosave"></span>
-<span id="wp-word-count"></span>
-</p>
-
-</div>
-
-<div class="side-info">
 <h5><?php _e('Related') ?></h5>
-
 <ul>
 <?php if ($post_ID): ?>
 <li><a href="edit-pages.php?page_id=<?php echo $post_ID ?>"><?php _e('See Comments on this Page') ?></a></li>
@@ -284,14 +220,22 @@ if ( ('edit' == $action) && current_user_can('delete_page', $post_ID) )
 <li><a href="edit-pages.php"><?php _e('Manage All Pages') ?></a></li>
 <?php do_action('page_relatedlinks_list'); ?>
 </ul>
+
+-->
+
+<div id="poststuff">
+
+<div id="side-info-column">
+
+<?php
+
+do_action('submitpage_box');
+$side_meta_boxes = do_meta_boxes('page', 'side', $page);
+
+?>
 </div>
-<?php do_action('submitpage_box'); ?>
 
-<?php do_meta_boxes('page', 'side', $page); ?>
-
-</div>
-
-<div id="post-body">
+<div id="post-body" class="<?php echo $side_meta_boxes ? 'has-sidebar' : ''; ?>">
 <div id="titlediv">
 <h3><label for="title"><?php _e('Title') ?></label></h3>
 <div id="titlewrap">
@@ -310,6 +254,79 @@ endif; ?>
 <div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
 <h3><label for="content"><?php _e('Page') ?></label></h3>
 <?php the_editor($post->post_content); ?>
+<div id="post-status-info">
+	<span id="wp-word-count" class="alignleft"></span>
+	<span id="autosave" class="alignright"></span>
+	<br class="clear" />
+</div>
+
+<div class="submitbox" id="submitpage">
+<div id="post-time-info" class="alignleft">
+<?php
+	if ($post_ID) {
+		if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
+			$stamp = __('Scheduled for:<br />%1$s at %2$s');
+		} else if ( 'publish' == $post->post_status ) { // already published
+			$stamp = __('Published on:<br />%1$s at %2$s');
+		} else if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
+			$stamp = __('Publish immediately');
+		} else { // draft, 1 or more saves, date specified
+			$stamp = __('Publish on:<br />%1$s at %2$s');
+		}
+		$date = mysql2date(get_option('date_format'), $post->post_date);
+		$time = mysql2date(get_option('time_format'), $post->post_date);
+	} else { // draft (no saves, and thus no date specified)
+		$stamp = __('Publish immediately');
+		$date = mysql2date(get_option('date_format'), current_time('mysql'));
+		$time = mysql2date(get_option('time_format'), current_time('mysql'));
+	}
+?>
+	<p class="curtime"><?php printf($stamp, $date, $time); ?> <a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex='4'><?php _e('Edit') ?></a></p>
+	<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
+
+<?php
+
+	if ($post_ID) {
+		if ( $last_id = get_post_meta($post_ID, '_edit_last', true) ) {
+			$last_user = get_userdata($last_id);
+			printf(__('Last edited by %1$s on %2$s at %3$s'), wp_specialchars( $last_user->display_name ), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
+		} else {
+			printf(__('Last edited on %1$s at %2$s'), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
+		}
+	}
+?>
+</div>
+
+<p class="submit alignright">
+
+<?php
+
+if ( ('edit' == $action) && current_user_can('delete_page', $post_ID) )
+	echo "<a class='submitdelete' href='" . wp_nonce_url("page.php?action=delete&amp;post=$post_ID", 'delete-page_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this page '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;page') . "</a>";
+
+?>
+
+<input type="submit" name="save" class="button button-highlighted" value="<?php _e('Save'); ?>" tabindex="4" />
+
+<?php
+	if ( !in_array( $post->post_status, array('publish', 'future') ) || 0 == $post_ID ) :
+		if ( current_user_can('publish_pages') ) : ?>
+
+	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Publish') ?>" />
+
+<?php		else : ?>
+
+	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Submit for Review') ?>" />
+
+<?php 
+
+		endif;
+	endif;
+
+?>
+</p>
+<br class="clear" />
+</div>
 <?php wp_nonce_field( 'autosave', 'autosavenonce', false ); ?>
 <?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
 <?php wp_nonce_field( 'getpermalink', 'getpermalinknonce', false ); ?>
@@ -317,13 +334,13 @@ endif; ?>
 <?php wp_nonce_field( 'meta-box-order', 'meta-box-order-nonce', false ); ?>
 </div>
 
-<?php do_meta_boxes('page', 'normal', $post); ?>
+<?php
 
-<?php do_action('edit_page_form'); ?>
+do_meta_boxes('page', 'normal', $post);
+do_action('edit_page_form');
+do_meta_boxes('page', 'advanced', $post);
 
-<h2><?php _e('Advanced Options'); ?></h2>
-
-<?php  do_meta_boxes('page', 'advanced', $post); ?>
+?>
 
 </div>
 </div>

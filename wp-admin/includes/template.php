@@ -952,7 +952,7 @@ function touch_time( $edit = 1, $for_post = 1, $tab_index = 0 ) {
 	$year = '<input type="text" id="aa" name="aa" value="' . $aa . '" size="4" maxlength="5"' . $tab_index_attribute . ' autocomplete="off"  />';
 	$hour = '<input type="text" id="hh" name="hh" value="' . $hh . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off"  />';
 	$minute = '<input type="text" id="mn" name="mn" value="' . $mn . '" size="2" maxlength="2"' . $tab_index_attribute . ' autocomplete="off"  />';
-	printf(_c('%1$s%2$s, %3$s <br />@ %4$s : %5$s|1: month input, 2: day input, 3: year input, 4: hour input, 5: minute input'), $month, $day, $year, $hour, $minute);
+	printf(_c('%1$s%2$s, %3$s @ %4$s : %5$s|1: month input, 2: day input, 3: year input, 4: hour input, 5: minute input'), $month, $day, $year, $hour, $minute);
 	echo "\n\n";
 	foreach ( array('mm', 'jj', 'aa', 'hh', 'mn') as $timeunit )
 		echo '<input type="hidden" id="hidden_' . $timeunit . '" name="hidden_' . $timeunit . '" value="' . $$timeunit . '" />' . "\n";
@@ -1189,6 +1189,7 @@ function do_meta_boxes($page, $context, $object) {
 
 	echo "<div id='$context-sortables' class='meta-box-sortables'>\n";
 
+	$i = 0;
 	do { 
 		// Grab the ones the user has manually sorted.  Pull them out of their previous context/priority and into the one the user chose
 		if ( !$already_sorted && $sorted = get_user_option( "meta-box-order_$page" ) ) {
@@ -1207,6 +1208,7 @@ function do_meta_boxes($page, $context, $object) {
 			foreach ( (array) $wp_meta_boxes[$page][$context][$priority] as $box ) {
 				if ( false === $box )
 					continue;
+				$i++;
 				echo '<div id="' . $box['id'] . '" class="postbox ' . postbox_classes($box['id'], $page) . '">' . "\n";
 				echo "<h3>{$box['title']}</h3>\n";
 				echo '<div class="inside">' . "\n";
@@ -1218,6 +1220,8 @@ function do_meta_boxes($page, $context, $object) {
 	} while(0);
 
 	echo "</div>";
+
+	return $i;
 
 }
 

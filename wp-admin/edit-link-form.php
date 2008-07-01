@@ -77,7 +77,7 @@ function link_target_meta_box($link) { ?>
 <p><?php _e('Choose the frame your link targets. Essentially this means if you choose <code>_blank</code> your link will open in a new window.'); ?></p>
 <?php
 }
-add_meta_box('linktargetdiv', __('Target'), 'link_target_meta_box', 'link', 'advanced', 'core');
+add_meta_box('linktargetdiv', __('Target'), 'link_target_meta_box', 'link', 'normal', 'core');
 
 function link_xfn_meta_box($link) {
 ?>
@@ -190,7 +190,7 @@ function link_xfn_meta_box($link) {
 <p><?php _e('If the link is to a person, you can specify your relationship with them using the above form. If you would like to learn more about the idea check out <a href="http://gmpg.org/xfn/">XFN</a>.'); ?></p>
 <?php
 }
-add_meta_box('linkxfndiv', __('Link Relationship (XFN)'), 'link_xfn_meta_box', 'link', 'advanced', 'core');
+add_meta_box('linkxfndiv', __('Link Relationship (XFN)'), 'link_xfn_meta_box', 'link', 'normal', 'core');
 
 function link_advanced_meta_box($link) {
 ?>
@@ -223,7 +223,7 @@ function link_advanced_meta_box($link) {
 </table>
 <?php
 }
-add_meta_box('linkadvanceddiv', __('Advanced'), 'link_advanced_meta_box', 'link', 'advanced', 'core');
+add_meta_box('linkadvanceddiv', __('Advanced'), 'link_advanced_meta_box', 'link', 'normal', 'core');
 
 ?>
 
@@ -235,29 +235,17 @@ add_meta_box('linkadvanceddiv', __('Advanced'), 'link_advanced_meta_box', 'link'
 <div class="wrap">
 <h2><?php echo $heading; ?></h2>
 
-<div id="poststuff">
-
-<div id="side-info-column">
-<div class="submitbox" id="submitlink">
-
-<div id="previewview">
+<p id="big-add-button">
+<span id="previewview">
 <?php if ( !empty($link_id) ) { ?>
-<a href="<?php echo $link->link_url; ?>" target="_blank"><?php _e('Visit Link'); ?></a>
+<a class="button" href="<?php echo $link->link_url; ?>" target="_blank"><?php _e('Visit Link'); ?></a>
 <?php } ?>
-</div>
-
-<div class="inside">
-<p><label for="link_private" class="selectit"><input id="link_private" name="link_visible" type="checkbox" value="N" <?php checked($link->link_visible, 'N'); ?> /> <?php _e('Keep this link private') ?></label></p>
-</div>
-
-<p class="submit">
-<input type="submit" class="button button-highlighted" name="save" value="<?php _e('Save'); ?>" tabindex="4" />
-<?php
-if ( ( 'edit' == $action) && current_user_can('manage_links') )
-	echo "<a class='submitdelete' href='" . wp_nonce_url("link.php?action=delete&amp;link_id=$link_id", 'delete-bookmark_' . $link_id) . "' onclick=\"if ( confirm('" . js_escape( sprintf( __("You are about to delete this link '%s'\n'Cancel' to stop, 'OK' to delete."), $link->link_name )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;link') . "</a>";
-?>
+</span>
 </p>
 
+<!-- TODO
+<div class="inside">
+<p><label for="link_private" class="selectit"><input id="link_private" name="link_visible" type="checkbox" value="N" <?php checked($link->link_visible, 'N'); ?> /> <?php _e('Keep this link private') ?></label></p>
 </div>
 
 <div class="side-info">
@@ -270,13 +258,20 @@ if ( ( 'edit' == $action) && current_user_can('manage_links') )
 <?php do_action('link_relatedlinks_list'); ?>
 </ul>
 </div>
-<?php do_action('submitlink_box'); ?>
+-->
 
-<?php do_meta_boxes( 'link', 'side', $link ); ?>
+<div id="poststuff">
 
+<div id="side-info-column">
+<?php 
+
+do_action('submitlink_box');
+$side_meta_boxes = do_meta_boxes( 'link', 'side', $link );
+
+?>
 </div>
 
-<div id="post-body">
+<div id="post-body" class="<?php echo $side_meta_boxes ? 'has-sidebar' : ''; ?>">
 <div id="namediv" class="stuffbox">
 <h3><label for="link_name"><?php _e('Name') ?></label></h3>
 <div class="inside">
@@ -301,11 +296,20 @@ if ( ( 'edit' == $action) && current_user_can('manage_links') )
 </div>
 </div>
 
-<?php do_meta_boxes('link', 'normal', $link); ?>
-
-<h2><?php _e('Advanced Options'); ?></h2>
-
+<div class="submitbox" id="submitlink">
+<p class="submit alignright">
 <?php
+if ( ( 'edit' == $action) && current_user_can('manage_links') )
+	echo "<a class='submitdelete' href='" . wp_nonce_url("link.php?action=delete&amp;link_id=$link_id", 'delete-bookmark_' . $link_id) . "' onclick=\"if ( confirm('" . js_escape( sprintf( __("You are about to delete this link '%s'\n'Cancel' to stop, 'OK' to delete."), $link->link_name )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;link') . "</a>";
+?>
+<input type="submit" class="button button-highlighted" name="save" value="<?php _e('Save'); ?>" tabindex="4" />
+</p>
+<br class="clear" />
+</div>
+
+<?php 
+
+do_meta_boxes('link', 'normal', $link);
 
 do_meta_boxes('link', 'advanced', $link);
 

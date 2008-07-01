@@ -2,6 +2,14 @@ function add_postbox_toggles(page) {
 	jQuery('.postbox h3').before('<a class="togbox">+</a> ');
 	jQuery('.postbox a.togbox').click( function() { jQuery(jQuery(this).parent().get(0)).toggleClass('closed'); save_postboxes_state(page); } );
 
+	var expandSidebar = function( doIt ) {
+		if ( doIt || jQuery.trim( jQuery( '#side-info-column' ).text() ) ) {
+			jQuery( '#post-body' ).addClass( 'has-sidebar' );
+		} else {
+			jQuery( '#post-body' ).removeClass( 'has-sidebar' );
+		}
+	};
+
 	var postingMetaBox = false; // post once, not once per sortable
 	jQuery('.meta-box-sortables').sortable( {
 		connectWith: [ '.meta-box-sortables' ],
@@ -21,7 +29,13 @@ function add_postbox_toggles(page) {
 			} );
 			jQuery.post( postboxL10n.requestFile, postVars, function() {
 				postingMetaBox = false;
+				expandSidebar();
 			} );
+		},
+		over: function(e, ui) {
+			if ( !ui.element.is( '#side-sortables' ) )
+				return;
+			expandSidebar( true );
 		}
 	} );
 }
