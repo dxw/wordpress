@@ -423,10 +423,17 @@ function wp_dashboard_inbox( $sidebar_args ) {
 			margin-left: 20px;
 		}
 	</style>
-
+	<script type="text/javascript">
+		jQuery( function($) {
+			$('#inbox-filter').submit( function() { return false; } )
+				.find( ':button' ).click( function() {
+					$(':checked').parent().slideUp();
+				} );
+		} );
+	</script>
 
 	<form id="inbox-filter" action="" method="get">
-		<p><input type="submit" value="Archive" name="archive" class="button"></p>
+		<p><input type="button" value="Archive" name="archive" class="button"></p>
 		<ul>
 
 <?php	foreach ( wp_get_inbox_items() as $k => $item ) : ?>
