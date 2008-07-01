@@ -48,7 +48,7 @@ function wp_dashboard_setup() {
 		$notice = '';
 	}
 	wp_register_sidebar_widget( 'dashboard_quick_press', __( 'QuickPress' ), 'wp_dashboard_quick_press',
-		array( 'width' => 'half', 'height' => 'double', 'notice' => $notice )
+		array( 'all_link' => array( 'edit.php?post_status=draft', __('View All Drafts') ), 'width' => 'half', 'height' => 'double', 'notice' => $notice )
 	);
 
 	// Incoming Links Widget
@@ -122,7 +122,7 @@ function wp_dashboard_setup() {
 		/* Dashboard Widget Template
 		wp_register_sidebar_widget( $widget_id (unique slug) , $widget_title, $output_callback,
 			array(
-				'all_link'  => full url for "See All" link,
+				'all_link'  => full url for "View All" link,
 				'feed_link' => full url for "RSS" link,
 				'width'     => 'fourth', 'third', 'half', 'full' (defaults to 'half'),
 				'height'    => 'single', 'double' (defaults to 'single'),
@@ -226,9 +226,11 @@ function wp_dashboard_dynamic_sidebar_params( $params ) {
 	if ( $the_classes )
 		$sidebar_before_widget = str_replace( "<div class='dashboard-widget-holder ", "<div class='dashboard-widget-holder " . join( ' ', $the_classes ) . ' ', $sidebar_before_widget );
 
-	$links = array();
-	if ( $widget_all_link )
-		$links[] = '<a href="' . clean_url( $widget_all_link ) . '">' . __( 'See&nbsp;All' ) . '</a>';
+	$top_links = $bottom_links = array();
+	if ( $widget_all_link ) {
+		$widget_all_link = (array) $widget_all_link;
+		$bottom_links[] = '<a href="' . clean_url( $widget_all_link[0] ) . '">' . ( isset($widget_all_link[1]) ? $widget_all_link[1] : __( 'View All' ) ) . '</a>';
+	}
 
 	$content_class = 'dashboard-widget-content';
 	if ( current_user_can( 'edit_dashboard' ) && isset($wp_registered_widget_controls[$widget_id]) && is_callable($wp_registered_widget_controls[$widget_id]['callback']) ) {
@@ -240,22 +242,16 @@ function wp_dashboard_dynamic_sidebar_params( $params ) {
 			$params[1] = 'wp_dashboard_trigger_widget_control';
 			$sidebar_before_widget .= '<form action="' . clean_url(remove_query_arg( 'edit' ))  . '" method="post">';
 			$sidebar_after_widget   = "<div class='dashboard-widget-submit'><input type='hidden' name='sidebar' value='wp_dashboard' /><input type='hidden' name='widget_id' value='$widget_id' /><input type='submit' value='" . __( 'Save' ) . "' /></div></form>$sidebar_after_widget";
-			$links[] = '<a href="' . clean_url(remove_query_arg( 'edit' )) . '">' . __( 'Cancel' ) . '</a>';
+			$top_links[] = '<a href="' . clean_url(remove_query_arg( 'edit' )) . '">' . __( 'Cancel' ) . '</a>';
 		} else {
-			$links[] = '<a href="' . clean_url(add_query_arg( 'edit', $widget_id )) . "#$widget_id" . '">' . __( 'Edit' ) . '</a>';
+			$top_links[] = '<a href="' . clean_url(add_query_arg( 'edit', $widget_id )) . "#$widget_id" . '">' . __( 'Edit' ) . '</a>';
 		}
 	}
 
 	if ( $widget_feed_link )
-		$links[] = '<img class="rss-icon" src="' . includes_url('images/rss.png') . '" alt="' . __( 'rss icon' ) . '" /> <a href="' . clean_url( $widget_feed_link ) . '">' . __( 'RSS' ) . '</a>';
+		$bottom_links[] = '<img class="rss-icon" src="' . includes_url('images/rss.png') . '" alt="' . __( 'rss icon' ) . '" /> <a href="' . clean_url( $widget_feed_link ) . '">' . __( 'RSS' ) . '</a>';
 
-	$links = apply_filters( "wp_dashboard_widget_links_$widget_id", $links );
-
-	// Add links to widget's title bar
-	if ( $links ) {
-		$sidebar_before_title .= '<span>';
-		$sidebar_after_title   = '</span><small>' . join( '&nbsp;|&nbsp;', $links ) . "</small><br class='clear' />$sidebar_after_title";
-	}
+	$bottom_links = apply_filters( "wp_dashboard_widget_links_$widget_id", $bottom_links );
 
 	// Could have put this in widget-content.  Doesn't really matter
 	if ( $widget_notice )
@@ -265,6 +261,16 @@ function wp_dashboard_dynamic_sidebar_params( $params ) {
 		$sidebar_after_title .= "\t\t\t<div class='dashboard-widget-error'>$widget_error</div>\n\n";
 
 	$sidebar_after_title .= "\t\t\t<div class='$content_class'>\n\n";
+
+	// Add links to widget's title bar
+	if ( $top_links ) {
+		$sidebar_before_title .= '<span>';
+		$sidebar_after_title   = '</span><small>' . join( '&nbsp;|&nbsp;', $top_links ) . "</small><br class='clear' />$sidebar_after_title";
+	}
+
+	// Add links to bottom of widget
+	if ( $bottom_links )
+		$sidebar_after_widget .= "<p class='dashboard-widget-links'>" . join( ' | ', $bottom_links ) . "</p>";
 
 	$sidebar_after_widget .= "\t\t\t</div>\n\n";
 

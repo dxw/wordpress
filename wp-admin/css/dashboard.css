@@ -117,8 +117,8 @@ div.dashboard-widget-holder.full {
 }
 
 div.dashboard-widget-holder.double div.dashboard-widget {
-	height: 54em;
-	padding-bottom: 28px /* lame */
+	height: 56em;
+	padding-bottom: 23px /* lame */
 }
 
 div.dashboard-widget {
@@ -126,10 +126,20 @@ div.dashboard-widget {
 	margin-right: 20px;
 	border-width: 1px;
 	border-style: solid;
-	padding: 2px;
 	height: 27em;
 	overflow: auto;
 	font-size: 11px;
+}
+
+#dashboard-widgets p.dashboard-widget-links {
+	padding: 2px;
+	font-size: 11px;
+	line-height: 2;
+	border-width: 1px;
+	margin: 0 20px 0 0;
+	padding: 0 7px;
+	border: 1px solid;
+	border-top: none;
 }
 
 h3.dashboard-widget-title  {
@@ -153,9 +163,8 @@ h3.dashboard-widget-title small {
 	line-height: 2.67; /* math: it works, bitches */
 }
 
-h3.dashboard-widget-title img.rss-icon {
+p.dashboard-widget-links img.rss-icon {
 	vertical-align: middle;
-	margin: .5em 0;
 }
 
 div.dashboard-widget-notice {
