@@ -740,6 +740,15 @@ a.view-comment-post-link {
 	display: none;
 }
 
+#adminmenu ul li {
+	margin-left: 36px;
+	text-indent: -18px;
+}
+
+#adminmenu ul a {
+	padding-left: 0;
+}
+
 .post-com-count-wrapper {
 	min-width: 22px;
 }
