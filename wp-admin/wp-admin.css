@@ -662,18 +662,36 @@ a.view-comment-post-link {
 }
 
 #dashmenu li {
-	display: inline;
+	display: block;
+	float: left;
 	list-style: none;
-	text-align: center;
 	white-space: nowrap;
-	margin: 0;
+	margin: 0 5px 0 0;
 	padding: 0;
+	position: relative;
+}
+
+/* Temp */
+#dashmenu li.wp-has-submenu > a:after {
+	content: " \25BC";
 }
 
 #dashmenu a {
 	padding: 5px 6px;
 	line-height: 31px;
-	margin-right: 8px;
+}
+
+#dashmenu ul {
+	position: absolute;
+	top: 31px;
+	left: 0;
+	background-color: #464646;
+	min-width: 100%;
+}
+
+#dashmenu ul li {
+	float: none;
+	margin-left: 5px;
 }
 
 #adminmenu {
