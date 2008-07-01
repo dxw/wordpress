@@ -148,7 +148,6 @@ function wp_dashboard_setup() {
 
 	// Hard code the sidebar's widgets and order
 	$dashboard_widgets = array();
-/*
 	$dashboard_widgets[] = 'dashboard_quick_press';
 	$dashboard_widgets[] = 'dashboard_recent_comments';
 	$dashboard_widgets[] = 'dashboard_incoming_links';
@@ -156,7 +155,7 @@ function wp_dashboard_setup() {
 	if ( current_user_can( 'activate_plugins' ) )
 		$dashboard_widgets[] = 'dashboard_plugins';
 	$dashboard_widgets[] = 'dashboard_secondary';
-*/
+
 	// Filter widget order
 	$dashboard_widgets = apply_filters( 'wp_dashboard_widgets', $dashboard_widgets );
 	if ( in_array( 'dashboard_quick_press', $dashboard_widgets ) ) {
