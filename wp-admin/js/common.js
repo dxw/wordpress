@@ -48,6 +48,11 @@ jQuery( function($) {
 		return false;
 	} );
 
+	// Temp
+	if ( !$('#post-search, #widget-search').size() ) {
+		$('.wrap:first').append( '<p id="post-search"><input id="post-search-input" type="text" /><input class="button" type="button" value="Search" /></p>' );
+	}
+
 } );
 
 jQuery(function(){jQuery('#media-buttons a').tTips();});

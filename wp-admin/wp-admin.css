@@ -1621,6 +1621,10 @@ fieldset {
 
 .settings-toggle {
 	text-align: right;
-	margin-right: 7px;
+	margin: 5px 7px 10px 0;
 	font-size: 12px;
+}
+
+.settings-toggle h3 {
+	margin: 0;
 }
