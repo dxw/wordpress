@@ -722,8 +722,10 @@ a.view-comment-post-link {
 
 #adminmenu a {
 	font-size: 16px;
-	padding: 5px 7px 5px 18px;
-	line-height: 30px;
+	padding: 5px 7px 5px 36px;
+	line-height: 1.1;
+	display: block;
+	text-indent: -18px;
 }
 
 #adminmenu li a #awaiting-mod {
@@ -738,15 +740,6 @@ a.view-comment-post-link {
 
 #adminmenu li a .count-0 {
 	display: none;
-}
-
-#adminmenu ul li {
-	margin-left: 36px;
-	text-indent: -18px;
-}
-
-#adminmenu ul a {
-	padding-left: 0;
 }
 
 .post-com-count-wrapper {
