@@ -62,13 +62,32 @@ function get_image_send_to_editor($id, $alt, $title, $align, $url='', $rel = fal
 	return $html;
 }
 
+function image_add_caption( $html, $id, $alt, $title, $align, $url, $size ) {
+
+	if ( empty($alt) ) return $html;
+	$id = ( 0 < (int) $id ) ? 'attachment_' . $id : '';
+
+	preg_match( '/width="([0-9]+)/', $html, $matches );
+	if ( ! isset($matches[1]) ) return $html;
+	$width = $matches[1];
+
+	$html = preg_replace( '/align[^\s\'"]+\s?/', '', $html );
+	if ( empty($align) ) $align = 'none';
+
+	$shcode = '[wp_caption id="' . $id . '" align="align' . $align
+	. '" width="' . $width . '" caption="' . $alt . '"]' . $html . '[/wp_caption]';
+
+	return apply_filters( 'image_add_caption_shortcode', $shcode, $html );
+}
+add_filter( 'image_send_to_editor', 'image_add_caption', 20, 7 );
+
 function media_send_to_editor($html) {
 	?>
 <script type="text/javascript">
-<!--
-top.send_to_editor('<?php echo addslashes($html); ?>');
-top.tb_remove();
--->
+/* <![CDATA[ */
+var win = window.dialogArguments || opener || parent || top;
+win.send_to_editor('<?php echo addslashes($html); ?>');
+/* ]]> */
 </script>
 	<?php
 	exit;
@@ -115,41 +134,6 @@ function media_handle_upload($file_id, $post_id, $post_data = array()) {
 
 }
 
-
-function media_sideload_image($file, $post_id, $desc = null) {
-
-	if (!empty($file) ) {
-		// Upload File button was clicked
-		
-		$file_array['name'] = basename($file);
-		$file_array['tmp_name'] = download_url($file);
-		$desc = @$desc;
-		
-		$sideload = media_handle_sideload($file_array, $post_id, $desc);
-
-		$id = $sideload['id'];
-		$src = $sideload['src'];
-		
-		unset($file_array['tmp_name']);
-		unset($file_array);
-		
-		if ( is_wp_error($id) ) {
-			$errors['upload_error'] = $id;
-			$id = false;
-		}
-	}
-	
-	if ( !empty($src) && !strpos($src, '://') )
-		
-		$src = "http://$src";
-		$alt = @$desc;
-		
-		if ( !empty($src) )
-			$html = "<img src='$src' alt='$alt' />";
-			return $html;
-	
-}
-
 function media_handle_sideload($file_array, $post_id, $desc = null, $post_data = array()) {
 	$overrides = array('test_form'=>false);
 	$file = wp_handle_sideload($file_array, $overrides);
@@ -186,10 +170,9 @@ function media_handle_sideload($file_array, $post_id, $desc = null, $post_data =
 	$id = wp_insert_attachment($attachment, $file, $post_parent);
 	if ( !is_wp_error($id) ) {
 		wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $file ) );
+		return $url;
 	}
-
-	return array('id' => $id, 'src' => $url);
-
+	return $id;
 }
 
 
@@ -346,6 +329,30 @@ function media_upload_image() {
 		$errors['upload_notice'] = __('Saved.');
 
 	return wp_iframe( 'media_upload_type_form', 'image', $errors, $id );
+}
+
+function media_sideload_image($file, $post_id, $desc = null) {
+	if (!empty($file) ) {
+		$file_array['name'] = basename($file);
+		$file_array['tmp_name'] = download_url($file);
+		$desc = @$desc;
+		
+		$id = media_handle_sideload($file_array, $post_id, $desc);
+		$src = $id;
+
+		unset($file_array);
+
+		if ( is_wp_error($id) ) {
+			$errors['upload_error'] = $id;
+			return $id;
+		}
+	}
+
+	if ( !empty($src) ) {
+		$alt = @$desc;
+		$html = "<img src='$src' alt='$alt' />";
+		return $html;
+	}
 }
 
 function media_upload_audio() {
@@ -860,7 +867,7 @@ jQuery(function($){
 			file_types: "<?php echo apply_filters('upload_file_glob', '*.*'); ?>",
 			post_params : {
 				"post_id" : "<?php echo $post_id; ?>",
-				"auth_cookie" : "<?php echo $_COOKIE[AUTH_COOKIE]; ?>",
+				"auth_cookie" : "<?php if ( is_ssl() ) echo $_COOKIE[SECURE_AUTH_COOKIE]; else echo $_COOKIE[AUTH_COOKIE]; ?>",
 				"_wpnonce" : "<?php echo wp_create_nonce('media-form'); ?>",
 				"type" : "<?php echo $type; ?>",
 				"tab" : "<?php echo $tab; ?>",

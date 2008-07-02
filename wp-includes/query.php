@@ -928,7 +928,7 @@ class WP_Query {
 				$page_paths = '/' . trim($q['pagename'], '/');
 				$q['pagename'] = sanitize_title(basename($page_paths));
 				$q['name'] = $q['pagename'];
-				$where .= " AND (ID = '$reqpage')";
+				$where .= " AND ($wpdb->posts.ID = '$reqpage')";
 				$reqpage_obj = get_page($reqpage);
 				if ( 'attachment' == $reqpage_obj->post_type ) {
 					$this->is_attachment = true;
@@ -1530,7 +1530,7 @@ class WP_Query {
 	function have_posts() {
 		if ($this->current_post + 1 < $this->post_count) {
 			return true;
-		} elseif ($this->current_post + 1 == $this->post_count) {
+		} elseif ($this->current_post + 1 == $this->post_count && $this->post_count > 0) {
 			do_action('loop_end');
 			// Do some cleaning up after the loop
 			$this->rewind_posts();

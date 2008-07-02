@@ -79,12 +79,11 @@ if ( ($is_gecko || $is_winIE) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']),
 	<img src="images/gear.png" title="Gear" alt="" class="gears-img" />
 	<div id="gears-msg1">
 	<h3 class="info-box-title"><?php _e('Speed up WordPress'); ?></h3>
-	<p><?php _e('WordPress has support for Gears that adds new features to your web browser.'); ?><br />
+	<p><?php _e('WordPress now has support for Gears, which adds new features to your web browser.'); ?><br />
 	<a href="http://gears.google.com/" target="_blank" style="font-weight:normal;"><?php _e('More information...'); ?></a></p>
-	<p><?php _e('After installing and enabling it, most of the WordPress images, scripts and CSS files will be stored on this computer. This will speed up page loading.'); ?></p>
-	<p><strong><?php _e('Please make sure you are not using a public or shared computer.'); ?></strong></p>
-	<div class="submit"><button onclick="window.location = 'http://gears.google.com/?action=install&amp;return=<?php echo urlencode( admin_url() ); ?>';" class="button"><?php _e('Install Now'); ?></button>
-	<button class="button" style="margin-left:10px;" onclick="document.getElementById('gears-info-box').style.display='none';">Cancel</button></div>
+	<p><?php _e('After you install and enable Gears most of WordPress&#8217; images, scripts, and CSS files will be stored locally on your computer. This speeds up page load time.'); ?></p>
+	<p><strong><?php _e('Don&#8217;t install on a public or shared computer.'); ?></strong></p>	<div class="submit"><button onclick="window.location = 'http://gears.google.com/?action=install&amp;return=<?php echo urlencode( admin_url() ); ?>';" class="button"><?php _e('Install Now'); ?></button>
+	<button class="button" style="margin-left:10px;" onclick="document.getElementById('gears-info-box').style.display='none';"><?php _e('Cancel'); ?></button></div>
 	</div>
 
 	<div id="gears-msg2" style="display:none;">
@@ -93,7 +92,7 @@ if ( ($is_gecko || $is_winIE) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']),
 	<p><?php _e('To enable it, make sure this web site is not on the denied list in Gears Settings under your browser\'s Tools menu, then click the button below.'); ?></p>
 	<p><strong><?php _e('However if this is a public or shared computer, Gears should not be enabled.'); ?></strong></p>
 	<div class="submit"><button class="button" onclick="wpGears.getPermission();"><?php _e('Enable Gears'); ?></button>
-	<button class="button" style="margin-left:10px;" onclick="document.getElementById('gears-info-box').style.display='none';">Cancel</button></div>
+	<button class="button" style="margin-left:10px;" onclick="document.getElementById('gears-info-box').style.display='none';"><?php _e('Cancel'); ?></button></div>
 	</div>
 
 	<div id="gears-msg3" style="display:none;">
@@ -110,7 +109,7 @@ if ( ($is_gecko || $is_winIE) && strpos(strtolower($_SERVER['HTTP_USER_AGENT']),
 <div id="user_info"><p>
 	<?php printf(__('Howdy, <a href="%1$s">%2$s</a>!'), 'profile.php', $user_identity) ?> |
 	<a href="<?php echo site_url('wp-login.php?action=logout', 'login') ?>" title="<?php _e('Log Out') ?>"><?php _e('Log Out'); ?></a>
-	<?php if ( $gears_compat ) { ?>| <span id="gears-menu"><a href="#" onclick="wpGears.message(1);return false;"><?php _e('Speed up!') ?></a></span><?php } ?>
+	<?php if ( $gears_compat ) { ?>| <span id="gears-menu"><a href="#" onclick="wpGears.message(1);return false;"><?php _e('Turbo') ?></a></span><?php } ?>
 </p></div>
 
 <?php

@@ -97,14 +97,14 @@ if ( empty($PHP_SELF) )
 	$_SERVER['PHP_SELF'] = $PHP_SELF = preg_replace("/(\?.*)?$/",'',$_SERVER["REQUEST_URI"]);
 
 if ( version_compare( '4.3', phpversion(), '>' ) ) {
-	die( 'Your server is running PHP version ' . phpversion() . ' but WordPress requires at least 4.3.' );
+	die( sprintf( /*WP_I18N_OLD_PHP*/'Your server is running PHP version %s but WordPress requires at least 4.3.'/*/WP_I18N_OLD_PHP*/, php_version() ) );
 }
 
 if ( !defined('WP_CONTENT_DIR') )
 	define( 'WP_CONTENT_DIR', ABSPATH . 'wp-content' ); // no trailing slash, full paths only - WP_CONTENT_URL is defined further down
 
 if ( !extension_loaded('mysql') && !file_exists(WP_CONTENT_DIR . '/db.php') )
-	die( 'Your PHP installation appears to be missing the MySQL extension which is required by WordPress.' );
+	die( /*WP_I18N_OLD_MYSQL*/'Your PHP installation appears to be missing the MySQL extension which is required by WordPress.'/*/WP_I18N_OLD_MYSQL*/ );
 
 /**
  * timer_start() - PHP 4 standard microtime start capture
@@ -212,7 +212,7 @@ if ( !empty($wpdb->error) )
 $prefix = $wpdb->set_prefix($table_prefix);
 
 if ( is_wp_error($prefix) )
-	wp_die('<strong>ERROR</strong>: <code>$table_prefix</code> in <code>wp-config.php</code> can only contain numbers, letters, and underscores.');
+	wp_die(/*WP_I18N_BAD_PREFIX*/'<strong>ERROR</strong>: <code>$table_prefix</code> in <code>wp-config.php</code> can only contain numbers, letters, and underscores.'/*/WP_I18N_BAD_PREFIX*/);
 
 if ( file_exists(WP_CONTENT_DIR . '/object-cache.php') )
 	require_once (WP_CONTENT_DIR . '/object-cache.php');
@@ -359,6 +359,20 @@ if ( !defined('COOKIEPATH') )
  */
 if ( !defined('SITECOOKIEPATH') )
 	define('SITECOOKIEPATH', preg_replace('|https?://[^/]+|i', '', get_option('siteurl') . '/' ) );
+
+/**
+ * It is possible to define this in wp-config.php
+ * @since 2.6
+ */
+if ( !defined('ADMIN_COOKIE_PATH') )
+	define( 'ADMIN_COOKIE_PATH', SITECOOKIEPATH . 'wp-admin' );
+
+/**
+ * It is possible to define this in wp-config.php
+ * @since 2.6
+ */
+if ( !defined('PLUGINS_COOKIE_PATH') )
+	define( 'PLUGINS_COOKIE_PATH', preg_replace('|https?://[^/]+|i', '', WP_PLUGIN_URL)  );
 
 /**
  * It is possible to define this in wp-config.php

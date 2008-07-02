@@ -7,7 +7,9 @@ require( ABSPATH . WPINC . '/class.wp-styles.php' );
 require( ABSPATH . WPINC . '/functions.wp-styles.php' );
 
 function wp_default_scripts( &$scripts ) {
-	$scripts->base_url = site_url();
+	if (!$guessurl = site_url())
+		$guessurl = wp_guess_url();
+	$scripts->base_url = $guessurl;
 	$scripts->default_version = get_bloginfo( 'version' );
 
 	$scripts->add( 'common', '/wp-admin/js/common.js', array('jquery'), '20080318' );
@@ -32,10 +34,10 @@ function wp_default_scripts( &$scripts ) {
 	$visual_editor = apply_filters('visual_editor', array('tiny_mce'));
 	$scripts->add( 'editor', false, $visual_editor, '20080321' );
 
-	$scripts->add( 'editor_functions', '/wp-admin/js/editor.js', false, '20080325' );
+	$scripts->add( 'editor_functions', '/wp-admin/js/editor.js', false, '20080701' );
 
 	// Modify this version when tinyMCE plugins are changed.
-	$mce_version = apply_filters('tiny_mce_version', '20080618');
+	$mce_version = apply_filters('tiny_mce_version', '20080701');
 	$scripts->add( 'tiny_mce', '/wp-includes/js/tinymce/tiny_mce_config.php', array('editor_functions'), $mce_version );
 
 	$scripts->add( 'prototype', '/wp-includes/js/prototype.js', false, '1.6');
@@ -68,7 +70,7 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->add( 'jquery-form', '/wp-includes/js/jquery/jquery.form.js', array('jquery'), '2.02');
 	$scripts->add( 'jquery-color', '/wp-includes/js/jquery/jquery.color.js', array('jquery'), '2.0-4561');
 	$scripts->add( 'interface', '/wp-includes/js/jquery/interface.js', array('jquery'), '1.2' );
-	$scripts->add( 'suggest', '/wp-includes/js/jquery/suggest.js', array('jquery'), '1.1');
+	$scripts->add( 'suggest', '/wp-includes/js/jquery/suggest.js', array('jquery'), '1.1b');
 	$scripts->add( 'schedule', '/wp-includes/js/jquery/jquery.schedule.js', array('jquery'), '20');
 	$scripts->add( 'thickbox', '/wp-includes/js/thickbox/thickbox.js', array('jquery'), '3.1-20080430');
 	$scripts->add( 'swfupload', '/wp-includes/js/swfupload/swfupload.js', false, '2.1.0');
@@ -98,9 +100,9 @@ function wp_default_scripts( &$scripts ) {
 			'deleted' => __('Deleted'),
 	) );
 
-	$scripts->add( 'jquery-ui-core', '/wp-includes/js/jquery/ui.core.js', array('jquery'), '1.5' );
-	$scripts->add( 'jquery-ui-tabs', '/wp-includes/js/jquery/ui.tabs.js', array('jquery-ui-core'), '1.5' );
-	$scripts->add( 'jquery-ui-sortable', '/wp-includes/js/jquery/ui.sortable.js', array('jquery-ui-core'), '1.5' );
+	$scripts->add( 'jquery-ui-core', '/wp-includes/js/jquery/ui.core.js', array('jquery'), '1.5.1' );
+	$scripts->add( 'jquery-ui-tabs', '/wp-includes/js/jquery/ui.tabs.js', array('jquery-ui-core'), '1.5.1' );
+	$scripts->add( 'jquery-ui-sortable', '/wp-includes/js/jquery/ui.sortable.js', array('jquery-ui-core'), '1.5.1' );
 
 	if ( is_admin() ) {
 		$scripts->add( 'ajaxcat', '/wp-admin/js/cat.js', array( 'wp-lists' ), '20071101' );
@@ -157,7 +159,7 @@ function wp_default_scripts( &$scripts ) {
 			'edit' => __('Edit'),
 		) );
 		$scripts->add( 'admin-gallery', '/wp-admin/js/gallery.js', array( 'jquery-ui-sortable' ), '20080520' );
-		$scripts->add( 'media-upload', '/wp-admin/js/media-upload.js', array( 'thickbox' ), '20080523' );
+		$scripts->add( 'media-upload', '/wp-admin/js/media-upload.js', array( 'thickbox' ), '20080701' );
 		$scripts->localize( 'upload', 'uploadL10n', array(
 			'browseTitle' => attribute_escape(__('Browse your files')),
 			'back' => __('&laquo; Back'),
@@ -198,12 +200,14 @@ function wp_default_scripts( &$scripts ) {
 			'error' => __('Error:')
 		));
 		
-		$scripts->add( 'theme-preview', '/wp-admin/js/theme-preview.js', array( 'thickbox', 'jquery' ), '20080523' );
+		$scripts->add( 'theme-preview', '/wp-admin/js/theme-preview.js', array( 'thickbox', 'jquery' ), '20080625' );
 	}
 }
 
 function wp_default_styles( &$styles ) {
-	$styles->base_url = site_url();
+	if (!$guessurl = site_url())
+		$guessurl = wp_guess_url();
+	$styles->base_url = $guessurl;
 	$styles->default_version = get_bloginfo( 'version' );
 	$styles->text_direction = 'rtl' == get_bloginfo( 'text_direction' ) ? 'rtl' : 'ltr';
 

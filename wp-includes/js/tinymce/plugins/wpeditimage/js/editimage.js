@@ -40,9 +40,8 @@ tinyMCEPopup = {
 
 		// To avoid domain relaxing issue in Opera
 		function close() {
-			t.editor.execCommand('mceRepaint');
 			win.tb_remove();
-			tinymce = tinyMCE = t.editor = t.params = t.dom = t.dom.doc = null; // Cleanup
+			tinymce = tinyMCE = t.editor = t.dom = t.dom.doc = null; // Cleanup
 		};
 
 		if (tinymce.isOpera)
@@ -80,10 +79,8 @@ var wpImage = {
 
 		for ( i = 0; i < styles.length; i++ ) {
 			var url = styles.item(i).href;
-			if ( url && url.indexOf('colors-') != -1 ) {
+			if ( url && url.indexOf('colors-') != -1 )
 				document.write( '<link rel="stylesheet" href="'+url+'" type="text/css" media="all" />' );
-				break;
-			}
 		}
 	},
 
@@ -95,10 +92,15 @@ var wpImage = {
 	link : '',
 	link_rel : '',
 	target_value : '',
+	current_size_sel : 's100',
+	width : '',
+	height : '',
+	align : '',
+	img_alt : '',
 
 	setTabs : function(tab) {
 		var t = this;
-		
+
 		if ( 'current' == tab.className ) return false;
 		t.I('div_advanced').style.display = ( 'tab_advanced' == tab.id ) ? 'block' : 'none';
 		t.I('div_basic').style.display = ( 'tab_basic' == tab.id ) ? 'block' : 'none';
@@ -125,95 +127,108 @@ var wpImage = {
 	imgAlignCls : function(v) {
 		var t = this, cls = t.I('img_classes').value;
 
-		t.I('img_demo').className = v;
+		t.I('img_demo').className = t.align = v;
 
 		cls = cls.replace( /align[^ "']+/gi, '' );
 		cls += (' ' + v);
 		cls = cls.replace( /\s+/g, ' ' ).replace( /^\s/, '' );
 
-		t.I('img_classes').value = cls;
-	},
-
-	imgSizeCls : function(v) {
-		var t = this, cls = t.I('img_classes').value;
-
-		if (v) {
-			if ( cls.indexOf('size-') != -1 )
-				cls = cls.replace( /size-[^ "']+/i, 'size-' + v );
-			else cls += (' size-' + v);
-		} else {
-			cls = cls.replace( /size-[^ "']+/gi, '' );
-			t.demoSetSize();
-			t.I('thumbnail').checked = '';
-			t.I('medium').checked = '';
-			t.I('full').checked = '';
+		if ( 'aligncenter' == v ) {
+			t.I('hspace').value = '';
+			t.updateStyle('hspace');
 		}
-		cls = cls.replace( /\s+/g, ' ' ).replace( /^\s|\s$/, '' );
 
 		t.I('img_classes').value = cls;
 	},
 
-	imgEditSize : function(size) {
-		var t = this, f = document.forms[0], sz, m = null;
+	showSize : function(el) {
+		var t = this, demo = t.I('img_demo'), w = t.width, h = t.height, id = el.id || 's100', size;
 
-		var W = parseInt(t.preloadImg.width), H = parseInt(t.preloadImg.height);
+		size = parseInt(id.substring(1)) / 200;
+		demo.width = Math.round(w * size);
+		demo.height = Math.round(h * size);
 
-		if ( ! t.preloadImg || W == "" || H == "" )
-			return;
+		t.showSizeClear();
+		el.style.borderColor = '#A3A3A3';
+		el.style.backgroundColor = '#E5E5E5';
+	},
 
-		switch(size) {
-			case 'thumbnail':
-				m = 150;
-				t.imgSizeCls('thumbnail');
-				break;
-			case 'medium':
-				m = 300;
-				t.imgSizeCls('medium');
-				break;
-			case 'full':
-				m = 500;
-				t.imgSizeCls('full');
-				break;
+	showSizeSet : function() {
+		var t = this;
+
+		if ( (t.width * 1.3) > parseInt(t.preloadImg.width) ) {
+			var s130 = t.I('s130'), s120 = t.I('s120'), s110 = t.I('s110');
+
+			s130.onclick = s120.onclick = s110.onclick = null;
+			s130.onmouseover = s120.onmouseover = s110.onmouseover = null;
+			s130.style.color = s120.style.color = s110.style.color = '#aaa';
 		}
+	},
 
-		if (m) {
-			if ( W > H ) {
-				m = Math.min(W, m);
-				f.width.value = m;
-				f.height.value = Math.round((m / W) * H);
-			} else {
-				m = Math.min(H, m);
-				f.height.value = m;
-				f.width.value = Math.round((m / H) * W);
-			}
+	showSizeRem : function() {
+		var t = this, demo = t.I('img_demo'), f = document.forms[0];
 
-			t.width = f.width.value;
-			t.height = f.height.value;
+		demo.width = Math.round(f.width.value * 0.5);
+		demo.height = Math.round(f.height.value * 0.5);
+		t.showSizeClear();
+		t.I(t.current_size_sel).style.borderColor = '#A3A3A3';
+		t.I(t.current_size_sel).style.backgroundColor = '#E5E5E5';
+
+		return false;
+	},
+
+	showSizeClear : function() {
+		var divs = this.I('img_size').getElementsByTagName('div');
+
+		for ( i = 0; i < divs.length; i++ ) {
+			divs[i].style.borderColor = '#f1f1f1';
+			divs[i].style.backgroundColor = '#f1f1f1';
 		}
+	},
+
+	imgEditSize : function(el) {
+		var t = this, f = document.forms[0];
+
+		if ( ! t.preloadImg || ! t.preloadImg.width || ! t.preloadImg.height )	return;
+		var W = parseInt(t.preloadImg.width), H = parseInt(t.preloadImg.height), w = t.width || W, h = t.height || H, id = el.id || 's100';
+
+		size = parseInt(id.substring(1)) / 100;
+
+		w = Math.round(w * size);
+		h = Math.round(h * size);
+
+		f.width.value = Math.min(W, w);
+		f.height.value = Math.min(H, h);
+
+		t.current_size_sel = id;
 		t.demoSetSize();
 	},
 
 	demoSetSize : function(img) {
 		var demo = this.I('img_demo'), f = document.forms[0];
 
-		demo.width = f.width.value ? Math.floor(f.width.value * 0.5) : '';
-		demo.height = f.height.value ? Math.floor(f.height.value * 0.5) : '';
+		demo.width = f.width.value ? Math.round(f.width.value * 0.5) : '';
+		demo.height = f.height.value ? Math.round(f.height.value * 0.5) : '';
 	},
-	
-	demoSetStyle : function() {
-		var f = document.forms[0], demo = this.I('img_demo');
 
-		if (demo)
-			tinyMCEPopup.editor.dom.setAttrib(demo, 'style', f.img_style.value);
+	demoSetStyle : function() {
+		var f = document.forms[0], demo = this.I('img_demo'), dom = tinyMCEPopup.editor.dom;
+
+		if (demo) {
+			dom.setAttrib(demo, 'style', f.img_style.value);
+			dom.setStyle(demo, 'width', '');
+			dom.setStyle(demo, 'height', '');
+		}
 	},
-	
+
 	origSize : function() {
-		var t = this, f = document.forms[0];
-		
-		f.width.value = t.preloadImg.width;
-		f.height.value = t.preloadImg.height;
+		var t = this, f = document.forms[0], el = t.I('s100');
+
+		f.width.value = t.width = t.preloadImg.width;
+		f.height.value = t.height = t.preloadImg.height;
+		t.showSizeSet();
 		t.demoSetSize();
-		t.imgSizeCls();
+		t.showSize(el);
 	},
 
 	init : function() {
@@ -230,29 +245,44 @@ var wpImage = {
 	},
 
 	setup : function() {
-		var t = this, h, c, el, id, link, fname, f = document.forms[0], ed = tinyMCEPopup.editor, d = t.I('img_demo'), dom = tinyMCEPopup.dom;
-	document.dir = tinyMCEPopup.editor.getParam('directionality','');
+		var t = this, h, c, el, id, link, fname, f = document.forms[0], ed = tinyMCEPopup.editor, d = t.I('img_demo'), dom = tinyMCEPopup.dom, DL, caption;
+		document.dir = tinyMCEPopup.editor.getParam('directionality','');
 		tinyMCEPopup.restoreSelection();
 		el = ed.selection.getNode();
 		if (el.nodeName != 'IMG') return;
 
 		f.img_src.value = d.src = link = ed.dom.getAttrib(el, 'src');
+		ed.dom.setStyle(el, 'float', '');
+		t.getImageData();
+		c = ed.dom.getAttrib(el, 'class');
+		caption = t.img_alt = ed.dom.getAttrib(el, 'alt');
+
+		if ( DL = dom.getParent(el, 'dl') ) {
+			var dlc = ed.dom.getAttrib(DL, 'class');
+			dlc = dlc.match(/align[^ "']+/i);
+			if ( ! dom.hasClass(el, dlc) )
+				c += ' '+dlc;
+				
+			tinymce.each(DL.childNodes, function(e) {
+				if ( e.nodeName == 'DD' ) {
+					caption = e.innerHTML;
+					return;
+				}
+			});
+		}
 
 		f.img_title.value = ed.dom.getAttrib(el, 'title');
-		f.img_alt.value = ed.dom.getAttrib(el, 'alt');
+		f.img_alt.value = caption;
 		f.border.value = ed.dom.getAttrib(el, 'border');
 		f.vspace.value = ed.dom.getAttrib(el, 'vspace');
 		f.hspace.value = ed.dom.getAttrib(el, 'hspace');
 		f.align.value = ed.dom.getAttrib(el, 'align');
 		f.width.value = t.width = ed.dom.getAttrib(el, 'width');
 		f.height.value = t.height = ed.dom.getAttrib(el, 'height');
-		f.img_classes.value = c = ed.dom.getAttrib(el, 'class');
+		f.img_classes.value = c;
 		f.img_style.value = ed.dom.getAttrib(el, 'style');
-		
-		// Move attribs to styles
-		if (dom.getAttrib(el, 'align'))
-			t.updateStyle('align');
 
+		// Move attribs to styles
 		if (dom.getAttrib(el, 'hspace'))
 			t.updateStyle('hspace');
 
@@ -272,41 +302,27 @@ var wpImage = {
 		}
 
 		f.link_target.checked = ( t.target_value && t.target_value == '_blank' ) ? 'checked' : '';
-		
+
 		fname = link.substring( link.lastIndexOf('/') );
 		fname = fname.replace(/-[0-9]{2,4}x[0-9]{2,4}/, '' );
 		t.link = link.substring( 0, link.lastIndexOf('/') ) + fname;
 
-		if ( c.indexOf('size-thumbnail') != -1 )
-			t.I('thumbnail').checked = "checked";
-		else if ( c.indexOf('size-medium') != -1 )
-			t.I('medium').checked = "checked";
-		else if ( c.indexOf('size-full') != -1 )
-			t.I('full').checked = "checked";
-
 		if ( c.indexOf('alignleft') != -1 ) {
 			t.I('alignleft').checked = "checked";
-			d.className = "alignleft";
+			d.className = t.align = "alignleft";
 		} else if ( c.indexOf('aligncenter') != -1 ) {
 			t.I('aligncenter').checked = "checked";
-			d.className = "aligncenter";
+			d.className = t.align = "aligncenter";
 		} else if ( c.indexOf('alignright') != -1 ) {
 			t.I('alignright').checked = "checked";
-			d.className = "alignright";
+			d.className = t.align = "alignright";
 		} else if ( c.indexOf('alignnone') != -1 ) {
 			t.I('alignnone').checked = "checked";
-			d.className = "alignnone";
+			d.className = t.align = "alignnone";
 		}
 
+		if ( t.width && t.preloadImg.width ) t.showSizeSet();
 		document.body.style.display = '';
-		t.getImageData();
-		t.demoSetStyle();
-
-		// Test if is attachment
-//		if ( (id = c.match( /wp-image-([0-9]{1,6})/ )) && id[1] ) {
-//			t.I('tab_attachment').href = tinymce.documentBaseURL + 'media.php?action=edit&attachment_id=' + id[1];
-//			t.I('tab_attachment').style.display = 'inline';
-//		}
 	},
 
 	remove : function() {
@@ -316,10 +332,11 @@ var wpImage = {
 		el = ed.selection.getNode();
 		if (el.nodeName != 'IMG') return;
 
-		if ( (p = ed.dom.getParent(el, 'A')) && p.childNodes.length == 1)
+		if ( (p = ed.dom.getParent(el, 'div')) && ed.dom.hasClass(p, 'mceTemp') )
 			ed.dom.remove(p);
-		else
-			ed.dom.remove(el);
+		else if ( (p = ed.dom.getParent(el, 'A')) && p.childNodes.length == 1 )
+			ed.dom.remove(p);
+		else ed.dom.remove(el);
 
 		ed.execCommand('mceRepaint');
 		tinyMCEPopup.close();
@@ -327,72 +344,146 @@ var wpImage = {
 	},
 
 	update : function() {
-		var t = this, f = document.forms[0], nl = f.elements, ed = tinyMCEPopup.editor, p, el, b;
+		var t = this, f = document.forms[0], ed = tinyMCEPopup.editor, el, b, fixSafari = null, DL, P, A, DIV, do_caption = null, img_class = f.img_classes.value, html;
 
 		tinyMCEPopup.restoreSelection();
 		el = ed.selection.getNode();
 
 		if (el.nodeName != 'IMG') return;
-		if (f.img_src.value === '') t.remove();
+		if (f.img_src.value === '') {
+			t.remove();
+			return;
+		}
+
+		if ( f.img_alt.value != '' && f.width.value != '' ) {
+			do_caption = 1;
+			img_class = img_class.replace( /align[^ "']+\s?/gi, '' );
+		}
+
+		A = ed.dom.getParent(el, 'a');
+		P = ed.dom.getParent(el, 'p');
+		DL = ed.dom.getParent(el, 'dl');
+		DIV = ed.dom.getParent(el, 'div');
+
+		tinyMCEPopup.execCommand("mceBeginUndoLevel");
 
 		ed.dom.setAttribs(el, {
 			src : f.img_src.value,
 			title : f.img_title.value,
-			alt : f.img_alt.value,
+			alt : t.img_alt,
 			width : f.width.value,
 			height : f.height.value,
 			style : f.img_style.value,
-			'class' : f.img_classes.value
+			'class' : img_class
 		});
 
-		pa = ed.dom.getParent(el, 'A');
-
 		if ( ! f.link_href.value ) {
-			if ( pa ) {
-				tinyMCEPopup.execCommand("mceBeginUndoLevel");
+			if ( A ) {
 				b = ed.selection.getBookmark();
-				ed.dom.remove(pa, 1);
+				ed.dom.remove(A, 1);
 				ed.selection.moveToBookmark(b);
-				tinyMCEPopup.execCommand("mceEndUndoLevel");
-				tinyMCEPopup.close();
-				return;
+			}
+		} else {
+			// Create new anchor elements
+			if ( A == null ) {
+				if ( ! f.link_href.value.match(/https?:\/\//) )
+					f.link_href.value = tinyMCEPopup.editor.documentBaseURI.toAbsolute(f.link_href.value);
+
+				if ( tinymce.isWebKit && ed.dom.hasClass(el, 'aligncenter') ) {
+					ed.dom.removeClass(el, 'aligncenter');
+					fixSafari = 1;
+				}
+
+				tinyMCEPopup.execCommand("CreateLink", false, "#mce_temp_url#", {skip_undo : 1});
+				if ( fixSafari ) ed.dom.addClass(el, 'aligncenter');
+
+				tinymce.each(ed.dom.select("a"), function(n) {
+					if (ed.dom.getAttrib(n, 'href') == '#mce_temp_url#') {
+
+						ed.dom.setAttribs(n, {
+							href : f.link_href.value,
+							title : f.link_title.value,
+							rel : f.link_rel.value,
+							target : (f.link_target.checked == true) ? '_blank' : '',
+							'class' : f.link_classes.value,
+							style : f.link_style.value
+						});
+					}
+				});
+			} else {
+				ed.dom.setAttribs(A, {
+					href : f.link_href.value,
+					title : f.link_title.value,
+					rel : f.link_rel.value,
+					target : (f.link_target.checked == true) ? '_blank' : '',
+					'class' : f.link_classes.value,
+					style : f.link_style.value
+				});
 			}
 		}
 
-		tinyMCEPopup.execCommand("mceBeginUndoLevel");
+		if ( do_caption ) {
+			var id, cap_id = '', cap, DT, DD, cap_width = 10 + parseInt(f.width.value), align = t.align.substring(5), div_cls = (t.align == 'aligncenter') ? 'mceTemp mceIEcenter' : 'mceTemp';
 
-		// Create new anchor elements
-		if (pa == null) {
-			tinyMCEPopup.execCommand("CreateLink", false, "#mce_temp_url#", {skip_undo : 1});
+			if ( DL ) {
+				ed.dom.setAttribs(DL, {
+					'class' : 'wp_caption '+t.align,
+					style : 'width: '+cap_width+'px;'
+				});
 
-			tinymce.each(ed.dom.select("a"), function(n) {
-				if (ed.dom.getAttrib(n, 'href') == '#mce_temp_url#') {
+				if ( DIV ) 
+					ed.dom.setAttrib(DIV, 'class', div_cls);
 
-					ed.dom.setAttribs(n, {
-						href : f.link_href.value,
-						title : f.link_title.value,
-						rel : f.link_rel.value,
-						target : (f.link_target.checked == true) ? '_blank' : '',
-						'class' : f.link_classes.value,
-						style : f.link_style.value
-					});
+				if ( (DT = ed.dom.getParent(el, 'dt')) && (DD = DT.nextSibling) && ed.dom.hasClass(DD, 'wp_caption_dd') )
+					ed.dom.setHTML(DD, f.img_alt.value);
+
+			} else {
+				if ( (id = f.img_classes.value.match( /wp-image-([0-9]{1,6})/ )) && id[1] )
+					cap_id = 'attachment_'+id[1];
+
+				if ( f.link_href.value ) html = ed.dom.getOuterHTML(ed.dom.getParent(el, 'a'));
+				else html = ed.dom.getOuterHTML(el);
+
+				html = '<dl id="'+cap_id+'" class="wp_caption '+t.align+'" style="width: '+cap_width+
+				'px"><dt class="wp_caption_dt">'+html+'</dt><dd class="wp_caption_dd">'+f.img_alt.value+'</dd></dl>';
+
+				cap = ed.dom.create('div', {'class': div_cls}, html);
+
+				if ( P ) {
+					P.parentNode.insertBefore(cap, P);
+					ed.dom.remove(P);
 				}
-			});
+			}
+
+			tinyMCEPopup.execCommand("mceEndUndoLevel");
+			ed.execCommand('mceRepaint');
+			tinyMCEPopup.close();
+			return;
 		} else {
-			ed.dom.setAttribs(pa, {
-				href : f.link_href.value,
-				title : f.link_title.value,
-				rel : f.link_rel.value,
-				target : (f.link_target.checked == true) ? '_blank' : '',
-				'class' : f.link_classes.value,
-				style : f.link_style.value
-			});
+			if ( DL ) {
+				if ( f.link_href.value ) html = ed.dom.getOuterHTML(ed.dom.getParent(el, 'a'));
+				else html = ed.dom.getOuterHTML(el);
+				
+				P = ed.dom.create('p', {}, html);
+				DL.parentNode.insertBefore(P,DL);
+				ed.dom.remove(DL.childNodes);
+				ed.dom.remove(DL);
+			}
+		}
+
+		if ( f.img_classes.value.indexOf('aligncenter') != -1 ) {
+			if ( P && ( ! P.style || P.style.textAlign != 'center' ) )
+				ed.dom.setStyle(P, 'textAlign', 'center');
+		} else {
+			if ( P && P.style && P.style.textAlign == 'center' )
+				ed.dom.setStyle(P, 'textAlign', '');
 		}
 
 		tinyMCEPopup.execCommand("mceEndUndoLevel");
+		ed.execCommand('mceRepaint');
 		tinyMCEPopup.close();
 	},
-	
+
 	updateStyle : function(ty) {
 		var dom = tinyMCEPopup.dom, st, v, f = document.forms[0], img = dom.create('img', {style : f.img_style.value});
 
@@ -466,17 +557,21 @@ var wpImage = {
 	resetImageData : function() {
 		var f = document.forms[0];
 
-		f.width.value = f.height.value = '';	
+		f.width.value = f.height.value = '';
 	},
 
 	updateImageData : function() {
 		var f = document.forms[0], t = wpImage;
 
 		if ( f.width.value == '' || f.height.value == '' ) {
-			f.width.value = t.preloadImg.width;
-			f.height.value = t.preloadImg.height;
+			f.width.value = t.width = t.preloadImg.width;
+			f.height.value = t.height = t.preloadImg.height;
 		}
+
+		t.showSizeSet();
 		t.demoSetSize();
+		if ( f.img_style.value )
+			t.demoSetStyle();
 	},
 
 	getImageData : function() {
