@@ -95,7 +95,11 @@ if ( isset( $_GET['approved'] ) || isset( $_GET['deleted'] ) || isset( $_GET['sp
 <?php
 $status_links = array();
 $num_comments = wp_count_comments();
-$stati = array('moderated' => sprintf(__ngettext('Awaiting Moderation (%s)', 'Awaiting Moderation (%s)', number_format_i18n($num_comments->moderated) ), "<span class='comment-count'>" . number_format_i18n($num_comments->moderated) . "</span>"), 'approved' => _c('Approved|plural'));
+$stati = array(
+		'moderated' => sprintf(__ngettext('Awaiting Moderation (%s)', 'Awaiting Moderation (%s)', number_format_i18n($num_comments->moderated) ), "<span class='comment-count'>" . number_format_i18n($num_comments->moderated) . "</span>"),
+		'approved' => _c('Approved|plural'),
+		'spam' => sprintf(__ngettext('Spam (%s)', 'Spam (%s)', number_format_i18n($num_comments->spam) ), "<span class='spam-comment-count'>" . number_format_i18n($num_comments->spam) . "</span>")
+	);
 $class = ( '' === $comment_status ) ? ' class="current"' : '';
 $status_links[] = "<li><a href=\"edit-comments.php\"$class>".__('Show All Comments')."</a>";
 foreach ( $stati as $status => $label ) {
@@ -104,7 +108,8 @@ foreach ( $stati as $status => $label ) {
 	if ( $status == $comment_status )
 		$class = ' class="current"';
 
-	$status_links[] = "<li><a href=\"edit-comments.php?comment_status=$status\"$class>" . $label . '</a>';
+
+	$status_links[] = "<li class='$status'><a href=\"edit-comments.php?comment_status=$status\"$class>$label</a>";
 }
 
 $status_links = apply_filters( 'comment_status_links', $status_links );
@@ -166,12 +171,13 @@ if ( $page_links )
 <div class="alignleft">
 <select name="action">
 <option value="" selected>Actions</option>
-<?php if ( 'approved' != $comment_status ): ?>
+<?php if ( 'approved' == $comment_status ): ?>
+<option value="unapprove"><?php _e('Unapprove'); ?></option>
+<?php else : ?>
 <option value="approve"><?php _e('Approve'); ?>
 <?php endif; ?>
+<?php if ( 'spam' != $comment_status ): ?>
 <option value="markspam"><?php _e('Mark as Spam'); ?></option>
-<?php if ( 'moderated' != $comment_status ): ?>
-<option value="unapprove"><?php _e('Unapprove'); ?></option>
 <?php endif; ?>
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>

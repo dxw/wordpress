@@ -111,6 +111,11 @@ h6 {
 
 .subsubsub li { display: inline; margin: 0; padding: 0; }
 
+/* make it small? */
+.subsubsub li.spam {
+	font-size: .9em;
+}
+
 .widefat {
 	border-width: 1px;
 	border-style: solid;

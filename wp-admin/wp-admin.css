@@ -246,7 +246,7 @@ table#availablethemes td.left {
 	display: none;
 }
 
-.unapproved .approve {
+.unapproved .approve, .spam .approve {
 	display: inline;
 }
 

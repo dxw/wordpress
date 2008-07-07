@@ -135,7 +135,7 @@ case 'dim-comment' :
 	if ( !current_user_can( 'moderate_comments' ) )
 		die('-1');
 
-	if ( 'unapproved' == wp_get_comment_status($comment->comment_ID) ) {
+	if ( in_array( wp_get_comment_status($comment->comment_ID), array( 'unapproved', 'spam' ) ) ) {
 		check_ajax_referer( "approve-comment_$id" );
 		if ( wp_set_comment_status( $comment->comment_ID, 'approve' ) )
 			die('1');
