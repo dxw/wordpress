@@ -671,6 +671,10 @@ a.view-comment-post-link {
 	position: relative;
 }
 
+#dashmenu li.highlighted {
+	font-weight: bold;
+}
+
 /* Temp */
 #dashmenu li.wp-has-submenu > a:after {
 	content: " \25BC";

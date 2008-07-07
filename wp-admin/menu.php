@@ -14,7 +14,7 @@ $top_menu = $top_submenu = $menu = $submenu = array();
 
 $top_menu[5]  = array( __('My Account'), 'read', 'profile.php' );
 $top_menu[10] = array( __('My Dashboard'), 'read', 'index.php' );
-$top_menu[15] = array( __('New Post'), 'edit_posts', 'post-new.php' );
+$top_menu[15] = array( __('New Post'), 'edit_posts', 'post-new.php', 'highlighted' );
 $top_menu[20] = array( sprintf( __('Inbox (%s)'), "<span id='inbox-num' class='count-$inbox_num'><span class='inbox-count'>" . number_format_i18n($inbox_num) . "</span></span>" ), 'edit_posts', 'inbox.php' );
 $top_menu[25] = array( __('Help'), 'read', 'index.php?help' ); // place holder
 

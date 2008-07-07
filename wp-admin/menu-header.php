@@ -10,7 +10,7 @@ function _wp_menu_output( &$menu, &$submenu, $submenu_as_parent = true ) {
 	global $self, $parent_file, $submenu_file, $plugin_page;
 
 	$first = true;
-	// 0 = name, 1 = capability, 2 = file
+	// 0 = name, 1 = capability, 2 = file, 3 = class
 	foreach ( $menu as $key => $item ) {
 		$class = array();
 		if ( $first ) {
@@ -26,6 +26,10 @@ function _wp_menu_output( &$menu, &$submenu, $submenu_as_parent = true ) {
 			else
 				$class[] = 'current';
 		}
+
+		if ( isset($item[3]) )
+			$class[] = $item[3];
+
 		$class = $class ? ' class="' . join( ' ', $class ) . '"' : '';
 
 		echo "\n\t<li$class>";

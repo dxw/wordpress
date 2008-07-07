@@ -484,7 +484,7 @@ input.readonly {
 	border-top-color: #247fab;
 }
 
-.login #backtoblog a, .curtime, #user_info a {
+.login #backtoblog a, .curtime, #user_info a, #dashmenu a {
 	color: #ccc;
 }
 
