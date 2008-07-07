@@ -276,7 +276,11 @@ ul.view-switch li.current a {
 	color: #666;
 }
 
-#adminmenu a, #poststuff #edButtonPreview, #poststuff #edButtonHTML, #the-comment-list p.comment-author strong a, #media-upload a.del-link, #media-upload a.delete, .ui-tabs-nav a, a {
+#adminmenu li.wp-has-submenu a {
+	color: #333;
+}
+
+#adminmenu a, #adminmenu ul.wp-submenu a, #poststuff #edButtonPreview, #poststuff #edButtonHTML, #the-comment-list p.comment-author strong a, #media-upload a.del-link, #media-upload a.delete, .ui-tabs-nav a, a {
 	color: #2583ad;
 }
 
