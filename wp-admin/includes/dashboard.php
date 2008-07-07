@@ -173,7 +173,7 @@ function wp_dashboard_setup() {
 	// Filter widget order
 	$dashboard_widgets = apply_filters( 'wp_dashboard_widgets', $dashboard_widgets );
 	if ( in_array( 'dashboard_quick_press', $dashboard_widgets ) ) {
-		add_action( 'admin_head', 'wp_teeny_mce' );
+//		add_action( 'admin_head', 'wp_teeny_mce' );
 		add_action( 'admin_head', 'wp_dashboard_quick_press_js' );
 	}
 
