@@ -379,8 +379,8 @@ function wp_dashboard_quick_press_js() {
 var quickPressLoad = function($) {
 	var act = $('#quickpost-action');
 	var t = $('#quick-press').submit( function() {
-		var head = $('#dashboard_quick_press div.dashboard-widget').children( 'div').hide().end().children('h3');
-		head.html( '<span>' + head.html() + '</span><img src="images/loading.gif" style="margin-top: 6px; float: right" /><br class="clear" />' );
+		var head = $('#dashboard_quick_press div.dashboard-widget').children( 'div').hide().end().find('h3 small');
+		head.prepend( '<img src="images/loading.gif" style="margin: 0 6px 0 0; vertical-align: middle" />' );
 
 		if ( 'post' == act.val() ) { act.val( 'post-quickpress-publish' ); }
 
@@ -389,7 +389,7 @@ var quickPressLoad = function($) {
 			tinyMCE.get('quickpress-content').remove();
 		}
 
-		$('#dashboard_quick_press').load( t.attr( 'action' ) + ' #dashboard_quick_press div.dashboard-widget', t.serializeArray(), function() {
+		$('#dashboard_quick_press').load( t.attr( 'action' ) + ' #dashboard_quick_press > *', t.serializeArray(), function() {
 			if ( 'undefined' != typeof wpTeenyMCEInit && $.isFunction( wpTeenyMCEInit ) ) { wpTeenyMCEInit(); }
 			quickPressLoad($);
 		} );
