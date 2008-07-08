@@ -306,26 +306,23 @@ endif; ?>
 <div id="post-time-info" class="alignleft">
 <?php
 	if ( current_user_can( 'publish_posts' ) ) : // Contributors don't get to choose the date of publish
+		$stamp = __( 'Timestamp: <span class="timestamp">%1$s%3$s</span>' );
+		$edit = '&nbsp;<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex="4">' . __('(Change)') . '</a>';
 		if ($post_ID) {
-			if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
-				$stamp = __('Scheduled for: %1$s at %2$s');
-			} else if ( 'publish' == $post->post_status ) { // already published
-				$stamp = __('Published on: %1$s at %2$s');
-			} else if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
-				$stamp = __('Publish immediately');
-			} else { // draft, 1 or more saves, date specified
-				$stamp = __('Publish on: %1$s at %2$s');
+			if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
+				$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
 			}
 			$date = mysql2date(get_option('date_format'), $post->post_date);
 			$time = mysql2date(get_option('time_format'), $post->post_date);
 		} else { // draft (no saves, and thus no date specified)
-			$stamp = __('Publish immediately');
+			$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
 			$date = mysql2date(get_option('date_format'), current_time('mysql'));
 			$time = mysql2date(get_option('time_format'), current_time('mysql'));
 		}
 ?>
 
-	<p class="curtime"><?php printf($stamp, $date, $time); ?>&nbsp;<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex='4'><?php _e('Edit') ?></a></p>
+	<p class="curtime"><?php printf($stamp, $date, $time, $edit); ?>
+</p>
 	<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
 
 <?php
