@@ -120,16 +120,18 @@ function wp_get_inbox_items() {
 		'time' => '4:19pm',
 		'from' => 'I. monroe',
 		'type' => 'comment',
-		'parent' => '1'
+		'parent' => '1',
+		'href' => '#'
 	);
 
 	$r[] = (object) array(
-		'text' => '<a href="#">Announcement: WordPress introduces new features for mobile blogging</a>.',
+		'text' => 'Announcement: WordPress introduces new features for mobile blogging.',
 		'date' => '2008/09/06',
 		'time' => '3:24pm',
 		'from' => 'WordPress.org',
 		'type' => 'announcement',
-		'parent' => '0'
+		'parent' => '0',
+		'href' => '#'
 	);
 
 	$r[] = (object) array(
@@ -138,7 +140,8 @@ function wp_get_inbox_items() {
 		'time' => '2:46pm',
 		'from' => 'matt',
 		'type' => 'comment',
-		'parent' => '2'
+		'parent' => '2',
+		'href' => '#'
 	);
 	
 	$r[] = (object) array(
@@ -147,7 +150,8 @@ function wp_get_inbox_items() {
 		'time' => '9:17am',
 		'from' => 'caped crusader',
 		'type' => 'comment',
-		'parent' => '3'
+		'parent' => '3',
+		'href' => '#'
 	);
 
 	return $r;

@@ -35,20 +35,24 @@ require_once('admin-header.php');
 	</thead>
 	<tbody>
 
-<?php foreach ( wp_get_inbox_items() as $k => $item ) : ?>
+<?php $crazy_posts = array( '', 'some post', 'a post', 'my cool post' ); foreach ( wp_get_inbox_items() as $k => $item ) : // crazyhorse ?>
 	
 	<tr id="message-<?php echo $k; ?>">
 		<th scope="col" class="check-column"><input type="checkbox" name="messages[]" value="<?php echo $k; ?>" /></td>
 		<td><?php
-			echo $item->text;
-			if ( strlen( $item->text ) > 180 )
-				echo '<br/><a class="inbox-more" href="#">more...</a>';
+			if ( $item->href )
+				echo "<a href='$item->href'>";
+			echo wp_specialchars( $item->text );
+			if ( strlen( $item->text ) > 180 ) // crazyhorse
+				echo '<br/><span class="inbox-more">more&hellip;</span>';
+			if ( $item->href )
+				echo '</a>';
 		?></td>
 		<td><a href="#link-to-comment"><abbr title="<?php echo "$item->date at $item->time"; ?>"><?php echo $item->date; ?></abbr></a></td>
 		<td><?php
 			echo $item->from;
-			if ( 'comment' == 'type' )
-				echo '<br/>on "<a href="#">Post</a>"';
+			if ( 'comment' == $item->type ) // crazyhorse
+				echo "<br/>on &quot;<a href='#'>{$crazy_posts[$item->parent]}</a>&quot;";
 		?></td>
 	</tr>
 
@@ -56,6 +60,7 @@ require_once('admin-header.php');
 
 </table>
 </form>
+
 <div class="tablenav"></div>
 <br class="clear"/>
 </div>

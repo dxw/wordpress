@@ -444,16 +444,24 @@ function wp_dashboard_inbox( $sidebar_args ) {
 		<p><input type="button" value="Archive" name="archive" class="button"></p>
 		<ul>
 
-<?php	foreach ( wp_get_inbox_items() as $k => $item ) : ?>
+<?php	$crazy_posts = array( '', 'some post', 'a post', 'my cool post' ); foreach ( wp_get_inbox_items() as $k => $item ) : // crazyhorse ?>
 
 			<li id="message-<?php echo $k; ?>">
 				<input type="checkbox" name="messages[]" value="<?php echo $k; ?>" class="checkbox" />
 				<p><?php
-					echo $item->text;
-					if ( strlen( $item->text ) > 180 )
-						echo ' <a class="inbox-more" href="#">more...</a>';;
+					if ( $item->href )
+						echo "<a href='$item->href'>";
+					echo wp_specialchars( $item->text );
+					if ( strlen( $item->text ) > 180 ) // crazyhorse
+						echo '<br/><span class="inbox-more">more&hellip;</span>';
+					if ( $item->href )
+						echo '</a>';
 				?><br />
-				-- <cite><?php echo $item->from; ?></cite>, <?php echo "$item->date, $item->time"; ?>
+				-- <cite><?php
+					echo $item->from; 
+					if ( 'comment' == $item->type ) // crazyhorse
+						echo " on &quot;<a href='#'>{$crazy_posts[$item->parent]}</a>&quot;";
+				?></cite>, <?php echo "$item->date, $item->time"; ?>
 				</p>
 			</li>
 
