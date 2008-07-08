@@ -1491,10 +1491,6 @@ ul.view-switch li.current {
 	word-wrap: break-word;
 }
 
-#the-comment-list td.comment p {
-	margin-left: 8px;
-}
-
 #the-comment-list .check-column {
 	padding-top: 8px;
 }
@@ -1644,4 +1640,9 @@ fieldset {
 
 .settings-toggle h3 {
 	margin: 0;
+}
+
+p.meta-options {
+	border: 1px solid;
+	padding: 1em .5em;
 }

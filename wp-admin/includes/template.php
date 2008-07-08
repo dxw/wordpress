@@ -741,7 +741,7 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
     <td class="check-column"><?php if ( current_user_can('edit_post', $comment->comment_post_ID) ) { ?><input type="checkbox" name="delete_comments[]" value="<?php echo $comment->comment_ID; ?>" /><?php } ?></td>
 <?php endif; ?>
     <td class="comment">
-    <?php if ( 'detail' == $mode ) comment_text(); ?>
+    <?php if ( 'detail' == $mode || 'single' == $mode ) comment_text(); ?>
     <p class="comment-author"><strong><?php comment_author(); ?></strong> |
     <?php if ( !empty($author_url) ) : ?>
     <a href="<?php echo $author_url ?>"><?php echo $author_url_display; ?></a> |
@@ -784,10 +784,12 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 	?>
     </td>
     <td><?php comment_date(__('Y/m/d \a\t g:ia')); ?></td>
+<?php if ( 'single' !== $mode ) : ?>
     <td>
     "<?php echo $post_link ?>" <?php echo sprintf('(%s comments)', $post->comment_count); ?><br/>
     <?php echo get_the_time(__('Y/m/d \a\t g:ia')); ?>
-	</td>
+    </td>
+<?php endif; ?>
   </tr>
 	<?php
 }

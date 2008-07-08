@@ -110,13 +110,16 @@ function post_trackback_meta_box($post) {
 	}
 
 ?>
+<p class="meta-options">
+	<label for="ping_status" class="selectit"><input name="ping_status" type="checkbox" id="ping_status" value="open" <?php checked($post->ping_status, 'open'); ?> /> <?php _e('Allow <a href="http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments" target="_blank">trackbacks and pingbacks</a> on this post') ?></label>
+</p>
 <p><label for="trackback"><?php _e('Send trackbacks to:'); ?></label> <?php echo $form_trackback; ?><br /> (<?php _e('Separate multiple URLs with spaces'); ?>)</p>
 <p><?php _e('Trackbacks are a way to notify legacy blog systems that you&#8217;ve linked to them. If you link other WordPress blogs they&#8217;ll be notified automatically using <a href="http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments" target="_blank">pingbacks</a>, no other action necessary.'); ?></p>
 <?php
 if ( ! empty($pings) )
 	echo $pings;
 }
-add_meta_box('trackbacksdiv', __('Trackbacks'), 'post_trackback_meta_box', 'post', 'normal', 'core');
+add_meta_box('trackbacksdiv', __('Trackbacks and Pings'), 'post_trackback_meta_box', 'post', 'normal', 'core');
 
 function post_custom_meta_box($post) {
 ?>
@@ -141,16 +144,47 @@ add_meta_box('postcustom', __('Custom Fields'), 'post_custom_meta_box', 'post', 
 do_action('dbx_post_advanced');
 
 function post_comment_status_meta_box($post) {
+	global $wpdb, $post_ID;
 ?>
 <input name="advanced_view" type="hidden" value="1" />
-<p><label for="comment_status" class="selectit">
-<input name="comment_status" type="checkbox" id="comment_status" value="open" <?php checked($post->comment_status, 'open'); ?> />
-<?php _e('Allow Comments') ?></label></p>
-<p><label for="ping_status" class="selectit"><input name="ping_status" type="checkbox" id="ping_status" value="open" <?php checked($post->ping_status, 'open'); ?> /> <?php _e('Allow Pings') ?></label></p>
-<p><?php _e('These settings apply to this post only. &#8220;Pings&#8221; are <a href="http://codex.wordpress.org/Introduction_to_Blogging#Managing_Comments" target="_blank">trackbacks and pingbacks</a>.'); ?></p>
+<p class="meta-options">
+	<label for="comment_status" class="selectit"> <input name="comment_status" type="checkbox" id="comment_status" value="open" <?php checked($post->comment_status, 'open'); ?> /><?php _e('Allow comments on this post') ?></label>
+</p>
 <?php
+
+
+	if ( !$post_ID || $post_ID < 0 )
+		return;
+
+	if ( !$comments = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND comment_approved != 'spam' ORDER BY comment_date", $post_ID) ) )
+		return;
+
+	// Make sure comments, post, and post_author are cached
+//	update_comment_cache($comments);
+?>
+
+<table class="widefat">
+<thead>
+	<tr>
+		<th scope="col"><?php _e('Comments') ?></th>
+		<th scope="col"><?php _e('Submitted') ?></th>
+	</tr>
+</thead>
+<tbody id="the-comment-list" class="list:comment">
+<?php
+	foreach ($comments as $comment)
+		_wp_comment_row( $comment, 'single', false, false );
+?>
+</tbody>
+</table>
+
+
+<?php
+
+
+
 }
-add_meta_box('commentstatusdiv', __('Comments &amp; Pings'), 'post_comment_status_meta_box', 'post', 'normal', 'core');
+add_meta_box('commentstatusdiv', __('Comments on this Post'), 'post_comment_status_meta_box', 'post', 'normal', 'core');
 
 function post_password_meta_box($post) {
 ?>

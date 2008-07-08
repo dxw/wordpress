@@ -248,14 +248,13 @@ if ( 1 == count($posts) && is_singular() ) :
 <thead>
   <tr>
     <th scope="col"><?php _e('Comment') ?></th>
-    <th scope="col"><?php _e('Date') ?></th>
-    <th scope="col"><?php _e('Actions') ?></th>
+    <th scope="col"><?php _e('Submitted') ?></th>
   </tr>
 </thead>
 <tbody id="the-comment-list" class="list:comment">
 <?php
 	foreach ($comments as $comment)
-		_wp_comment_row( $comment->comment_ID, 'detail', false, false );
+		_wp_comment_row( $comment->comment_ID, 'single', false, false );
 ?>
 </tbody>
 </table>
