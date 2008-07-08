@@ -58,7 +58,8 @@ div.dashboard-widget-holder.full {
 }
 
 div.dashboard-widget-holder.double div.dashboard-widget {
-	height: 40.5em; /* temp */
+	height: 54em;
+        padding-bottom: 28px /* lame */
 }
 
 div.dashboard-widget {
@@ -259,8 +260,34 @@ div.dashboard-widget-content p.comment-meta {
 	line-height: 1.5em;
 }
 
+#dashboard_inbox div.dashboard-widget, #dashboard_quick_press div.dashboard-widget {
+	height: 34em;
+	padding-bottom: 0;
+}
+
+#dashboard_inbox p.actions {
+	margin-top: 0;
+}
+
+#dashboard_quick_press h3 {
+	margin-bottom: 3px;
+}
+
+#dashboard_quick_press h3#quick-post-title {
+	margin-top: 0;
+}
+
+#dashboard_quick_press p.field-tip {
+	margin-top: 0;
+	font-style: italic;
+}
+
 #dashboard_quick_press .submit {
-	padding: 0 0 1.5em 0;
+	padding: 0 0 1em 0;
 	border-top: none;
 	border-bottom: 1px solid #ccc;
+}
+
+#dashboard_quick_press p#recent-drafts {
+	margin: 0;
 }

@@ -311,7 +311,7 @@ function wp_dashboard_quick_press( $sidebar_args ) {
 ?>
 
 	<form name="post" action="<?php echo clean_url( admin_url( 'post.php' ) ); ?>" method="post" id="quick-press">
-		<h3><label for="title"><?php _e('Title') ?></label></h3>
+		<h3 id="quick-post-title"><label for="title"><?php _e('Title') ?></label></h3>
 		<div class="input-text-wrap">
 			<input type="text" name="post_title" id="title" autocomplete="off" />
 		</div>
@@ -325,7 +325,7 @@ function wp_dashboard_quick_press( $sidebar_args ) {
 		<div class="input-text-wrap">
 			<input type="text" name="tags_input" id="tags-input" />
 		</div>
-		<p><?php _e('Separate tags with commas'); ?></p>
+		<p class='field-tip'><?php _e('Separate tags with commas'); ?></p>
 
 		<p class="submit">
 			<input type="hidden" name="action" id="quickpost-action" value="post-quickpress-save" />
@@ -441,7 +441,7 @@ function wp_dashboard_inbox( $sidebar_args ) {
 	</script>
 
 	<form id="inbox-filter" action="" method="get">
-		<p><input type="button" value="Archive" name="archive" class="button"></p>
+		<p class="actions"><input type="button" value="Archive" name="archive" class="button"></p>
 		<ul>
 
 <?php	$crazy_posts = array( '', 'some post', 'a post', 'my cool post' ); foreach ( wp_get_inbox_items() as $k => $item ) : // crazyhorse ?>

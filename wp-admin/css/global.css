@@ -10,6 +10,7 @@ div#wpbody-content {
 	margin-left: 200px;
 	border-width: 1px 0 0 1px;
 	border-style: solid;
+	padding-top: 10px;
 }
 
 ul#adminmenu {
@@ -176,7 +177,7 @@ th.check-column + th, th.check-column + td {
 	text-align: center;
 }
 
-.wrap {
+#wpbody .wrap {
 	position: relative;
 }
 

@@ -1391,7 +1391,7 @@ p#big-add-button .button {
 p#post-search {
         position: absolute;
         right: 0;
-        top: -45px;
+        top: -64px;
         margin: 0;
 }
 
@@ -1645,7 +1645,7 @@ fieldset {
 
 .settings-toggle {
 	text-align: right;
-	margin: 5px 7px 10px 0;
+	margin: 5px 7px 15px 0;
 	font-size: 12px;
 }
 
