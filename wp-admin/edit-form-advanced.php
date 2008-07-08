@@ -51,23 +51,13 @@ function post_tags_meta_box($post) {
 ?>
 <p id="jaxtag"><label class="hidden" for="newtag"><?php _e('Tags'); ?></label><input type="text" name="tags_input" class="tags-input" id="tags-input" size="40" tabindex="3" value="<?php echo get_tags_to_edit( $post->ID ); ?>" /></p>
 <div id="tagchecklist"></div>
+<p><a href='#'><?php _e( 'Choose from tags' ); ?></a></p>
 <?php
 }
-add_meta_box('tagsdiv', __('Tags'), 'post_tags_meta_box', 'post', 'normal', 'core');
+add_meta_box('tagsdiv', __('Tags'), 'post_tags_meta_box', 'post', 'side', 'core');
 
 function post_categories_meta_box($post) {
 ?>
-<div id="category-adder" class="wp-hidden-children">
-	<h4><a id="category-add-toggle" href="#category-add" class="hide-if-no-js" tabindex="3"><?php _e( '+ Add New Category' ); ?></a></h4>
-	<p id="category-add" class="wp-hidden-child">
-		<label class="hidden" for="newcat"><?php _e( 'Add New Category' ); ?></label><input type="text" name="newcat" id="newcat" class="form-required form-input-tip" value="<?php _e( 'New category name' ); ?>" tabindex="3" aria-required="true"/>
-		<label class="hidden" for="newcat_parent"><?php _e('Parent category'); ?>:</label><?php wp_dropdown_categories( array( 'hide_empty' => 0, 'name' => 'newcat_parent', 'orderby' => 'name', 'hierarchical' => 1, 'show_option_none' => __('Parent category'), 'tab_index' => 3 ) ); ?>
-		<input type="button" id="category-add-sumbit" class="add:categorychecklist:category-add button" value="<?php _e( 'Add' ); ?>" tabindex="3" />
-		<?php wp_nonce_field( 'add-category', '_ajax_nonce', false ); ?>
-		<span id="category-ajax-response"></span>
-	</p>
-</div>
-
 <ul id="category-tabs">
 	<li class="ui-tabs-selected"><a href="#categories-all" tabindex="3"><?php _e( 'All Categories' ); ?></a></li>
 	<li class="wp-no-js-hidden"><a href="#categories-pop" tabindex="3"><?php _e( 'Most Used' ); ?></a></li>
@@ -84,9 +74,21 @@ function post_categories_meta_box($post) {
 		<?php wp_category_checklist($post->ID, false, false, $popular_ids) ?>
 	</ul>
 </div>
+
+<div id="category-adder" class="wp-hidden-children">
+	<h4><a id="category-add-toggle" href="#category-add" class="hide-if-no-js" tabindex="3"><?php _e( '+ Add New Category' ); ?></a></h4>
+	<p id="category-add" class="wp-hidden-child">
+		<label class="hidden" for="newcat"><?php _e( 'Add New Category' ); ?></label><input type="text" name="newcat" id="newcat" class="form-required form-input-tip" value="<?php _e( 'New category name' ); ?>" tabindex="3" aria-required="true"/>
+		<label class="hidden" for="newcat_parent"><?php _e('Parent category'); ?>:</label><?php wp_dropdown_categories( array( 'hide_empty' => 0, 'name' => 'newcat_parent', 'orderby' => 'name', 'hierarchical' => 1, 'show_option_none' => __('Parent category'), 'tab_index' => 3 ) ); ?>
+		<input type="button" id="category-add-sumbit" class="add:categorychecklist:category-add button" value="<?php _e( 'Add' ); ?>" tabindex="3" />
+		<?php wp_nonce_field( 'add-category', '_ajax_nonce', false ); ?>
+		<span id="category-ajax-response"></span>
+	</p>
+</div>
+
 <?php
 }
-add_meta_box('categorydiv', __('Categories'), 'post_categories_meta_box', 'post', 'normal', 'core');
+add_meta_box('categorydiv', __('Categories'), 'post_categories_meta_box', 'post', 'side', 'core');
 
 function post_excerpt_meta_box($post) {
 ?>
@@ -311,9 +313,12 @@ endif; ?>
 		if ($post_ID) {
 			if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
 				$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
+				$date = mysql2date(get_option('date_format'), current_time('mysql'));
+				$time = mysql2date(get_option('time_format'), current_time('mysql'));
+			} else {
+				$date = mysql2date(get_option('date_format'), $post->post_date);
+				$time = mysql2date(get_option('time_format'), $post->post_date);
 			}
-			$date = mysql2date(get_option('date_format'), $post->post_date);
-			$time = mysql2date(get_option('time_format'), $post->post_date);
 		} else { // draft (no saves, and thus no date specified)
 			$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
 			$date = mysql2date(get_option('date_format'), current_time('mysql'));

@@ -1189,6 +1189,7 @@ function add_meta_box($id, $title, $callback, $page, $context = 'advanced', $pri
 	$wp_meta_boxes[$page][$context][$priority][$id] = array('id' => $id, 'title' => $title, 'callback' => $callback);
 }
 
+// crazyhorse - this can be made simpler
 function do_meta_boxes($page, $context, $object) {
 	global $wp_meta_boxes;
 	static $already_sorted = false;
