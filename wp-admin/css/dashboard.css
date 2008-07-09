@@ -31,7 +31,6 @@ form .textarea-wrap textarea {
 /* Widgets */
 
 div#dashboard-widgets-wrap {
-	margin-top: -20px;
 	margin-right: -13px; /* 20 (div.dashboard-widget margin-right) - 7 (#rightnow margin-right) */
 }
 

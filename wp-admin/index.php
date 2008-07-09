@@ -38,10 +38,6 @@ $today = current_time('mysql', 1);
 
 <div class="wrap">
 
-<div id="dashboard-settings" class="settings-toggle">
-<h3><a href="#"><?php _e( 'Change Settings' ); ?></a></h3>
-</div>
-
 <div id="dashboard-widgets-wrap">
 
 <?php wp_dashboard(); ?>
