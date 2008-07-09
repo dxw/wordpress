@@ -241,9 +241,9 @@ default:
 <div class="wrap">
 <form id="posts-filter" action="" method="get">
 	<?php if ( $wp_user_search->is_search() ) : ?>
-		<h2><?php printf(__('Users Matching "%s"'), wp_specialchars($wp_user_search->search_term)); ?></h2>
+		<h2><?php printf( current_user_can('create_users') ? __('Users Matching "%2$s" (<a href="%1$s">Add New</a>)') : __('Add New'), '#add-new-user', wp_specialchars($wp_user_search->search_term) ); ?></h2>
 	<?php else : ?>
-		<h2><?php _e('Manage Users'); ?></h2>
+		<h2><?php printf( current_user_can('create_users') ? __('Users (<a href="%s">Add New</a>)') : __('Add New'), '#add-new-user' ); ?></h2>
 	<?php endif; ?>
 
 <ul class="subsubsub">
@@ -284,12 +284,6 @@ echo implode(' |</li>', $role_links) . '</li>';
 unset($role_links);
 ?>
 </ul>
-
-<?php if ( current_user_can('create_users') ) : ?>
-<p id="big-add-button">
-	<a href="#add-new-user" class="button"><?php _e('Add New User'); ?></a>
-</p>
-<?php endif; ?>
 
 	<p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Users' ); ?>:</label>

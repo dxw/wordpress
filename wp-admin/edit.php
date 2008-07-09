@@ -65,7 +65,7 @@ else
 if ( is_single() ) {
 	printf(__('Comments on %s'), apply_filters( "the_title", $post->post_title));
 } else {
-	$post_status_label = _c('Manage Posts|manage posts header');
+	$post_status_label = _c('Posts|manage posts header');
 	if ( isset($_GET['post_status']) && in_array( $_GET['post_status'], array_keys($post_stati) ) )
         $post_status_label = $post_stati[$_GET['post_status']][1];
 	if ( $post_listing_pageable && !is_archive() && !is_search() )
@@ -87,7 +87,7 @@ if ( is_single() ) {
 	$h2_cat    = isset($_GET['cat']) && $_GET['cat'] ? ' ' . sprintf( __('in &#8220;%s&#8221;'), single_cat_title('', false) ) : '';
 	$h2_tag    = isset($_GET['tag']) && $_GET['tag'] ? ' ' . sprintf( __('tagged with &#8220;%s&#8221;'), single_tag_title('', false) ) : '';
 	$h2_month  = isset($_GET['m'])   && $_GET['m']   ? ' ' . sprintf( __('during %s'), single_month_title(' ', false) ) : '';
-	printf( _c( '%1$s%2$s%3$s%4$s%5$s%6$s|You can reorder these: 1: Posts, 2: by {s}, 3: matching {s}, 4: in {s}, 5: tagged with {s}, 6: during {s}' ), $h2_noun, $h2_author, $h2_search, $h2_cat, $h2_tag, $h2_month );
+	printf( _c( '%1$s%2$s%3$s%4$s%5$s%6$s (<a href="%7$s">Add New</a>)|You can reorder these: 1: Posts, 2: by {s}, 3: matching {s}, 4: in {s}, 5: tagged with {s}, 6: during {s}' ), $h2_noun, $h2_author, $h2_search, $h2_cat, $h2_tag, $h2_month, 'post-new.php' );
 }
 ?></h2>
 
@@ -126,10 +126,6 @@ if ( isset($_GET['posted']) && $_GET['posted'] ) : $_GET['posted'] = (int) $_GET
 <?php $_SERVER['REQUEST_URI'] = remove_query_arg(array('posted'), $_SERVER['REQUEST_URI']);
 endif;
 ?>
-
-<p id="big-add-button">
-	<a href="post-new.php" class="button"><?php _e( 'Write New Post' ); ?></a>
-</p>
 
 <p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Posts' ); ?>:</label>

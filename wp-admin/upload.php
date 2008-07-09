@@ -60,7 +60,7 @@ if ( !isset( $_GET['paged'] ) )
 if ( is_singular() ) {
 	printf(__('Comments on %s'), apply_filters( "the_title", $post->post_title));
 } else {
-	$post_mime_type_label = _c('Manage Media|manage media header');
+	$post_mime_type_label = _c('Media|manage media header');
 	if ( isset($_GET['post_mime_type']) && in_array( $_GET['post_mime_type'], array_keys($post_mime_types) ) )
         $post_mime_type_label = $post_mime_types[$_GET['post_mime_type']][1];
 	if ( $post_listing_pageable && !is_archive() && !is_search() )
@@ -82,7 +82,7 @@ if ( is_singular() ) {
 	$h2_cat    = isset($_GET['cat']) && $_GET['cat'] ? ' ' . sprintf( __('in &#8220;%s&#8221;'), single_cat_title('', false) ) : '';
 	$h2_tag    = isset($_GET['tag']) && $_GET['tag'] ? ' ' . sprintf( __('tagged with &#8220;%s&#8221;'), single_tag_title('', false) ) : '';
 	$h2_month  = isset($_GET['m'])   && $_GET['m']   ? ' ' . sprintf( __('during %s'), single_month_title(' ', false) ) : '';
-	printf( _c( '%1$s%2$s%3$s%4$s%5$s%6$s|You can reorder these: 1: Posts, 2: by {s}, 3: matching {s}, 4: in {s}, 5: tagged with {s}, 6: during {s}' ), $h2_noun, $h2_author, $h2_search, $h2_cat, $h2_tag, $h2_month );
+	printf( _c( '%1$s%2$s%3$s%4$s%5$s%6$s (<a href="%7$s" class="thickbox">Add New</a>)|You can reorder these: 1: Posts, 2: by {s}, 3: matching {s}, 4: in {s}, 5: tagged with {s}, 6: during {s}' ), $h2_noun, $h2_author, $h2_search, $h2_cat, $h2_tag, $h2_month, 'media-upload.php?TB_iframe=true' );
 }
 ?></h2>
 
@@ -127,10 +127,6 @@ if (isset($_GET['message'])) : ?>
 <?php $_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 endif;
 ?>
-
-<p id="big-add-button">
-	<a href="media-upload.php?TB_iframe=true" class="button thickbox"><?php _e( 'Add Media' ); ?></a>
-</p>
 
 <p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Media' ); ?>:</label>

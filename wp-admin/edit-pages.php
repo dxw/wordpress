@@ -45,7 +45,7 @@ $post_stati  = array(	//	array( adj, noun )
 		'private' => array(__('Private'), __('Private pages'), __ngettext_noop('Private (%s)', 'Private (%s)'))
 	);
 
-$post_status_label = __('Manage Pages');
+$post_status_label = __('Pages');
 $post_status_q = '';
 if ( isset($_GET['post_status']) && in_array( $_GET['post_status'], array_keys($post_stati) ) ) {
 	$post_status_label = $post_stati[$_GET['post_status']][1];
@@ -73,7 +73,7 @@ if ( isset($_GET['author']) && $_GET['author'] ) {
 	$author_user = get_userdata( (int) $_GET['author'] );
 	$h2_author = ' ' . sprintf(__('by %s'), wp_specialchars( $author_user->display_name ));
 }
-printf( _c( '%1$s%2$s%3$s|You can reorder these: 1: Pages, 2: by {s}, 3: matching {s}' ), $post_status_label, $h2_author, $h2_search );
+printf( _c( '%1$s%2$s%3$s (<a href="%4$s">Add New</a>)|You can reorder these: 1: Pages, 2: by {s}, 3: matching {s}' ), $post_status_label, $h2_author, $h2_search, 'page-new.php' );
 ?></h2>
 
 <ul class="subsubsub">
@@ -111,10 +111,6 @@ if ( isset($_GET['posted']) && $_GET['posted'] ) : $_GET['posted'] = (int) $_GET
 <?php $_SERVER['REQUEST_URI'] = remove_query_arg(array('posted'), $_SERVER['REQUEST_URI']);
 endif;
 ?>
-
-<p id="big-add-button">
-	<a href="page-new.php" class="button"><?php _e( 'Write New Page' ); ?></a>
-</p>
 
 <p id="post-search">
 	<label class="hidden" for="post-search-input"><?php _e( 'Search Pages' ); ?>:</label>
