@@ -283,8 +283,8 @@ textarea.all-options, input.all-options {
 	padding: 0;
 }
 
-#namediv, #poststuff #namediv {
-	margin-top: 10px;
+#emaildiv input, #uridiv input {
+	width: 94%;
 }
 
 #postdivrich {
