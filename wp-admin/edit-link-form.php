@@ -262,7 +262,7 @@ add_meta_box('linkadvanceddiv', __('Advanced'), 'link_advanced_meta_box', 'link'
 
 <div id="poststuff">
 
-<div id="side-info-column">
+<div id="side-info-column" class="inner-sidebar">
 <?php 
 
 do_action('submitlink_box');
@@ -272,6 +272,7 @@ $side_meta_boxes = do_meta_boxes( 'link', 'side', $link );
 </div>
 
 <div id="post-body" class="<?php echo $side_meta_boxes ? 'has-sidebar' : ''; ?>">
+<div id="post-body-content" class="has-sidebar-content">
 <div id="namediv" class="stuffbox">
 <h3><label for="link_name"><?php _e('Name') ?></label></h3>
 <div class="inside">
@@ -322,6 +323,7 @@ if ( $link_id ) : ?>
 <input type="hidden" name="action" value="add" />
 <?php endif; ?>
 
+</div>
 </div>
 </div>
 

@@ -188,11 +188,15 @@ add_meta_box('commentstatusdiv', __('Comments on this Post'), 'post_comment_stat
 
 function post_password_meta_box($post) {
 ?>
+<p>
+	<input id="post_status_private" name="post_status" type="checkbox" value="private" <?php checked($post->post_status, 'private'); ?> tabindex="4" /> <?php _e('Keep this post private') ?></label>
+</p>
+<h4><?php _e( 'Post Password' ); ?></h4>
 <p><label class="hidden" for="post_password"><?php _e('Password Protect This Post') ?></label><input name="post_password" type="text" size="25" id="post_password" value="<?php echo attribute_escape( $post->post_password ); ?>" /></p>
 <p><?php _e('Setting a password will require people who visit your blog to enter the above password to view this post and its comments.'); ?></p>
 <?php
 }
-add_meta_box('passworddiv', __('Password Protect This Post'), 'post_password_meta_box', 'post', 'normal', 'core');
+add_meta_box('passworddiv', __('Privacy Options'), 'post_password_meta_box', 'post', 'normal', 'core');
 
 function post_slug_meta_box($post) {
 ?>
@@ -303,7 +307,7 @@ else
 <p><?php _e('Drag-and-drop the following link to your bookmarks bar or right click it and add it to your favorites for a posting shortcut.') ?>  <a href="<?php echo get_shortcut_link(); ?>" title="<?php echo attribute_escape(__('Press This')) ?>"><?php _e('Press This') ?></a></p>
 </div>
 
-<div id="side-info-column">
+<div id="side-info-column" class="inner-sidebar">
 
 <?php do_action('submitpost_box'); ?>
 
@@ -312,6 +316,7 @@ else
 </div>
 
 <div id="post-body" class="<?php echo $side_meta_boxes ? 'has-sidebar' : ''; ?>">
+<div id="post-body-content" class="has-sidebar-content">
 <div id="titlediv">
 <h3><label for="title"><?php _e('Title') ?></label></h3>
 <div id="titlewrap">
@@ -435,6 +440,7 @@ do_action('dbx_post_sidebar');
 
 ?>
 
+</div>
 </div>
 </div>
 

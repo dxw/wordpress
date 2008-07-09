@@ -225,7 +225,7 @@ if ( current_user_can('publish_pages') OR ( $post->post_status == 'publish' AND 
 
 <div id="poststuff">
 
-<div id="side-info-column">
+<div id="side-info-column" class="inner-sidebar">
 
 <?php
 
@@ -236,6 +236,8 @@ $side_meta_boxes = do_meta_boxes('page', 'side', $page);
 </div>
 
 <div id="post-body" class="<?php echo $side_meta_boxes ? 'has-sidebar' : ''; ?>">
+<div id="post-body-content" class="has-sidebar-content">
+
 <div id="titlediv">
 <h3><label for="title"><?php _e('Title') ?></label></h3>
 <div id="titlewrap">
@@ -342,6 +344,7 @@ do_meta_boxes('page', 'advanced', $post);
 
 ?>
 
+</div>
 </div>
 </div>
 

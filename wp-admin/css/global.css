@@ -20,6 +20,27 @@ ul#adminmenu {
 	position: relative;
 }
 
+/* inner 2 column liquid layout */
+
+.inner-sidebar {
+	float: right;
+	clear: right;
+	width: 220px;
+	position: relative;
+}
+
+.has-sidebar {
+	float: left;
+	clear: left;
+	width: 100%;
+	margin-right: -240px;
+}
+
+.has-sidebar .has-sidebar-content {
+	margin-right: 245px;
+}
+
+
 /* styles for use by people extending the WordPress interface */
 
 body	{

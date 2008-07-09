@@ -283,7 +283,7 @@ textarea.all-options, input.all-options {
 	padding: 0;
 }
 
-#titlediv, #namediv, #poststuff #namediv {
+#namediv, #poststuff #namediv {
 	margin-top: 10px;
 }
 
@@ -407,14 +407,6 @@ textarea.all-options, input.all-options {
 
 #postcustomstuff table #addmetasub {
 	width: auto;
-}
-
-#poststuff #post-body {
-	margin: 0 0 0 20px;
-}
-
-#poststuff #post-body.has-sidebar {
-	margin-right: 250px;
 }
 
 #save {
@@ -964,6 +956,7 @@ table.form-table td .updated {
 
 .postbox {
 	position: relative;
+	min-width: 195px;
 }
 
 #post-body #tagsdiv #newtag {
@@ -1224,16 +1217,6 @@ table.form-table td .updated {
 
 #poststuff .closed .togbox {
 	background-position: 4px 15px;
-}
-
-#side-info-column {
-	width: 220px;
-	position: absolute;
-	right: 0;
-}
-
-#side-info-column {
-	height: 100%;
 }
 
 #side-info-column #side-sortables {
