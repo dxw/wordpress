@@ -74,9 +74,12 @@ foreach($posts_columns as $column_name=>$column_display_name) {
 				$h_time = mysql2date(__('Y/m/d'), $m_time);
 			}
 		}
-		?>
-		<td><abbr title="<?php echo $t_time ?>"><?php echo apply_filters('post_date_column_time', $h_time, $post, $column_name) ?></abbr></td>
-		<?php
+
+		if ( 'excerpt' == $mode ) : ?>
+		<td><?php echo apply_filters('post_date_column_time', $t_time, $post, $column_name, $mode) ?></td>
+<?php		else : ?>
+		<td><abbr title="<?php echo $t_time ?>"><?php echo apply_filters('post_date_column_time', $h_time, $post, $column_name, $mode) ?></abbr></td>
+<?php		endif;
 		break;
 	case 'title':
 		?>
