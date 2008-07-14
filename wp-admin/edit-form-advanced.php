@@ -333,7 +333,11 @@ endif; ?>
 </div>
 
 <div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-<h3><label for="content"><?php _e('Post') ?></label></h3>
+<h3>
+	<label for="content"><?php _e('Post') ?></label>
+	<a id="add-media-button" href="<?php echo clean_url( admin_url( 'media-upload.php?post_id=' . ( $post_ID ? $post_ID : $temp_ID ) . '&TB_iframe=true' ) ); ?>" class="thickbox button"><?php _e( 'Add Media' ); ?></a>
+	<br class="clear" />
+</h3>
 
 <?php the_editor($post->post_content); ?>
 

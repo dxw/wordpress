@@ -434,8 +434,12 @@ input.readonly {
 	background-color: #fff;
 }
 
-#poststuff #editor-toolbar .active {
+#poststuff #editor-toolbar {
 	background-color: #83b4d5;
+}
+
+#poststuff #editor-toolbar .active {
+	background-color: #CFEBF7;
 	color: #333;
 }
 
