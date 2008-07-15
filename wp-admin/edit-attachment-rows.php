@@ -47,7 +47,16 @@ foreach($posts_columns as $column_name=>$column_display_name) {
 
 	case 'icon':
 		?>
-		<td class="media-icon"><?php echo wp_get_attachment_link($post->ID, array(80, 60), false, true); ?></td>
+		<td class="media-icon"><?php
+			if ( $thumb = wp_get_attachment_image( $post->ID, array(80, 60), true ) ) {
+?>
+
+				<a href="media.php?action=edit&amp;attachment_id=<?php the_ID(); ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $att_title)); ?>">
+					<?php echo $thumb; ?>
+				</a>
+
+<?php			}
+		?></td>
 		<?php
 		// TODO
 		break;
