@@ -34,10 +34,10 @@ function wp_default_scripts( &$scripts ) {
 	$visual_editor = apply_filters('visual_editor', array('tiny_mce'));
 	$scripts->add( 'editor', false, $visual_editor, '20080321' );
 
-	$scripts->add( 'editor_functions', '/wp-admin/js/editor.js', false, '20080701' );
+	$scripts->add( 'editor_functions', '/wp-admin/js/editor.js', false, '20080710' );
 
 	// Modify this version when tinyMCE plugins are changed.
-	$mce_version = apply_filters('tiny_mce_version', '20080701');
+	$mce_version = apply_filters('tiny_mce_version', '20080710');
 	$scripts->add( 'tiny_mce', '/wp-includes/js/tinymce/tiny_mce_config.php', array('editor_functions'), $mce_version );
 
 	$scripts->add( 'prototype', '/wp-includes/js/prototype.js', false, '1.6');
@@ -73,13 +73,13 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->add( 'suggest', '/wp-includes/js/jquery/suggest.js', array('jquery'), '1.1b');
 	$scripts->add( 'schedule', '/wp-includes/js/jquery/jquery.schedule.js', array('jquery'), '20');
 	$scripts->add( 'thickbox', '/wp-includes/js/thickbox/thickbox.js', array('jquery'), '3.1-20080430');
-	$scripts->add( 'swfupload', '/wp-includes/js/swfupload/swfupload.js', false, '2.1.0');
-	$scripts->add( 'swfupload-degrade', '/wp-includes/js/swfupload/plugins/swfupload.graceful_degradation.js', array('swfupload'), '2.1.0');
+	$scripts->add( 'swfupload', '/wp-includes/js/swfupload/swfupload.js', false, '2.0.2-20080430');
+	$scripts->add( 'swfupload-degrade', '/wp-includes/js/swfupload/plugins/swfupload.graceful_degradation.js', array('swfupload'), '2.0.2');
 	$scripts->localize( 'swfupload-degrade', 'uploadDegradeOptions', array(
 		'is_lighttpd_before_150' => is_lighttpd_before_150(),
 	) );
-	$scripts->add( 'swfupload-queue', '/wp-includes/js/swfupload/plugins/swfupload.queue.js', array('swfupload'), '2.1.0');
-	$scripts->add( 'swfupload-handlers', '/wp-includes/js/swfupload/handlers.js', array('swfupload'), '2.1.0');
+	$scripts->add( 'swfupload-queue', '/wp-includes/js/swfupload/plugins/swfupload.queue.js', array('swfupload'), '2.0.2');
+	$scripts->add( 'swfupload-handlers', '/wp-includes/js/swfupload/handlers.js', array('swfupload'), '2.0.2-20080407');
 	// these error messages came from the sample swfupload js, they might need changing.
 	$scripts->localize( 'swfupload-handlers', 'swfuploadL10n', array(
 			'queue_limit_exceeded' => __('You have attempted to queue too many files.'),
@@ -158,8 +158,8 @@ function wp_default_scripts( &$scripts ) {
 			'cancel' => __('Cancel'),
 			'edit' => __('Edit'),
 		) );
-		$scripts->add( 'admin-gallery', '/wp-admin/js/gallery.js', array( 'jquery-ui-sortable' ), '20080520' );
-		$scripts->add( 'media-upload', '/wp-admin/js/media-upload.js', array( 'thickbox' ), '20080701' );
+		$scripts->add( 'admin-gallery', '/wp-admin/js/gallery.js', array( 'jquery-ui-sortable' ), '20080709' );
+		$scripts->add( 'media-upload', '/wp-admin/js/media-upload.js', array( 'thickbox' ), '20080710' );
 		$scripts->localize( 'upload', 'uploadL10n', array(
 			'browseTitle' => attribute_escape(__('Browse your files')),
 			'back' => __('&laquo; Back'),
@@ -211,7 +211,7 @@ function wp_default_styles( &$styles ) {
 	$styles->default_version = get_bloginfo( 'version' );
 	$styles->text_direction = 'rtl' == get_bloginfo( 'text_direction' ) ? 'rtl' : 'ltr';
 
-	$rtl_styles = array( 'global', 'colors', 'dashboard', 'ie', 'install', 'login', 'media', 'theme-editor', 'upload', 'widgets' );
+	$rtl_styles = array( 'global', 'colors', 'dashboard', 'ie', 'install', 'login', 'media', 'theme-editor', 'upload', 'widgets', 'press-this', 'press-this-ie' );
 
 	$styles->add( 'wp-admin', '/wp-admin/wp-admin.css' );
 	$styles->add_data( 'wp-admin', 'rtl', '/wp-admin/rtl.css' );
@@ -224,12 +224,14 @@ function wp_default_styles( &$styles ) {
 	$styles->add_data( 'colors-fresh', 'rtl', true );
 
 	$styles->add( 'global', '/wp-admin/css/global.css' );
-	$styles->add( 'media', '/wp-admin/css/media.css', array(), '20080523' );
+	$styles->add( 'media', '/wp-admin/css/media.css', array(), '20080709' );
 	$styles->add( 'widgets', '/wp-admin/css/widgets.css' );
 	$styles->add( 'dashboard', '/wp-admin/css/dashboard.css' );
-	$styles->add( 'install', '/wp-admin/css/install.css' );
+	$styles->add( 'install', '/wp-admin/css/install.css', array(), '20080708' );
 	$styles->add( 'theme-editor', '/wp-admin/css/theme-editor.css' );
-	$styles->add( 'press-this', '/wp-admin/css/press-this.css' );
+	$styles->add( 'press-this', '/wp-admin/css/press-this.css', array(), '20080710' );
+	$styles->add( 'press-this-ie', '/wp-admin/css/press-this-ie.css', array(), '20080710' );
+	$styles->add_data( 'press-this-ie', 'conditional', 'gte IE 6' );
 	$styles->add( 'thickbox', '/wp-includes/js/thickbox/thickbox.css', array(), '20080613' );
 	$styles->add( 'login', '/wp-admin/css/login.css' );
 

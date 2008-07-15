@@ -14,8 +14,8 @@ class WP_Categories_to_Tags {
 			echo '<p>' . __('Cheatin&#8217; uh?') . '</p>';
 			echo '</div>';
 		} else { ?>
-			<div class="tablenav"><p style="margin:4px"><a style="display:inline;" class="button-secondary" href="admin.php?import=wp-cat2tag">Categories to Tags</a>
-			<a style="display:inline;" class="button-secondary" href="admin.php?import=wp-cat2tag&amp;step=3">Tags to Categories</a></p></div>
+			<div class="tablenav"><p style="margin:4px"><a style="display:inline;" class="button-secondary" href="admin.php?import=wp-cat2tag"><?php _e( "Categories to Tags" ); ?></a>
+			<a style="display:inline;" class="button-secondary" href="admin.php?import=wp-cat2tag&amp;step=3"><?php _e( "Tags to Categories" ); ?></a></p></div>
 <?php	}
 	}
 
@@ -52,7 +52,7 @@ class WP_Categories_to_Tags {
 		if ( $cat_num > 0 ) {
 			echo '<h2>' . sprintf( __ngettext( 'Convert Category to Tag.', 'Convert Categories (%d) to Tags.', $cat_num ), $cat_num ) . '</h2>';
 			echo '<div class="narrow">';
-			echo '<p>' . __('Hey there. Here you can selectively converts existing categories to tags. To get started, check the categories you wish to be converted, then click the Convert button.') . '</p>';
+			echo '<p>' . __('Hey there. Here you can selectively convert existing categories to tags. To get started, check the categories you wish to be converted, then click the Convert button.') . '</p>';
 			echo '<p>' . __('Keep in mind that if you convert a category with child categories, the children become top-level orphans.') . '</p></div>';
 
 			$this->categories_form();

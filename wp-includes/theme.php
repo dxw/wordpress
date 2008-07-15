@@ -337,7 +337,7 @@ function get_theme_root() {
 }
 
 function get_theme_root_uri() {
-	return apply_filters('theme_root_uri', WP_CONTENT_URL . "/themes", get_option('siteurl'));
+	return apply_filters('theme_root_uri', content_url('themes'), get_option('siteurl'));
 }
 
 function get_query_template($type) {
@@ -486,12 +486,12 @@ function preview_theme() {
 	if ( !current_user_can( 'switch_themes' ) )
 		return;
 
-	$_GET[template] = preg_replace('|[^a-z0-9]|i', '', $_GET[template]);
+	$_GET[template] = preg_replace('|[^a-z0-9_-]|i', '', $_GET[template]);
 
 	add_filter('template', create_function('', "return '$_GET[template]';") );
 
 	if ( isset($_GET['stylesheet']) ) {
-		$_GET[stylesheet] = preg_replace('|[^a-z0-9]|i', '', $_GET[stylesheet]);
+		$_GET[stylesheet] = preg_replace('|[^a-z0-9_-]|i', '', $_GET[stylesheet]);
 		add_filter('stylesheet', create_function('', "return '$_GET[stylesheet]';") );
 	}
 

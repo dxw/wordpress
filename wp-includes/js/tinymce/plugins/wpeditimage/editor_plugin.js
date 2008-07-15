@@ -15,28 +15,42 @@
 				if ( ed.dom.getAttrib(el, 'class').indexOf('mceItem') != -1 || el.nodeName != 'IMG' )
 					return;
 
-				tb_show('', url + '/editimage.html?TB_iframe=true');
+				tb_show('', url + '/editimage.html?ver=311c&TB_iframe=true');
 				tinymce.DOM.setStyle( ['TB_overlay','TB_window','TB_load'], 'z-index', '999999' );
 			});
 
 			ed.onInit.add(function(ed) {
 				tinymce.dom.Event.add(ed.getWin(), 'scroll', function(e) {
-	  				ed.plugins.wpeditimage.hideButtons();
+					ed.plugins.wpeditimage.hideButtons();
 				});
 			});
 
 			ed.onBeforeExecCommand.add(function(ed, cmd, ui, val) {
 				ed.plugins.wpeditimage.hideButtons();
-      		});
+			});
 
 			ed.onSaveContent.add(function(ed, o) {
-   				ed.plugins.wpeditimage.hideButtons();
+				ed.plugins.wpeditimage.hideButtons();
 			});
 
 			ed.onMouseUp.add(function(ed, e) {
-				if ( ! tinymce.isOpera ) return;
-				if ( e.target.nodeName == 'IMG' )
-					ed.plugins.wpeditimage.showButtons(e.target);
+				if ( tinymce.isOpera ) {
+					if ( e.target.nodeName == 'IMG' )
+						ed.plugins.wpeditimage.showButtons(e.target);
+				} else if ( ! tinymce.isWebKit ) {
+					var n = ed.selection.getNode(), DL;
+					
+					if ( n.nodeName == 'IMG' && (DL = ed.dom.getParent(n, 'DL')) ) {					
+						window.setTimeout(function(){
+							var ed = tinyMCE.activeEditor, n = ed.selection.getNode(), DL = ed.dom.getParent(n, 'DL');
+						
+							if ( n.width != (parseInt(ed.dom.getStyle(DL, 'width')) - 10) ) {
+								ed.dom.setStyle(DL, 'width', parseInt(n.width)+10);
+								ed.execCommand('mceRepaint');
+							}
+						}, 100);
+					}
+				}
 			});
 
 			ed.onMouseDown.add(function(ed, e) {
@@ -63,8 +77,8 @@
 			});
 
 			ed.onBeforeSetContent.add(function(ed, o) {
-           		o.content = t._do_shcode(o.content);
-      		});
+				o.content = t._do_shcode(o.content);
+			});
 
 			ed.onPostProcess.add(function(ed, o) {
 				if (o.get)
@@ -73,9 +87,11 @@
 		},
 
 		_do_shcode : function(co) {
-			return co.replace(/\[wp_caption([^\]]+)\]([\s\S]+?)\[\/wp_caption\][\s\u00a0]*/g, function(a,b,c){
-				var id = b.match(/id=['"]([^'"]+)/), cls = b.match(/align=['"]([^'"]+)/);
-				var w = b.match(/width=['"]([0-9]+)/), cap = b.match(/caption=['"]([^'"]+)/);
+			return co.replace(/\[(?:wp_)?caption([^\]]+)\]([\s\S]+?)\[\/(?:wp_)?caption\][\s\u00a0]*/g, function(a,b,c){
+				b = b.replace(/\\'|\\&#39;|\\&#039;/g, '&#39;').replace(/\\"|\\&quot;/g, '&quot;');
+				c = c.replace(/\\&#39;|\\&#039;/g, '&#39;').replace(/\\&quot;/g, '&quot;');
+				var id = b.match(/id=['"]([^'"]+)/i), cls = b.match(/align=['"]([^'"]+)/i);
+				var w = b.match(/width=['"]([0-9]+)/), cap = b.match(/caption=['"]([^'"]+)/i);
 
 				id = ( id && id[1] ) ? id[1] : '';
 				cls = ( cls && cls[1] ) ? cls[1] : 'alignnone';
@@ -85,14 +101,14 @@
 				
 				var div_cls = (cls == 'aligncenter') ? 'mceTemp mceIEcenter' : 'mceTemp';
 
-				return '<div class="'+div_cls+'"><dl id="'+id+'" class="wp_caption '+cls+'" style="width: '+(10+parseInt(w))+
-				'px"><dt class="wp_caption_dt">'+c+'</dt><dd class="wp_caption_dd">'+cap+'</dd></dl></div>';
+				return '<div class="'+div_cls+'"><dl id="'+id+'" class="wp-caption '+cls+'" style="width: '+(10+parseInt(w))+
+				'px"><dt class="wp-caption-dt">'+c+'</dt><dd class="wp-caption-dd">'+cap+'</dd></dl></div>';
 			});
 		},
 
 		_get_shcode : function(co) {
-			return co.replace(/<div class="mceTemp[^"]*">\s*<dl([^>]+)>\s*<dt[^>]+>([\s\S]+?)<\/dt>\s*<dd[^>]+>([^<]+)<\/dd>\s*<\/dl>\s*<\/div>\s*/g, function(a,b,c,cap){
-				var id = b.match(/id=['"]([^'"]+)/), cls = b.match(/class=['"]([^'"]+)/);
+			return co.replace(/<div class="mceTemp[^"]*">\s*<dl([^>]+)>\s*<dt[^>]+>([\s\S]+?)<\/dt>\s*<dd[^>]+>(.+?)<\/dd>\s*<\/dl>\s*<\/div>\s*/gi, function(a,b,c,cap){
+				var id = b.match(/id=['"]([^'"]+)/i), cls = b.match(/class=['"]([^'"]+)/i);
 				var w = c.match(/width=['"]([0-9]+)/);
 
 				id = ( id && id[1] ) ? id[1] : '';
@@ -100,23 +116,10 @@
 				w = ( w && w[1] ) ? w[1] : '';
 
 				if ( ! w || ! cap ) return c;
-				cls = cls ? cls.match(/align[^ '"]+/) : '';
+				cls = cls.match(/align[^ '"]+/) || 'alignnone';
+				cap = cap.replace(/<\S[^<>]*>/gi, '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
 
-				return '[wp_caption id="'+id+'" align="'+cls+'" width="'+w+'" caption="'+cap+'"]'+c+'[/wp_caption]';
-			});
-		},
-
-		_fixCenter : function(c) {
-			var ed = tinyMCE.activeEditor;
-
-			tinymce.each(ed.dom.select('img', c), function(n) {
-				if ( ed.dom.hasClass(n, 'aligncenter') ) {
-					var P = ed.dom.getParent(n, 'p');
-					if ( tinymce.isIE )
-						ed.dom.addClass(P, 'mce_iecenter');
-					if ( P.style && P.style.textAlign == 'center' )
-						ed.dom.setStyle(P, 'textAlign', '');
-				}
+				return '[caption id="'+id+'" align="'+cls+'" width="'+w+'" caption="'+cap+'"]'+c+'[/caption]';
 			});
 		},
 
@@ -172,7 +175,7 @@
 				ed.windowManager.bookmark = ed.selection.getBookmark('simple');
 				ed.execCommand("WP_EditImage");
 				this.parentNode.style.display = 'none';
-			}
+			};
 
 			var wp_delimgbtn = DOM.add('wp_editbtns', 'img', {
 				src : t.url+'/img/delete.png',
@@ -196,7 +199,7 @@
 					ed.execCommand('mceRepaint');
 					return false;
 				}
-			}
+			};
 		},
 
 		getInfo : function() {

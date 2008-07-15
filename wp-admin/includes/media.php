@@ -26,11 +26,14 @@ function update_gallery_tab($tabs) {
 add_filter('media_upload_tabs', 'update_gallery_tab');
 
 function the_media_upload_tabs() {
+	global $redir_tab;
 	$tabs = media_upload_tabs();
 
 	if ( !empty($tabs) ) {
 		echo "<ul id='sidemenu'>\n";
-		if ( isset($_GET['tab']) && array_key_exists($_GET['tab'], $tabs) )
+		if ( isset($redir_tab) && array_key_exists($redir_tab, $tabs) )
+			$current = $redir_tab;
+		elseif ( isset($_GET['tab']) && array_key_exists($_GET['tab'], $tabs) )
 			$current = $_GET['tab'];
 		else {
 			$keys = array_keys($tabs);
@@ -64,7 +67,8 @@ function get_image_send_to_editor($id, $alt, $title, $align, $url='', $rel = fal
 
 function image_add_caption( $html, $id, $alt, $title, $align, $url, $size ) {
 
-	if ( empty($alt) ) return $html;
+	// CAPTIONS_OFF is temporary. Do not use it.
+	if ( empty($alt) || ( defined('CAPTIONS_OFF') && true == CAPTIONS_OFF ) ) return $html;
 	$id = ( 0 < (int) $id ) ? 'attachment_' . $id : '';
 
 	preg_match( '/width="([0-9]+)/', $html, $matches );
@@ -74,8 +78,8 @@ function image_add_caption( $html, $id, $alt, $title, $align, $url, $size ) {
 	$html = preg_replace( '/align[^\s\'"]+\s?/', '', $html );
 	if ( empty($align) ) $align = 'none';
 
-	$shcode = '[wp_caption id="' . $id . '" align="align' . $align
-	. '" width="' . $width . '" caption="' . $alt . '"]' . $html . '[/wp_caption]';
+	$shcode = '[caption id="' . $id . '" align="align' . $align
+	. '" width="' . $width . '" caption="' . $alt . '"]' . $html . '[/caption]';
 
 	return apply_filters( 'image_add_caption_shortcode', $shcode, $html );
 }
@@ -154,7 +158,7 @@ function media_handle_sideload($file_array, $post_id, $desc = null, $post_data =
 		if ( trim($image_meta['caption']) )
 			$content = $image_meta['caption'];
 	}
-	
+
 	$title = @$desc;
 
 	// Construct the attachment array
@@ -231,10 +235,10 @@ function media_buttons() {
 	$audio_title = __('Add Audio');
 	$out = <<<EOF
 
-	<a href="{$image_upload_iframe_src}&amp;TB_iframe=true" class="thickbox" title='$image_title'><img src='images/media-button-image.gif' alt='$image_title' /></a>
-	<a href="{$video_upload_iframe_src}&amp;TB_iframe=true" class="thickbox" title='$video_title'><img src='images/media-button-video.gif' alt='$video_title' /></a>
-	<a href="{$audio_upload_iframe_src}&amp;TB_iframe=true" class="thickbox" title='$audio_title'><img src='images/media-button-music.gif' alt='$audio_title' /></a>
-	<a href="{$media_upload_iframe_src}&amp;TB_iframe=true" class="thickbox" title='$media_title'><img src='images/media-button-other.gif' alt='$media_title' /></a>
+	<a href="{$image_upload_iframe_src}&amp;TB_iframe=true" id="add_image" class="thickbox" title='$image_title'><img src='images/media-button-image.gif' alt='$image_title' /></a>
+	<a href="{$video_upload_iframe_src}&amp;TB_iframe=true" id="add_video" class="thickbox" title='$video_title'><img src='images/media-button-video.gif' alt='$video_title' /></a>
+	<a href="{$audio_upload_iframe_src}&amp;TB_iframe=true" id="add_audio" class="thickbox" title='$audio_title'><img src='images/media-button-music.gif' alt='$audio_title' /></a>
+	<a href="{$media_upload_iframe_src}&amp;TB_iframe=true" id="add_media" class="thickbox" title='$media_title'><img src='images/media-button-other.gif' alt='$media_title' /></a>
 
 EOF;
 	printf($context, $out);
@@ -325,8 +329,10 @@ function media_upload_image() {
 			$errors = $return;
 	}
 
-	if ( isset($_POST['save']) )
+	if ( isset($_POST['save']) ) {
 		$errors['upload_notice'] = __('Saved.');
+		return media_upload_gallery();
+	}
 
 	return wp_iframe( 'media_upload_type_form', 'image', $errors, $id );
 }
@@ -336,14 +342,12 @@ function media_sideload_image($file, $post_id, $desc = null) {
 		$file_array['name'] = basename($file);
 		$file_array['tmp_name'] = download_url($file);
 		$desc = @$desc;
-		
+
 		$id = media_handle_sideload($file_array, $post_id, $desc);
 		$src = $id;
 
-		unset($file_array);
-
 		if ( is_wp_error($id) ) {
-			$errors['upload_error'] = $id;
+			@unlink($file_array['tmp_name']);
 			return $id;
 		}
 	}
@@ -387,8 +391,10 @@ function media_upload_audio() {
 			$errors = $return;
 	}
 
-	if ( isset($_POST['save']) )
+	if ( isset($_POST['save']) ) {
 		$errors['upload_notice'] = __('Saved.');
+		return media_upload_gallery();
+	}
 
 	return wp_iframe( 'media_upload_type_form', 'audio', $errors, $id );
 }
@@ -425,8 +431,10 @@ function media_upload_video() {
 			$errors = $return;
 	}
 
-	if ( isset($_POST['save']) )
+	if ( isset($_POST['save']) ) {
 		$errors['upload_notice'] = __('Saved.');
+		return media_upload_gallery();
+	}
 
 	return wp_iframe( 'media_upload_type_form', 'video', $errors, $id );
 }
@@ -463,8 +471,10 @@ function media_upload_file() {
 			$errors = $return;
 	}
 
-	if ( isset($_POST['save']) )
+	if ( isset($_POST['save']) ) {
 		$errors['upload_notice'] = __('Saved.');
+		return media_upload_gallery();
+	}
 
 	return wp_iframe( 'media_upload_type_form', 'file', $errors, $id );
 }
@@ -499,8 +509,15 @@ function media_upload_library() {
 function image_attachment_fields_to_edit($form_fields, $post) {
 	if ( substr($post->post_mime_type, 0, 5) == 'image' ) {
 		$form_fields['post_title']['required'] = true;
-		$form_fields['post_excerpt']['label'] = __('Caption');
-		$form_fields['post_excerpt']['helps'][] = __('Alternate text, e.g. "The Mona Lisa"');
+
+		// CAPTIONS_OFF is temporary. Do not use it.
+		if ( defined('CAPTIONS_OFF') && true == CAPTIONS_OFF ) {
+			$form_fields['post_excerpt']['label'] = __('Alternate Text');
+			$form_fields['post_excerpt']['helps'][] = __('Alt text for the image, e.g. "The Mona Lisa"');
+		} else {
+			$form_fields['post_excerpt']['label'] = __('Caption');
+			$form_fields['post_excerpt']['helps'][] = __('Also used as alternate text for the image');
+		}
 
 		$form_fields['post_content']['label'] = __('Description');
 
@@ -589,13 +606,19 @@ function get_attachment_fields_to_edit($post, $errors = null) {
 	$file = wp_get_attachment_url($post->ID);
 	$link = get_attachment_link($post->ID);
 
+	// CAPTIONS_OFF is temporary. Do not use it.
+	if ( defined('CAPTIONS_OFF') && true == CAPTIONS_OFF )
+		$alt = __('Alternate Text');
+	else
+		$alt = __('Caption');
+
 	$form_fields = array(
 		'post_title'   => array(
 			'label'      => __('Title'),
 			'value'      => $edit_post->post_title,
 		),
 		'post_excerpt' => array(
-			'label'      => __('Caption'),
+			'label'      => $alt,
 			'value'      => $edit_post->post_excerpt,
 		),
 		'post_content' => array(
@@ -675,6 +698,8 @@ function get_media_items( $post_id, $errors ) {
 }
 
 function get_media_item( $attachment_id, $args = null ) {
+	global $redir_tab;
+
 	$default_args = array( 'errors' => null, 'send' => true, 'delete' => true, 'toggle' => true );
 	$args = wp_parse_args( $args, $default_args );
 	extract( $args, EXTR_SKIP );
@@ -722,10 +747,27 @@ function get_media_item( $attachment_id, $args = null ) {
 	}
 
 	$display_title = ( !empty( $title ) ) ? $title : $filename; // $title shouldn't ever be empty, but just in case
+	$display_title = wp_html_excerpt($display_title, 60);
+
+	$gallery = ( (isset($_REQUEST['tab']) && 'gallery' == $_REQUEST['tab']) || (isset($redir_tab) && 'gallery' == $redir_tab) ) ? true : false;
+	$order = '';
+
+	foreach ( $form_fields as $key => $val ) {
+		if ( 'menu_order' == $key ) {
+			if ( $gallery )
+				$order = '<div class="menu_order"> <input class="menu_order_input" type="text" id="attachments['.$attachment_id.'][menu_order]" name="attachments['.$attachment_id.'][menu_order]" value="'.$val['value'].'" /></div>';
+			else
+				$order = '<input type="hidden" name="attachments['.$attachment_id.'][menu_order]" value="'.$val['value'].'" />';
+
+			unset($form_fields['menu_order']);
+			break;
+		}
+	}
 
 	$item = "
 	$type
 	$toggle_links
+	$order
 	<div class='filename new'>$display_title</div>
 	<table class='slidetoggle describe $class'>
 		<thead class='media-item-info'>
@@ -959,6 +1001,81 @@ jQuery(function($){
 <h3><?php _e('From URL'); ?></h3>
 </div>
 
+<script type="text/javascript">
+//<![CDATA[
+var addExtImage = {
+
+	width : '',
+	height : '',
+	align : 'alignnone',
+
+	insert : function() {
+		var t = this, html, f = document.forms[0], cls, title = '', alt = '', caption = null;
+
+		if ( '' == f.src.value || '' == t.width ) return false;
+
+		if ( f.title.value ) {
+			title = f.title.value.replace(/['"<>]+/g, '');
+			title = ' title="'+title+'"';
+		}
+
+		if ( f.alt.value ) {
+			alt = f.alt.value.replace(/['"<>]+/g, '');
+<?php if ( ! defined('CAPTIONS_OFF') || true != CAPTIONS_OFF ) { // CAPTIONS_OFF is temporary. Do not use it. ?>
+			caption = f.alt.value.replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+<?php } ?>
+		}
+
+		cls = caption ? '' : ' class="'+t.align+'"';
+
+		html = '<img alt="'+alt+'" src="'+f.src.value+'"'+title+cls+' width="'+t.width+'" height="'+t.height+'" />';
+
+		if ( f.url.value )
+			html = '<a href="'+f.url.value+'">'+html+'</a>';
+
+		if ( caption )
+			html = '[caption id="" align="'+t.align+'" width="'+t.width+'" caption="'+caption+'"]'+html+'[/caption]';
+
+		var win = window.dialogArguments || opener || parent || top;
+		win.send_to_editor(html);
+	},
+
+	resetImageData : function() {
+		var t = addExtImage;
+
+		t.width = t.height = '';
+		document.getElementById('go_button').style.color = '#bbb';
+		if ( ! document.forms[0].src.value )
+			document.getElementById('status_img').src = 'images/required.gif';
+		else document.getElementById('status_img').src = 'images/no.png';
+	},
+
+	updateImageData : function() {
+		var t = addExtImage;
+
+		t.width = t.preloadImg.width;
+		t.height = t.preloadImg.height;
+		document.getElementById('go_button').style.color = '#333';
+		document.getElementById('status_img').src = 'images/yes.png';
+	},
+
+	getImageData : function() {
+		var t = addExtImage, src = document.forms[0].src.value;
+
+		if ( ! src ) {
+			t.resetImageData();
+			return false;
+		}
+		document.getElementById('status_img').src = 'images/loading.gif';
+		t.preloadImg = new Image();
+		t.preloadImg.onload = t.updateImageData;
+		t.preloadImg.onerror = t.resetImageData;
+		t.preloadImg.src = src;
+	}
+}
+//]]>
+</script>
+
 <div id="media-items">
 <div class="media-item media-blank">
 <?php echo call_user_func($callback); ?>
@@ -970,12 +1087,13 @@ jQuery(function($){
 }
 
 function media_upload_gallery_form($errors) {
+	global $redir_tab;
+
+	$redir_tab = 'gallery';
 	media_upload_header();
 
 	$post_id = intval($_REQUEST['post_id']);
-
 	$form_action_url = admin_url("media-upload.php?type={$GLOBALS['type']}&tab=gallery&post_id=$post_id");
-
 ?>
 
 <script type="text/javascript">
@@ -993,15 +1111,22 @@ jQuery(function($){
 <form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form validate" id="gallery-form">
 <?php wp_nonce_field('media-form'); ?>
 <?php //media_upload_form( $errors ); ?>
-
+<table class="widefat">
+<thead><tr>
+<th><?php _e('Media'); ?></th>
+<th class="order-head"><?php _e('Order'); ?></th>
+</tr></thead>
+</table>
 <div id="media-items">
 <?php echo get_media_items($post_id, $errors); ?>
 </div>
+<p class="ml-submit">
 <input type="submit" class="button savebutton" name="save" value="<?php echo attribute_escape( __( 'Save all changes' ) ); ?>" />
 <input type="submit" class="button insert-gallery" name="insert-gallery" value="<?php echo attribute_escape( __( 'Insert gallery into post' ) ); ?>" />
 <input type="hidden" name="post_id" id="post_id" value="<?php echo (int) $post_id; ?>" />
 <input type="hidden" name="type" value="<?php echo attribute_escape( $GLOBALS['type'] ); ?>" />
 <input type="hidden" name="tab" value="<?php echo attribute_escape( $GLOBALS['tab'] ); ?>" />
+</p>
 </form>
 <?php
 }
@@ -1153,44 +1278,83 @@ jQuery(function($){
 }
 
 function type_form_image() {
-	return '
+	$form = '
 	<table class="describe"><tbody>
 		<tr>
-			<th valign="top" scope="row" class="label">
-				<span class="alignleft"><label for="insertonly[src]">' . __('Image URL') . '</label></span>
-				<span class="alignright"><abbr title="required" class="required">*</abbr></span>
+			<th valign="top" scope="row" class="label" style="width:120px;">
+				<span class="alignleft"><label for="src">' . __('Source') . '</label></span>
+				<span class="alignright"><img id="status_img" src="images/required.gif" title="required" alt="required" /></span>
 			</th>
-			<td class="field"><input id="insertonly[src]" name="insertonly[src]" value="" type="text" aria-required="true"></td>
+			<td class="field"><input id="src" name="src" value="" type="text" aria-required="true" onblur="addExtImage.getImageData()"></td>
 		</tr>
+
 		<tr>
 			<th valign="top" scope="row" class="label">
-				<span class="alignleft"><label for="insertonly[alt]">' . __('Description') . '</label></span>
+				<span class="alignleft"><label for="title">' . __('Image Title') . '</label></span>
 				<span class="alignright"><abbr title="required" class="required">*</abbr></span>
 			</th>
-			<td class="field"><input id="insertonly[alt]" name="insertonly[alt]" value="" type="text" aria-required="true"></td>
+			<td class="field"><p><input id="title" name="title" value="" type="text" aria-required="true" /></p></td>
 		</tr>
-		<tr><td></td><td class="help">' . __('Alternate text, e.g. "The Mona Lisa"') . '</td></tr>
+';
+	// CAPTIONS_OFF is temporary. Do not use it.
+	if ( defined('CAPTIONS_OFF') && true == CAPTIONS_OFF ) {
+		$form .= '
+		<tr>
+			<th valign="top" scope="row" class="label">
+				<span class="alignleft"><label for="alt">' . __('Alternate Text') . '</label></span>
+			</th>
+			<td class="field"><input id="alt" name="alt" value="" type="text" aria-required="true" />
+			<p class="help">' . __('Alt text for the image, e.g. "The Mona Lisa"') . '</p></td>
+		</tr>
+';
+
+	} else {
+		$form .= '
+		<tr>
+			<th valign="top" scope="row" class="label">
+				<span class="alignleft"><label for="alt">' . __('Image Caption') . '</label></span>
+			</th>
+			<td class="field"><input id="alt" name="alt" value="" type="text" aria-required="true" />
+			<p class="help">' . __('Also used as alternate text for the image') . '</p></td>
+		</tr>
+';
+	}
+		$form .= '
 		<tr class="align">
-			<th valign="top" scope="row" class="label"><label for="insertonly[align]">' . __('Alignment') . '</label></th>
+			<th valign="top" scope="row" class="label"><p><label for="align">' . __('Alignment') . '</label></p></th>
 			<td class="field">
-				<input name="insertonly[align]" id="image-align-none-0" value="none" type="radio" checked="checked" />
-				<label for="image-align-none-0" class="align image-align-none-label">' . __('None') . '</label>
-				<input name="insertonly[align]" id="image-align-left-0" value="left" type="radio" />
-				<label for="image-align-left-0" class="align image-align-left-label">' . __('Left') . '</label>
-				<input name="insertonly[align]" id="image-align-center-0" value="center" type="radio" />
-				<label for="image-align-center-0" class="align image-align-center-label">' . __('Center') . '</label>
-				<input name="insertonly[align]" id="image-align-right-0" value="right" type="radio" />
-				<label for="image-align-right-0" class="align image-align-right-label">' . __('Right') . '</label>
+				<input name="align" id="align-none" value="alignnone" onclick="addExtImage.align=this.value" type="radio" checked="checked" />
+				<label for="align-none" class="align image-align-none-label">' . __('None') . '</label>
+				<input name="align" id="align-left" value="alignleft" onclick="addExtImage.align=this.value" type="radio" />
+				<label for="align-left" class="align image-align-left-label">' . __('Left') . '</label>
+				<input name="align" id="align-center" value="aligncenter" onclick="addExtImage.align=this.value" type="radio" />
+				<label for="align-center" class="align image-align-center-label">' . __('Center') . '</label>
+				<input name="align" id="align-right" value="alignright" onclick="addExtImage.align=this.value" type="radio" />
+				<label for="align-right" class="align image-align-right-label">' . __('Right') . '</label>
 			</td>
 		</tr>
+
+		<tr>
+			<th valign="top" scope="row" class="label">
+				<span class="alignleft"><label for="url">' . __('Link URL') . '</label></span>
+			</th>
+			<td class="field"><input id="url" name="url" value="" type="text" /><br />
+
+			<button type="button" class="button" value="" onclick="document.forms[0].url.value=null">' . __('None') . '</button>
+			<button type="button" class="button" value="" onclick="document.forms[0].url.value=document.forms[0].src.value">' . __('Link to image') . '</button>
+			<p class="help">' . __('Enter a link URL or click above for presets.') . '</p></td>
+		</tr>
+
 		<tr>
 			<td></td>
 			<td>
-				<input type="submit" class="button" name="insertonlybutton" value="' . attribute_escape(__('Insert into Post')) . '" />
+				<input type="button" class="button" id="go_button" style="color:#bbb;" onclick="addExtImage.insert()" value="' . attribute_escape(__('Insert into Post')) . '" />
 			</td>
 		</tr>
 	</tbody></table>
 ';
+
+	return $form;
 }
 
 function type_form_audio() {
@@ -1276,6 +1440,49 @@ function type_form_file() {
 	</tbody></table>
 ';
 }
+
+// support a GET parameter for disabling the flash uploader
+function media_upload_use_flash($flash) {
+        if ( array_key_exists('flash', $_REQUEST) )
+                $flash = !empty($_REQUEST['flash']);
+        return $flash;
+}
+
+add_filter('flash_uploader', 'media_upload_use_flash');
+
+function media_upload_flash_bypass() {
+        echo '<p class="upload-flash-bypass">';
+        printf( __('You are using the Flash uploader.  Problems?  Try the <a href="%s">Browser uploader</a> instead.'), clean_url(add_query_arg('flash', 0)) );
+        echo '</p>';
+}
+
+add_action('post-flash-upload-ui', 'media_upload_flash_bypass');
+
+function media_upload_html_bypass() {
+        echo '<p class="upload-html-bypass">';
+        if ( array_key_exists('flash', $_REQUEST) )
+                // the user manually selected the browser uploader, so let them switch back to Flash
+                printf( __('You are using the Browser uploader.  Try the <a href="%s">Flash uploader</a> instead.'), clean_url(add_query_arg('flash', 1)) );
+        else
+                // the user probably doesn't have Flash
+                printf( __('You are using the Browser uploader.') );
+
+        echo '</p>';
+}
+
+add_action('post-flash-upload-ui', 'media_upload_flash_bypass');
+add_action('post-html-upload-ui', 'media_upload_html_bypass');
+
+// make sure the GET parameter sticks when we submit a form
+function media_upload_bypass_url($url) {
+        if ( array_key_exists('flash', $_REQUEST) )
+                $url = add_query_arg('flash', intval($_REQUEST['flash']));
+        return $url;
+}
+
+add_filter('media_upload_form_url', 'media_upload_bypass_url');
+
+
 
 add_filter('async_upload_image', 'get_media_item', 10, 2);
 add_filter('async_upload_audio', 'get_media_item', 10, 2);

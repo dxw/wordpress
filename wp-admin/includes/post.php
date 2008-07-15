@@ -93,7 +93,10 @@ function _wp_translate_postdata( $update = false ) {
 		$hh = $_POST['hh'];
 		$mn = $_POST['mn'];
 		$ss = $_POST['ss'];
+		$aa = ($aa <= 0 ) ? date('Y') : $aa;
+		$mm = ($mm <= 0 ) ? date('n') : $mm;
 		$jj = ($jj > 31 ) ? 31 : $jj;
+		$jj = ($jj <= 0 ) ? date('j') : $jj;
 		$hh = ($hh > 23 ) ? $hh -24 : $hh;
 		$mn = ($mn > 59 ) ? $mn -60 : $mn;
 		$ss = ($ss > 59 ) ? $ss -60 : $ss;
@@ -743,12 +746,13 @@ function wp_teeny_mce( $args = null ) {
 		remove_script_host : false,
 		convert_urls : false,
 		apply_source_formatting : false,
-		remove_linebreaks : false,
+		remove_linebreaks : true,
 		accessibility_focus : false,
 		tab_focus : ":next",
 		plugins : "safari,inlinepopups",
 		entities : "38,amp,60,lt,62,gt",
-		force_p_newlines : true
+		force_p_newlines : true,
+		save_callback : 'switchEditors.saveCallback'
 	});
 	};
 	wpTeenyMCEInit();
