@@ -65,8 +65,29 @@ foreach($posts_columns as $column_name=>$column_display_name) {
 		?>
 		<td><strong><a href="media.php?action=edit&amp;attachment_id=<?php the_ID(); ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $att_title)); ?>"><?php echo $att_title; ?></a></strong><br />
 		<?php echo strtoupper(preg_replace('/^.*?\.(\w+)$/', '$1', get_attached_file($post->ID))); ?>
+		<p>
+		<a href="media.php?action=edit&amp;attachment_id=<?php the_ID(); ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $att_title)); ?>"><?php _e('Edit'); ?></a> |
+		<a href="<?php the_permalink(); ?>"><?php _e('Get permalink'); ?></a> |
+		<a href="#" class="delete"><?php _e('Delete'); ?></a>
+		</p>
 		<?php do_action('manage_media_media_column', $post->ID); ?>
 		</td>
+		<?php
+		break;
+
+	case 'tags':
+		?>
+		<td><?php
+		$tags = get_the_tags();
+		if ( !empty( $tags ) ) {
+			$out = array();
+			foreach ( $tags as $c )
+				$out[] = "<a href='edit.php?tag=$c->slug'> " . wp_specialchars(sanitize_term_field('name', $c->name, $c->term_id, 'post_tag', 'display')) . "</a>";
+			echo join( ', ', $out );
+		} else {
+			_e('No Tags');
+		}
+		?></td>
 		<?php
 		break;
 
