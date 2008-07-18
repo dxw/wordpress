@@ -1,6 +1,10 @@
-<br class="clear" /></div></div><!-- wpbody-content wpbody -->
-<br class="clear" /></div><!-- wpcontent -->
+</div><!-- wpbody-content -->
+<?php if ( ! $fixed_bar ) { ?>
+</div><!-- wpbody -->
+<?php } ?>
+</div><!-- wpcontent -->
 </div><!-- wpwrap -->
+
 <div id="footer">
 <p><?php
 do_action('in_admin_footer', '');

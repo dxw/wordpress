@@ -69,7 +69,7 @@ jQuery(document).ready( function() {
 	jQuery('.hide-if-js').hide();
 
 	// postboxes
-	add_postbox_toggles('post');
+	postboxes.add_postbox_toggles('post');
 
 	// Editable slugs
 	make_slugedit_clickable();
@@ -161,16 +161,18 @@ jQuery(document).ready( function() {
 
 	jQuery('.edit-timestamp').click(function () {
 		if (jQuery('#timestampdiv').is(":hidden")) {
+			jQuery('.curtime').slideUp("normal");
 			jQuery('#timestampdiv').slideDown("normal");
-			jQuery('.timestamp').hide();
+	//		jQuery('.timestamp').hide();
 		} else {
-			jQuery('#timestampdiv').hide();
+			jQuery('#timestampdiv').slideUp("normal");
 			jQuery('#mm').val(jQuery('#hidden_mm').val());
 			jQuery('#jj').val(jQuery('#hidden_jj').val());
 			jQuery('#aa').val(jQuery('#hidden_aa').val());
 			jQuery('#hh').val(jQuery('#hidden_hh').val());
 			jQuery('#mn').val(jQuery('#hidden_mn').val());
-			jQuery('.timestamp').show();
+			jQuery('.curtime').slideDown("normal");
+		//	jQuery('.timestamp').show();
 		}
 		return false;
 
@@ -185,6 +187,7 @@ jQuery(document).ready( function() {
 			jQuery('#hh').val() + ':' +
 			jQuery('#mn').val() + ' '
 		).append( link );
+		jQuery('.curtime').slideDown("normal");
 		return false;
 	});
 

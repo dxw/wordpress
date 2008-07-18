@@ -985,7 +985,7 @@ table.form-table td .updated {
 }
 
 .submitbox {
-	margin: 1em 0;
+/*	margin: 1em 0; */
 }
 
 .submitbox p {
@@ -1251,8 +1251,7 @@ table.form-table td .updated {
 .submitbox .submit input {
 	margin-bottom: 8px;
 	margin-right: 3px;
-	padding: 6px 4px;
-	border: none;
+	padding: 6px;
 }
 
 /* Categories */
@@ -1377,10 +1376,10 @@ p#big-add-button .button {
 }
 
 p#post-search {
-        position: absolute;
-        right: 0;
-        top: -64px;
-        margin: 0;
+    position: absolute;
+    right: 0;
+    top: -64px;
+    margin: 0;
 }
 
 #post-search .button, #widget-search .button {
@@ -1652,3 +1651,103 @@ p.meta-options {
 	border: 1px solid;
 	padding: 1em .5em;
 }
+
+.hndle {
+	cursor:move;
+	padding:6px 10px 6px 0pt;
+}
+
+a.togbox {
+	cursor: pointer;
+}
+
+
+/* fixed bottom bar */
+.postarea h3 label {
+	float:none;
+}
+
+#fixedbar {
+	bottom:0pt;
+	height:80px;
+	position:fixed;
+	width:100%;
+	z-index: 100;
+}
+
+#fixedbar #submitpost {
+	width: 690px;
+}
+
+#fixedbar .submit {
+	padding-top: 10px;
+}
+
+#fixedbar .button {
+	border: 1px solid #464646;
+}
+
+#fixedbar .button:hover {
+	border: 1px solid #000;
+}
+
+#fixedbar #publish {
+	font-weight:bold;
+	width:160px;
+}
+
+#fixedbar #save-post {
+	width:80px;
+	font-weight:normal;
+}
+
+#fixedbar .submitbox {
+	padding: 14px 18px;
+	border-left: 1px solid #aaa;
+}
+
+#fixedbar #post-time-info {
+	margin-top: 17px;
+}
+
+#fixedbar #timestampdiv input,
+#fixedbar #timestampdiv select {
+	background-color:#464646;
+	border:1px solid #777777;
+	color:#CCCCCC;
+	padding:2px;
+}
+
+#fixedbar-wrap {
+	width: 100%;
+}
+
+#preview-link {
+	text-align: right;
+}
+
+#preview-link a {
+	padding-right:10px;
+}
+
+p#post-search-prep {
+	margin:0pt;
+	position:absolute;
+	right:20px;
+	top:50px;
+}
+
+#jj, #hh, #mn {
+	width: 1.5em;
+}
+
+#aa {
+	width: 2.7em;
+}
+
+
+
+
+
+
+

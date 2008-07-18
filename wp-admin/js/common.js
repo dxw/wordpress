@@ -25,7 +25,7 @@ jQuery(document).ready( function() {
 			el.find('img').removeAttr('alt');
 
 			el.mouseover(function(e) {
-				txt = el.attr('tip'), o = el.offset();;
+				txt = el.attr('tip'), o = el.offset();
 
 				clearTimeout(TT.sD);
 				TT.find('p').html(txt);
@@ -50,8 +50,13 @@ jQuery( function($) {
 
 	// Temp
 	if ( !$('#post-search, #widget-search').size() ) {
-		$('.wrap:first').append( '<p id="post-search"><input id="post-search-input" type="text" /><input class="button" type="button" value="Search" /></p>' );
+		$('#wphead').append( '<p id="post-search-prep"><input id="post-search-input" type="text" /><input class="button" type="button" value="Search" /></p>' );
 	}
+	
+	// Temp 2
+	var minH = $(window).height()-185+"px"
+	$('#wpbody-content').css("min-height", minH);
+
 
 } );
 

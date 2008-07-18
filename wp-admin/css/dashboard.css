@@ -19,12 +19,14 @@ form .input-text-wrap input {
 form .textarea-wrap {
 	border-style: solid;
 	border-width: 1px;
-	padding: 0;
+	padding: 2px;
 	border-color: #CCCCCC;
 }
 
 form .textarea-wrap textarea {
 	border: 0pt none;
+	padding: 0;
+	width: 100%;
 }
 
 

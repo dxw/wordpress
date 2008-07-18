@@ -8,6 +8,7 @@ $messages[2] = __('Custom field updated.');
 $messages[3] = __('Custom field deleted.');
 $messages[4] = __('Post updated.');
 $messages[5] = sprintf( __('Post restored to revision from %s'), wp_post_revision_title( $_GET['revision'], false ) );
+$messages[6] = __('Post published.');
 
 $notice = false;
 $notices[1] = __( 'There is an autosave of this post that is more recent than the version below.  <a href="%s">View the autosave</a>.' );
@@ -36,12 +37,7 @@ if ( !isset($post_ID) || 0 == $post_ID ) {
 }
 
 ?>
-<?php if ( $notice ) : ?>
-<div id="notice" class="error"><p><?php echo $notice ?></p></div>
-<?php endif; ?>
-<?php if (isset($_GET['message'])) : ?>
-<div id="message" class="updated fade"><p><?php echo $messages[$_GET['message']]; ?></p></div>
-<?php endif; ?>
+
 
 <?php
 
@@ -231,6 +227,15 @@ endif;
 ?>
 
 <form name="post" action="post.php" method="post" id="post">
+<div id="wpbody-content">
+
+<?php if ( $notice ) : ?>
+<div id="notice" class="error"><p><?php echo $notice ?></p></div>
+<?php endif; ?>
+<?php if (isset($_GET['message'])) : ?>
+<div id="message" class="updated fade"><p><?php echo $messages[$_GET['message']]; ?></p></div>
+<?php endif; ?>
+
 <?php if ( (isset($mode) && 'bookmarklet' == $mode) || isset($_GET['popupurl']) ): ?>
 <input type="hidden" name="mode" value="bookmarklet" />
 <?php endif; ?>
@@ -243,7 +248,7 @@ endif;
 		printf( __( '<a href="%s">Posts</a> / Edit Post' ), 'edit.php' );
 ?></h2>
 
-<p id="big-add-button">
+<!--<p id="big-add-button">
 <span id="previewview">
 <?php if ( 'publish' == $post->post_status ) { ?>
 <a class="button" href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank" tabindex="4"><?php _e('View this Post'); ?></a>
@@ -251,7 +256,7 @@ endif;
 <a class="button" href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank"  tabindex="4"><?php _e('Preview this Post'); ?></a>
 <?php } ?>
 </span>
-</p>
+</p>-->
 
 <?php
 
@@ -343,84 +348,24 @@ endif; ?>
 
 <div id="post-status-info">
 	<span id="wp-word-count" class="alignleft"></span>
-	<span id="autosave" class="alignright"></span>
-	<br class="clear" />
-</div>
-
-<div id="submitpost" class="submitbox">
-<div id="post-time-info" class="alignleft">
+	<span class="alignright">
+	<span id="autosave">&nbsp;</span>
 <?php
-	if ( current_user_can( 'publish_posts' ) ) : // Contributors don't get to choose the date of publish
-		$stamp = __( 'Timestamp: <span class="timestamp">%1$s%3$s</span>' );
-		$edit = '&nbsp;<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex="4">' . __('(Change)') . '</a>';
-		if ($post_ID) {
-			if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
-				$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
-				$date = mysql2date(get_option('date_format'), current_time('mysql'));
-				$time = mysql2date(get_option('time_format'), current_time('mysql'));
-			} else {
-				$date = mysql2date(get_option('date_format'), $post->post_date);
-				$time = mysql2date(get_option('time_format'), $post->post_date);
-			}
-		} else { // draft (no saves, and thus no date specified)
-			$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
-			$date = mysql2date(get_option('date_format'), current_time('mysql'));
-			$time = mysql2date(get_option('time_format'), current_time('mysql'));
-		}
-?>
-
-	<p class="curtime"><?php printf($stamp, $date, $time, $edit); ?>
-</p>
-	<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
-
-<?php
-
-	endif;
-
 	if ( $post_ID ) {
-		echo '<p id="last-edit">';
+		echo '<span id="last-edit">';
 		if ( $last_id = get_post_meta($post_ID, '_edit_last', true) ) {
 			$last_user = get_userdata($last_id);
 			printf(__('Last edited by %1$s on %2$s at %3$s'), wp_specialchars( $last_user->display_name ), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
 		} else {
 			printf(__('Last edited on %1$s at %2$s'), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
 		}
-		echo '</p>';
+		echo '</span>';
 	}
-
 ?>
-
+	</span>
+	<br class="clear" />
 </div>
-<p class="submit alignright">
-<?php
 
-	if ( ( 'edit' == $action) && current_user_can('delete_post', $post_ID) )
-		echo "<a class='submitdelete' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post_ID", 'delete-post_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;post') . "</a>";
-
-?>
-
-	<input type="submit" name="save" id="save-post" value="<?php _e('Save'); ?>" tabindex="4" class="button button-highlighted" />
-
-<?php
-	if ( !in_array( $post->post_status, array('publish', 'future') ) || 0 == $post_ID ) :
-		if ( current_user_can('publish_posts') ) :
-?>
-
-	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Publish') ?>" />
-
-<?php		else : ?>
-
-	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Submit for Review') ?>" />
-
-<?php
-
-		endif;
-	endif;
-
-?>
-</p>
-<br class="clear" />
-</div>
 
 <?php wp_nonce_field( 'autosave', 'autosavenonce', false ); ?>
 <?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
@@ -446,8 +391,78 @@ do_action('dbx_post_sidebar');
 
 </div>
 </div>
+</div><!-- /poststuff -->
+
+</div>
 </div>
 
+<div id="fixedbar">
+<table id="fixedbar-wrap"><tbody><tr>
+<td id="preview-link">&nbsp;
+<?php if ( 'publish' == $post->post_status ) { ?>
+<a href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank" tabindex="4"><?php _e('View this Post'); ?></a>
+<?php } elseif ( 'edit' == $action ) { ?>
+<a href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank"  tabindex="4"><?php _e('Preview this Post'); ?></a>
+<?php } ?>
+</td>
+<td id="submitpost" class="submitbox">
+<div id="post-time-info" class="alignleft">
+<?php
+	if ( current_user_can( 'publish_posts' ) ) : // Contributors don't get to choose the date of publish
+		$stamp = __( 'Timestamp: <span class="timestamp">%1$s%3$s</span>' );
+		$edit = '&nbsp;(<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex="4">' . __('Change') . '</a>)';
+		if ($post_ID) {
+			if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
+				$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
+				$date = mysql2date(get_option('date_format'), current_time('mysql'));
+				$time = mysql2date(get_option('time_format'), current_time('mysql'));
+			} else {
+				$date = mysql2date(get_option('date_format'), $post->post_date);
+				$time = mysql2date(get_option('time_format'), $post->post_date);
+			}
+		} else { // draft (no saves, and thus no date specified)
+			$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
+			$date = mysql2date(get_option('date_format'), current_time('mysql'));
+			$time = mysql2date(get_option('time_format'), current_time('mysql'));
+		}
+?>
+
+	<p class="curtime"><?php printf($stamp, $date, $time, $edit); ?></p>
+	<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
+
+<?php
+	endif;
+?>
+</div>
+<p class="submit alignright">
+<?php
+
+	if ( ( 'edit' == $action) && current_user_can('delete_post', $post_ID) )
+		echo "<a class='submitdelete' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post_ID", 'delete-post_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;post') . "</a>";
+
+?>
+
+	<input type="submit" name="save" id="save-post" value="<?php _e('Save'); ?>" tabindex="4" class="button button-highlighted" />
+
+<?php
+	if ( !in_array( $post->post_status, array('publish', 'future') ) || 0 == $post_ID ) :
+		if ( current_user_can('publish_posts') ) :
+?>
+
+	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Publish') ?>" />
+
+<?php	else : ?>
+
+	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Submit for Review') ?>" />
+
+<?php
+
+		endif;
+	endif;
+
+?>
+</p>
+</td></tr></tbody></table>
 </div>
 
 </form>

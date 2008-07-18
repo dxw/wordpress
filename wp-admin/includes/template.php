@@ -1240,11 +1240,11 @@ function do_meta_boxes($page, $context, $object) {
 
 		foreach ( array('high', 'sorted', 'core', 'default', 'low') as $priority ) {
 			foreach ( (array) $wp_meta_boxes[$page][$context][$priority] as $box ) {
-				if ( false === $box )
+				if ( false == $box || ! $box['title'] )
 					continue;
 				$i++;
 				echo '<div id="' . $box['id'] . '" class="postbox ' . postbox_classes($box['id'], $page) . '">' . "\n";
-				echo "<h3>{$box['title']}</h3>\n";
+				echo "<h3><span class='hndle'>{$box['title']}</span></h3>\n";
 				echo '<div class="inside">' . "\n";
 				call_user_func($box['callback'], $object, $box);
 				echo "</div>\n";

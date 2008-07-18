@@ -1,5 +1,5 @@
 jQuery(document).ready( function() {
-	add_postbox_toggles('comment');
+	postboxes.add_postbox_toggles('comment');
 
 	// close postboxes that should be closed
 	jQuery('.if-js-closed').removeClass('if-js-closed').addClass('closed');

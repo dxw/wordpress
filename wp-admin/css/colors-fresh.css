@@ -1,4 +1,4 @@
-#wpcontent {
+#wpcontent, #wpbody {
 	background-color: #e4f2fd;
 }
 #wpbody-content {
@@ -706,4 +706,43 @@ table.diff .diff-addedline {
 }
 table.diff .diff-addedline ins {
 	background-color: #99ff99;
+}
+
+
+
+
+#adminmenu {
+	background-color: #E4F2FD;
+}
+
+
+/* fixed tool bar */
+#fixedbar {
+	background-color:#464646;
+	color: #ccc;
+}
+
+#fixedbar #last-edit {
+	
+}
+
+#fixedbar a,
+#fixedbar .curtime {
+	color: #ccc;
+}
+
+#fixedbar a:hover {
+	color: #fff;
+}
+
+#fixedbar a.button {
+	color: #246;
+}
+
+#fixedbar a.button:hover {
+	color: #d54e21;
+}
+
+#timestampdiv {
+	color: #ccc;
 }
