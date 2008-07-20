@@ -4,6 +4,10 @@ jQuery(document).ready( function() {
 
 	// Reveal
 	jQuery('.wp-no-js-hidden').removeClass( 'wp-no-js-hidden' );
+	
+	// show things that should be visible, hide what should be hidden
+	jQuery('.hide-if-no-js').show();
+	jQuery('.hide-if-js').hide();
 
 	// Basic form validation
 	if ( ( 'undefined' != typeof wpAjax ) && jQuery.isFunction( wpAjax.validateForm ) ) {
@@ -56,7 +60,6 @@ jQuery( function($) {
 	// Temp 2
 	var minH = $(window).height()-185+"px"
 	$('#wpbody-content').css("min-height", minH);
-
 
 } );
 

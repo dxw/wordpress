@@ -38,6 +38,9 @@ if ( !isset($post_ID) || 0 == $post_ID ) {
 
 ?>
 
+<form name="post" action="post.php" method="post" id="post">
+<div id="wpbody-content">
+
 
 <?php
 
@@ -226,9 +229,6 @@ endif;
 
 ?>
 
-<form name="post" action="post.php" method="post" id="post">
-<div id="wpbody-content">
-
 <?php if ( $notice ) : ?>
 <div id="notice" class="error"><p><?php echo $notice ?></p></div>
 <?php endif; ?>
@@ -338,11 +338,10 @@ endif; ?>
 </div>
 
 <div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-<h3>
-	<label for="content"><?php _e('Post') ?></label>
-	<a id="add-media-button" href="<?php echo clean_url( admin_url( 'media-upload.php?post_id=' . ( $post_ID ? $post_ID : $temp_ID ) . '&TB_iframe=true' ) ); ?>" class="thickbox button"><?php _e( 'Add Media' ); ?></a>
-	<br class="clear" />
-</h3>
+
+<div id="add-media-button"><a href="<?php echo clean_url( admin_url( 'media-upload.php?post_id=' . ( $post_ID ? $post_ID : $temp_ID ) . '&TB_iframe=true' ) ); ?>" class="thickbox button"><?php _e( 'Add Media' ); ?></a></div>
+
+<h3><?php _e('Post') ?></h3>
 
 <?php the_editor($post->post_content); ?>
 
@@ -394,17 +393,20 @@ do_action('dbx_post_sidebar');
 </div><!-- /poststuff -->
 
 </div>
-</div>
+<br class="clear" /></div><!-- wpbody-content (fixedbar) -->
 
 <div id="fixedbar">
 <table id="fixedbar-wrap"><tbody><tr>
 <td id="preview-link">&nbsp;
+<span>
 <?php if ( 'publish' == $post->post_status ) { ?>
 <a href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank" tabindex="4"><?php _e('View this Post'); ?></a>
 <?php } elseif ( 'edit' == $action ) { ?>
 <a href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank"  tabindex="4"><?php _e('Preview this Post'); ?></a>
 <?php } ?>
+</span>
 </td>
+
 <td id="submitpost" class="submitbox">
 <div id="post-time-info" class="alignleft">
 <?php
@@ -426,8 +428,7 @@ do_action('dbx_post_sidebar');
 			$time = mysql2date(get_option('time_format'), current_time('mysql'));
 		}
 ?>
-
-	<p class="curtime"><?php printf($stamp, $date, $time, $edit); ?></p>
+	<p id="curtime"><?php printf($stamp, $date, $time, $edit); ?></p>
 	<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
 
 <?php
@@ -437,9 +438,10 @@ do_action('dbx_post_sidebar');
 <p class="submit alignright">
 <?php
 
-	if ( ( 'edit' == $action) && current_user_can('delete_post', $post_ID) )
+	if ( ( 'edit' == $action ) && current_user_can('delete_post', $post_ID) )
 		echo "<a class='submitdelete' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post_ID", 'delete-post_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;post') . "</a>";
-
+	elseif ( 'edit' != $action )
+		echo "<a class='submitdelete' href='index.php' onclick=\"if ( confirm('" . js_escape( __("You are about to delete this post\n  'Cancel' to stop, 'OK' to delete.")) . "') ) { return true;}return false;\">" . __('Cancel&nbsp;post') . "</a>";
 ?>
 
 	<input type="submit" name="save" id="save-post" value="<?php _e('Save'); ?>" tabindex="4" class="button button-highlighted" />

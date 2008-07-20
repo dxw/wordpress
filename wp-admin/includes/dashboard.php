@@ -433,8 +433,11 @@ function wp_dashboard_inbox( $sidebar_args ) {
 		jQuery( function($) {
 			$('#inbox-filter').submit( function() { return false; } )
 				.find( ':button' ).click( function() {
+					var done = $(':checked').size().toString(), txt = (done == '1') ? '<?php _e(' item archived'); ?>' : '<?php _e(' items archived'); ?>';
 					$(':checked').parent().slideUp( 'normal', function() {
 						$('.inbox-count').text( $('#inbox-filter li:visible').size().toString() );
+						$('#inbox-message').addClass('updated');
+						$('#inbox-message').text(done+txt);
 					} );
 				} );
 		} );
@@ -442,6 +445,9 @@ function wp_dashboard_inbox( $sidebar_args ) {
 
 	<form id="inbox-filter" action="" method="get">
 		<p class="actions"><input type="button" value="Archive" name="archive" class="button"></p>
+		<div id="inbox-message"></div>
+		<br class="clear" />
+		
 		<ul>
 
 <?php	$crazy_posts = array( '', 'some post', 'a post', 'my cool post' ); foreach ( wp_get_inbox_items() as $k => $item ) : // crazyhorse ?>

@@ -488,7 +488,7 @@ input.readonly {
 	border-top-color: #247fab;
 }
 
-.login #backtoblog a, .curtime, #user_info a, #dashmenu a {
+.login #backtoblog a, #curtime, #user_info a, #dashmenu a {
 	color: #ccc;
 }
 
@@ -684,7 +684,7 @@ div#media-upload-error, .file-error, abbr.required, .widget-control-remove:hover
 	border-color: #ccc;
 }
 
-.curtime {
+#curtime {
 	color: #666;
 }
 
@@ -727,7 +727,7 @@ table.diff .diff-addedline ins {
 }
 
 #fixedbar a,
-#fixedbar .curtime {
+#fixedbar #curtime {
 	color: #ccc;
 }
 

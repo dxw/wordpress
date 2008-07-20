@@ -267,7 +267,9 @@ div.dashboard-widget-content p.comment-meta {
 }
 
 #dashboard_inbox p.actions {
+	margin-bottom:0pt;
 	margin-top: 0;
+	float:left;
 }
 
 #dashboard_quick_press h3 {
@@ -291,4 +293,9 @@ div.dashboard-widget-content p.comment-meta {
 
 #dashboard_quick_press p#recent-drafts {
 	margin: 0;
+}
+
+#inbox-message {
+	margin:0 0 0 75px;
+	padding:5px;
 }

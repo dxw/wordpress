@@ -16,8 +16,8 @@ if ( in_array( $the_current_page, $min_width_pages ) ) {
 		add_filter( 'admin_body_class', 'add_minwidth' );
 }
 
-$fixed_bar_pages = array( 'post.php', 'post-new.php' );
-$fixed_bar = in_array( $the_current_page, $fixed_bar_pages ) ? true : false;
+$fixed_bar_pages = array( 'post.php', 'post-new.php', 'page.php', 'page-new.php' );
+if ( ! isset($fixed_bar) ) $fixed_bar = in_array( $the_current_page, $fixed_bar_pages ) ? true : false;
 
 get_admin_page_title();
 

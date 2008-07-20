@@ -6,6 +6,8 @@ $form_extra = "' />\n<input type='hidden' name='comment_ID' value='" . $comment-
 ?>
 
 <form name="post" action="comment.php" method="post" id="post">
+<div id="wpbody-content">
+
 <?php wp_nonce_field('update-comment_' . $comment->comment_ID) ?>
 <div class="wrap">
 <h2><?php echo $toprow_title; ?></h2>
@@ -14,11 +16,13 @@ $form_extra = "' />\n<input type='hidden' name='comment_ID' value='" . $comment-
 
 <div id="poststuff">
 
+<!--
 <p id="big-add-button">
 <span id="previewview">
 <a href="<?php echo get_comment_link(); ?>" class="button" target="_blank"><?php _e('View this Comment'); ?></a>
 </span>
 </p>
+-->
 
 <!-- crazyhorse
 <div class="side-info">
@@ -75,34 +79,9 @@ $form_extra = "' />\n<input type='hidden' name='comment_ID' value='" . $comment-
 
 
 <div id="postdiv" class="postarea">
-<h3><label for="content"><?php _e('Comment') ?></label></h3>
+<h3><?php _e('Comment') ?></h3>
 <?php the_editor($comment->comment_content, 'content', 'newcomment_author_url', false, 4); ?>
 <?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
-</div>
-
-<div id="submitpost" class="submitbox">
-<div id="comment-time-info" class="alignleft">
-<?php
-$stamp = __('Timestamp: <span class="timestamp">%1$s at %2$s %3$s</span>');
-$date = mysql2date(get_option('date_format'), $comment->comment_date);
-$time = mysql2date(get_option('time_format'), $comment->comment_date);
-$edit = '<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js">' . __('(Change)') . '</a>';
-
-?>
-<p class="curtime"><?php printf($stamp, $date, $time, $edit); ?></p>
-
-<div id='timestampdiv' class='hide-if-js'><?php touch_time(('editcomment' == $action), 0, 5); ?></div>
-</div>
-
-<p class="submit alignright">
-<?php
-echo "<a class='submitdelete' href='" . wp_nonce_url("comment.php?action=deletecomment&amp;c=$comment->comment_ID&amp;_wp_original_http_referer=" . wp_get_referer(), 'delete-comment_' . $comment->comment_ID) . "' onclick=\"if ( confirm('" . js_escape(__("You are about to delete this comment. \n  'Cancel' to stop, 'OK' to delete.")) . "') ) { return true;}return false;\">" . __('Delete comment') . "</a>";
-?>
-<input type="submit" name="save" value="<?php _e('Save'); ?>" tabindex="4" class="button button-highlighted" />
-</p>
-
-<br class="clear" />
-
 </div>
 
 <?php do_meta_boxes('comment', 'normal', $comment); ?>
@@ -117,6 +96,44 @@ echo "<a class='submitdelete' href='" . wp_nonce_url("comment.php?action=deletec
 </div>
 </div>
 </div>
+
+</div><!-- wpbody-content (fixedbar) -->
+
+<div id="fixedbar">
+<table id="fixedbar-wrap"><tbody><tr>
+
+<td id="preview-link">&nbsp;
+<span>
+<a href="<?php echo get_comment_link(); ?>" target="_blank"><?php _e('View this Comment'); ?></a>
+</span>
+</td>
+
+<td id="submitpost" class="submitbox">
+<div id="comment-time-info" class="alignleft">
+<?php
+$stamp = __('Timestamp: <span class="timestamp">%1$s at %2$s %3$s</span>');
+$date = mysql2date(get_option('date_format'), $comment->comment_date);
+$time = mysql2date(get_option('time_format'), $comment->comment_date);
+$edit = '(<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js">' . __('Change') . '</a>)';
+
+?>
+<p id="curtime"><?php printf($stamp, $date, $time, $edit); ?></p>
+
+<div id='timestampdiv' class='hide-if-js'><?php touch_time(('editcomment' == $action), 0, 5); ?></div>
+</div>
+
+<p class="submit alignright">
+<?php
+echo "<a class='submitdelete' href='" . wp_nonce_url("comment.php?action=deletecomment&amp;c=$comment->comment_ID&amp;_wp_original_http_referer=" . wp_get_referer(), 'delete-comment_' . $comment->comment_ID) . "' onclick=\"if ( confirm('" . js_escape(__("You are about to delete this comment. \n  'Cancel' to stop, 'OK' to delete.")) . "') ) { return true;}return false;\">" . __('Delete comment') . "</a>&nbsp;";
+?>
+<input type="submit" name="save" value="<?php _e('Save'); ?>" tabindex="4" class="button button-highlighted" />
+</p>
+</td></tr></tbody></table>
+</div><!-- /fixedbar -->
+
+
+
+
 
 </form>
 

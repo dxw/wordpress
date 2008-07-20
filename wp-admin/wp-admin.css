@@ -1145,8 +1145,11 @@ table.form-table td .updated {
 	float: left;
 }
 
-.postarea h3 #add-media-button {
-	float: right;
+.postarea #add-media-button {
+	float:right;
+	margin:7px 0pt 0pt;
+	position:relative;
+	right:10px;
 }
 
 #poststuff #editor-toolbar {
@@ -1504,11 +1507,12 @@ ul.view-switch li.current {
 	text-decoration: none;
 }
 
-#submitpost p.curtime {
+#submitpost p#curtime {
 	background-image: url(images/date-button.gif);
 	background-repeat: no-repeat;
-	background-position: left 2px;
+	background-position: left 4px;
 	padding-left: 18px;
+	padding-top: 2px;
 }
 
 .tablenav .delete {
@@ -1664,7 +1668,11 @@ a.togbox {
 
 /* fixed bottom bar */
 .postarea h3 label {
-	float:none;
+
+}
+
+#footer {
+	z-index: -1;
 }
 
 #fixedbar {
@@ -1676,7 +1684,7 @@ a.togbox {
 }
 
 #fixedbar #submitpost {
-	width: 690px;
+	
 }
 
 #fixedbar .submit {
@@ -1704,10 +1712,12 @@ a.togbox {
 #fixedbar .submitbox {
 	padding: 14px 18px;
 	border-left: 1px solid #aaa;
+	width: 690px;
 }
 
-#fixedbar #post-time-info {
-	margin-top: 17px;
+#fixedbar #post-time-info,
+#fixedbar #comment-time-info {
+	margin-top: 16px;
 }
 
 #fixedbar #timestampdiv input,

@@ -1,7 +1,7 @@
-</div><!-- wpbody-content -->
 <?php if ( ! $fixed_bar ) { ?>
-</div><!-- wpbody -->
+<br class="clear" /></div><!-- wpbody-content -->
 <?php } ?>
+</div><!-- wpbody -->
 </div><!-- wpcontent -->
 </div><!-- wpwrap -->
 

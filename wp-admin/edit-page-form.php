@@ -33,6 +33,9 @@ if ( 0 != $post_ID && $sendto == get_permalink($post_ID) )
 	$sendto = 'redo';
 ?>
 
+<form name="post" action="page.php" method="post" id="post">
+<div id="wpbody-content">
+
 <?php if ( $notice ) : ?>
 <div id="notice" class="error"><p><?php echo $notice ?></p></div>
 <?php endif; ?>
@@ -146,10 +149,8 @@ function page_revisions_meta_box($post) {
 }
 add_meta_box('revisionsdiv', __('Page Revisions'), 'page_revisions_meta_box', 'page', 'normal', 'core');
 endif;
-
 ?>
 
-<form name="post" action="page.php" method="post" id="post">
 <div class="wrap">
 <h2><?php
 	if ( !isset($post_ID) || 0 == $post_ID )
@@ -158,6 +159,7 @@ endif;
 		printf( __( '<a href="%s">Pages</a> / Edit Page' ), 'edit-pages.php' );
 ?></h2>
 
+<!--
 <p id="big-add-button">
 <span id="previewview">
 <?php if ( 'publish' == $post->post_status ) { ?>
@@ -167,6 +169,7 @@ endif;
 <?php } ?>
 </span>
 </p>
+-->
 
 <?php
 wp_nonce_field($nonce_action);
@@ -254,40 +257,17 @@ endif; ?>
 </div>
 
 <div id="<?php echo user_can_richedit() ? 'postdivrich' : 'postdiv'; ?>" class="postarea">
-<h3><label for="content"><?php _e('Page') ?></label></h3>
+
+<div id="add-media-button"><a href="<?php echo clean_url( admin_url( 'media-upload.php?post_id=' . ( $post_ID ? $post_ID : $temp_ID ) . '&TB_iframe=true' ) ); ?>" class="thickbox button"><?php _e( 'Add Media' ); ?></a></div>
+
+<h3><?php _e('Page') ?></h3>
 <?php the_editor($post->post_content); ?>
 <div id="post-status-info">
 	<span id="wp-word-count" class="alignleft"></span>
-	<span id="autosave" class="alignright"></span>
-	<br class="clear" />
-</div>
-
-<div class="submitbox" id="submitpage">
-<div id="post-time-info" class="alignleft">
-<?php
-	if ($post_ID) {
-		if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
-			$stamp = __('Scheduled for:<br />%1$s at %2$s');
-		} else if ( 'publish' == $post->post_status ) { // already published
-			$stamp = __('Published on:<br />%1$s at %2$s');
-		} else if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
-			$stamp = __('Publish immediately');
-		} else { // draft, 1 or more saves, date specified
-			$stamp = __('Publish on:<br />%1$s at %2$s');
-		}
-		$date = mysql2date(get_option('date_format'), $post->post_date);
-		$time = mysql2date(get_option('time_format'), $post->post_date);
-	} else { // draft (no saves, and thus no date specified)
-		$stamp = __('Publish immediately');
-		$date = mysql2date(get_option('date_format'), current_time('mysql'));
-		$time = mysql2date(get_option('time_format'), current_time('mysql'));
-	}
-?>
-	<p class="curtime"><?php printf($stamp, $date, $time); ?> <a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex='4'><?php _e('Edit') ?></a></p>
-	<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
+	<span class="alignright">
+	<span id="autosave">&nbsp;</span>
 
 <?php
-
 	if ($post_ID) {
 		if ( $last_id = get_post_meta($post_ID, '_edit_last', true) ) {
 			$last_user = get_userdata($last_id);
@@ -297,38 +277,11 @@ endif; ?>
 		}
 	}
 ?>
+	</span>
+	<br class="clear" />
 </div>
 
-<p class="submit alignright">
 
-<?php
-
-if ( ('edit' == $action) && current_user_can('delete_page', $post_ID) )
-	echo "<a class='submitdelete' href='" . wp_nonce_url("page.php?action=delete&amp;post=$post_ID", 'delete-page_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this page '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;page') . "</a>";
-
-?>
-
-<input type="submit" name="save" class="button button-highlighted" value="<?php _e('Save'); ?>" tabindex="4" />
-
-<?php
-	if ( !in_array( $post->post_status, array('publish', 'future') ) || 0 == $post_ID ) :
-		if ( current_user_can('publish_pages') ) : ?>
-
-	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Publish') ?>" />
-
-<?php		else : ?>
-
-	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Submit for Review') ?>" />
-
-<?php 
-
-		endif;
-	endif;
-
-?>
-</p>
-<br class="clear" />
-</div>
 <?php wp_nonce_field( 'autosave', 'autosavenonce', false ); ?>
 <?php wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false ); ?>
 <?php wp_nonce_field( 'getpermalink', 'getpermalinknonce', false ); ?>
@@ -349,6 +302,69 @@ do_meta_boxes('page', 'advanced', $post);
 </div>
 
 </div>
+
+<br class="clear" /></div><!-- wpbody-content (fixedbar) -->
+
+<div id="fixedbar">
+<table id="fixedbar-wrap"><tbody><tr>
+
+<td id="preview-link">&nbsp;
+<span>
+<?php if ( 'publish' == $post->post_status ) { ?>
+<a href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank"  tabindex="4"><?php _e('View this Page'); ?></a>
+<?php } elseif ( 'edit' == $action ) { ?>
+<a href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank" tabindex="4"><?php _e('Preview this Page'); ?></a>
+<?php } ?>
+</span>
+</td>
+
+<td id="submitpage" class="submitbox">
+<div id="post-time-info" class="alignleft">
+<?php
+	if ($post_ID) {
+		if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
+			$stamp = __('Scheduled for: <span class="timestamp">%1$s at %2$s</span>');
+		} else if ( 'publish' == $post->post_status ) { // already published
+			$stamp = __('Published on: <span class="timestamp">%1$s at %2$s</span>');
+		} else if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
+			$stamp = __('Publish immediately');
+		} else { // draft, 1 or more saves, date specified
+			$stamp = __('Publish on: <span class="timestamp">%1$s at %2$s</span>');
+		}
+		$date = mysql2date(get_option('date_format'), $post->post_date);
+		$time = mysql2date(get_option('time_format'), $post->post_date);
+	} else { // draft (no saves, and thus no date specified)
+		$stamp = __('Publish immediately');
+		$date = mysql2date(get_option('date_format'), current_time('mysql'));
+		$time = mysql2date(get_option('time_format'), current_time('mysql'));
+	}
+?>
+	<p id="curtime"><?php printf($stamp, $date, $time); ?> <a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex='4'><?php _e('Edit') ?></a></p>
+	<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
+</div>
+
+<p class="submit alignright">
+<?php
+if ( ('edit' == $action ) && current_user_can('delete_page', $post_ID) )
+	echo "<a class='submitdelete' href='" . wp_nonce_url("page.php?action=delete&amp;post=$post_ID", 'delete-page_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this page '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;page') . "</a>";
+elseif ( 'edit' != $action )
+	echo "<a class='submitdelete' href='index.php' onclick=\"if ( confirm('" . js_escape( __("You are about to delete this page\n  'Cancel' to stop, 'OK' to delete.")) . "') ) { return true;}return false;\">" . __('Cancel&nbsp;page') . "</a>";
+?>
+	<input type="submit" name="save" class="button button-highlighted" value="<?php _e('Save'); ?>" tabindex="4" />
+
+<?php
+	if ( !in_array( $post->post_status, array('publish', 'future') ) || 0 == $post_ID ) :
+		if ( current_user_can('publish_pages') ) : ?>
+	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Publish') ?>" />
+<?php		else : ?>
+	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Submit for Review') ?>" />
+<?php 
+		endif;
+	endif;
+?>
+</p>
+</td></tr></tbody></table>
+</div><!-- /fixedbar -->
 
 </form>
 
