@@ -4,8 +4,12 @@
 		add_postbox_toggles : function(page) {
 			$('.postbox h3').before('<a class="togbox">+</a> ');
 			$('.postbox h3, .postbox a.togbox').click( function() { $($(this).parent().get(0)).toggleClass('closed'); save_postboxes_state(page); } );
-		
-			$('#side-sortables').append( '<div id="make-it-tall" style="margin-bottom: -2000px; padding-bottom: 2001px"></div>' );
+
+			if ( $.browser.msie ) {
+				$('#side-sortables').append( '<div id="make-it-tall"></div>' );
+			} else {
+				$('#side-sortables').append( '<div id="make-it-tall" style="margin-bottom: -100px; padding-bottom: 101px"></div>' );
+			}
 			$('#wpbody-content').css( 'overflow', 'hidden' );
 			
 			this.init(page);
