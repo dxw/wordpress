@@ -324,7 +324,7 @@ abbr.required {
 .filelink {
 	float:left;
 	max-width:65px;
-	padding:7px;
+	padding:6px;
 	text-align:center;
 }
 
@@ -432,6 +432,10 @@ body#media-upload {
 }
 
 #media-upload  #att-info p.type-file {
+	background: url(../images/media-button-other.gif) no-repeat center left;
+}
+
+#media-upload  #att-info p.type-single {
 	background: url(../images/media-button-other.gif) no-repeat center left;
 }
 
