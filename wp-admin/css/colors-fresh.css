@@ -711,7 +711,9 @@ table.diff .diff-addedline ins {
 
 
 
-#adminmenu {
+#adminmenu,
+#html-upload-ui,
+#att-info {
 	background-color: #E4F2FD;
 }
 
@@ -720,6 +722,10 @@ table.diff .diff-addedline ins {
 #fixedbar {
 	background-color:#464646;
 	color: #ccc;
+}
+
+#html-upload-help {
+	color: #328AB2;
 }
 
 #fixedbar #last-edit {
