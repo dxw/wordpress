@@ -11,7 +11,7 @@ form .input-text-wrap input {
 	outline-style: none;
 	outline-width: medium;
 	padding: 0pt;
-	width: 100%;
+	width: 99%;
 	border-style: solid;
 	color: #333333;
 }
@@ -26,7 +26,7 @@ form .textarea-wrap {
 form .textarea-wrap textarea {
 	border: 0pt none;
 	padding: 0;
-	width: 100%;
+	width: 99%;
 }
 
 
@@ -262,7 +262,7 @@ div.dashboard-widget-content p.comment-meta {
 }
 
 #dashboard_inbox div.dashboard-widget, #dashboard_quick_press div.dashboard-widget {
-	height: 34em;
+	height: 35em;
 	padding-bottom: 0;
 }
 
@@ -293,9 +293,4 @@ div.dashboard-widget-content p.comment-meta {
 
 #dashboard_quick_press p#recent-drafts {
 	margin: 0;
-}
-
-#inbox-message {
-	margin:0 0 0 75px;
-	padding:5px;
 }

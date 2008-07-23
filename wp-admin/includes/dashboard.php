@@ -421,12 +421,26 @@ function wp_dashboard_inbox( $sidebar_args ) {
 			list-style: none;
 			margin: 0;
 			padding: 0;
+			position: relative;
 		}
-		#inbox-filter ul input[type=checkbox] {
-			float: left;		
+		#inbox-filter ul li {
+			position: relative;
+			padding-right: 20px;
+		}
+		#inbox-filter ul input.checkbox {
+			float: left;
 		}
 		#inbox-filter ul p {
-			margin-left: 20px;
+			float: left;
+			margin: 0;
+			margin-left: -40px;
+			width: 100%;
+			position: relative;
+			left: 50px;
+		}
+		#inbox-message {
+			margin:0 0 0 7.5em;
+			padding:5px;
 		}
 	</style>
 	<script type="text/javascript">
@@ -469,6 +483,7 @@ function wp_dashboard_inbox( $sidebar_args ) {
 						echo " on &quot;<a href='#'>{$crazy_posts[$item->parent]}</a>&quot;";
 				?></cite>, <?php echo "$item->date, $item->time"; ?>
 				</p>
+				<br class="clear" />
 			</li>
 
 <?php	endforeach; ?>
