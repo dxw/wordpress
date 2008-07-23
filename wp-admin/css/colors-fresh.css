@@ -47,7 +47,7 @@ input.disabled, textarea.disabled {
 	color: #fff;
 }
 
-li.widget-list-control-item, div.nav, .tablenav, h3.dashboard-widget-title, h3.dashboard-widget-title span, h3.dashboard-widget-title small, #dashboard-widgets p.dashboard-widget-links, ul.view-switch li.current, .form-table tr, #poststuff h3, .login form, h3.info-box-title, #post-status-info {
+li.widget-list-control-item, div.nav, .tablenav, #dashboard-widgets p.dashboard-widget-links, ul.view-switch li.current, .form-table tr, #poststuff h3, .login form, h3.info-box-title, #post-status-info {
 	background-color: #eaf3fa;
 }
 
@@ -261,9 +261,17 @@ ul.view-switch li.current a {
 	border-bottom-color: #ccc;
 }
 
-.widefat thead, .thead {
+.widefat thead, .thead, h3.dashboard-widget-title, h3.dashboard-widget-title span, h3.dashboard-widget-title small {
 	background-color: #464646;
 	color: #d7d7d7;
+}
+
+h3.dashboard-widget-title small a:link {
+	color: #d7d7d7;
+}
+
+h3.dashboard-widget-title small a:hover {
+	color: #fff;
 }
 
 .widget-control-save, .widget-control-remove {
