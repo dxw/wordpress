@@ -8,7 +8,7 @@
 			if ( $.browser.msie ) {
 				$('#side-sortables').append( '<div id="make-it-tall"></div>' );
 			} else {
-				$('#side-sortables').append( '<div id="make-it-tall" style="margin-bottom: -100px; padding-bottom: 101px"></div>' );
+				$('#side-sortables').append( '<div id="make-it-tall" style="margin-bottom: -2000px; padding-bottom: 2001px"></div>' );
 			}
 			$('#wpbody-content').css( 'overflow', 'hidden' );
 			
