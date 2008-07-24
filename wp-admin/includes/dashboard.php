@@ -470,7 +470,7 @@ function wp_dashboard_inbox( $sidebar_args ) {
 				<input type="checkbox" name="messages[]" value="<?php echo $k; ?>" class="checkbox" />
 				<p><?php
 					if ( $item->href )
-						echo "<a href='$item->href'>";
+						echo "<a href='$item->href' class='no-crazy'>";
 					echo wp_specialchars( $item->text );
 					if ( strlen( $item->text ) > 180 ) // crazyhorse
 						echo '<br/><span class="inbox-more">more&hellip;</span>';

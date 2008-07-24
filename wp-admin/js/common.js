@@ -13,6 +13,11 @@ jQuery(document).ready( function() {
 	if ( ( 'undefined' != typeof wpAjax ) && jQuery.isFunction( wpAjax.validateForm ) ) {
 		jQuery('form.validate').submit( function() { return wpAjax.validateForm( jQuery(this) ); } );
 	}
+
+	jQuery('a.no-crazy').click( function() {
+		alert( "This feature isn't enabled in this prototype." );
+		return false;
+	} );
 });
 
 (function(JQ) {

@@ -41,7 +41,7 @@ require_once('admin-header.php');
 		<th scope="col" class="check-column"><input type="checkbox" name="messages[]" value="<?php echo $k; ?>" /></td>
 		<td><?php
 			if ( $item->href )
-				echo "<a href='$item->href'>";
+				echo "<a href='$item->href' class='no-crazy'>";
 			echo wp_specialchars( $item->text );
 			if ( strlen( $item->text ) > 180 ) // crazyhorse
 				echo '<br/><span class="inbox-more">more&hellip;</span>';
