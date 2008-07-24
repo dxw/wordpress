@@ -1693,7 +1693,11 @@ a.togbox {
 }
 
 #fixedbar .button {
-	border: 1px solid #464646;
+	border: none;
+	-moz-border-radius: 6px;
+	-khtml-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
 }
 
 #fixedbar .button:hover {
