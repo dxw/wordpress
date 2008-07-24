@@ -308,29 +308,37 @@ function wp_dashboard_quick_press( $sidebar_args ) {
 	echo $widget_name;
 	echo $after_title;
 
+	if ( ( 'post' === strtolower( $_SERVER['REQUEST_METHOD'] ) ) && 'post-quickpress-save-cont' === $_POST['action'] ) {
+		$post = get_post_to_edit( $_POST['post_ID'] );
+	} else {
+		$_REQUEST = array(); // hack
+		$post = get_default_post_to_edit();
+	}
 ?>
 
 	<form name="post" action="<?php echo clean_url( admin_url( 'post.php' ) ); ?>" method="post" id="quick-press">
 		<h3 id="quick-post-title"><label for="title"><?php _e('Title') ?></label></h3>
 		<div class="input-text-wrap">
-			<input type="text" name="post_title" id="title" autocomplete="off" />
+			<input type="text" name="post_title" id="title" autocomplete="off" value="<?php echo attribute_escape( $post->post_title ); ?>" />
 		</div>
 
 		<h3><label for="content"><?php _e('Post') ?></label></h3>
 		<div class="textarea-wrap">
-			<textarea name="content" id="quickpress-content" class="mceEditor" rows="3" cols="15"></textarea>
+			<textarea name="content" id="quickpress-content" class="mceEditor" rows="3" cols="15"><?php echo $post->post_content; ?></textarea>
 		</div>
 
 		<h3><label for="tags-input"><?php _e('Tags') ?></label></h3>
 		<div class="input-text-wrap">
-			<input type="text" name="tags_input" id="tags-input" />
+			<input type="text" name="tags_input" id="tags-input" value="<?php echo get_tags_to_edit( $post->ID ); ?>" />
 		</div>
 		<p class='field-tip'><?php _e('Separate tags with commas'); ?></p>
 
 		<p class="submit">
 			<input type="hidden" name="action" id="quickpost-action" value="post-quickpress-save" />
+			<input type="hidden" name="quickpress_post_ID" value="<?php echo (int) $post->ID; ?>" />
 			<?php wp_nonce_field('add-post'); ?>
 			<input type="submit" name="save" id="save-post" class="button" value="<?php _e('Save'); ?>" />
+			<input type="submit" name="save-cont" id="save-cont" class="button" value="<?php _e('Save and Continue'); ?>" />
 			<input type="submit" name="publish" id="publish" accesskey="p" class="button button-highlighted" value="<?php _e('Publish'); ?>" />
 		</p>
 
@@ -397,6 +405,7 @@ var quickPressLoad = function($) {
 	} );
 
 	$('#publish').click( function() { act.val( 'post-quickpress-publish' ); } );
+	$('#save-cont').click( function() { act.val( 'post-quickpress-save-cont' ); } );
 };
 jQuery( quickPressLoad );
 /* ]]> */

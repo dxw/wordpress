@@ -61,12 +61,18 @@ case 'postajaxpost':
 case 'post':
 case 'post-quickpress-publish':
 case 'post-quickpress-save':
+case 'post-quickpress-save-cont':
 	check_admin_referer('add-post');
 
 	if ( 'post-quickpress-publish' == $action )
 		$_POST['publish'] = 'publish'; // tell write_post() to publish
 
-	$post_ID = 'postajaxpost' == $action ? edit_post() : write_post();
+	if ( !empty( $_POST['quickpress_post_ID'] ) ) {
+		$_POST['post_ID'] = (int) $_POST['quickpress_post_ID'];
+		$post_ID = edit_post();
+	} else {
+		$post_ID = 'postajaxpost' == $action ? edit_post() : write_post();
+	}
 
 	if ( 0 === strpos( $action, 'post-quickpress' ) ) {
 		$_POST['post_ID'] = $post_ID;
