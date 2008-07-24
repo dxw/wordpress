@@ -679,10 +679,26 @@ a.view-comment-post-link {
 
 #dashmenu ul {
 	position: absolute;
-	top: 31px;
+	top: 29px;
 	left: 0;
-	background-color: #464646;
 	min-width: 100%;
+}
+
+#dashmenu ul {
+	background: #eee;
+	-webkit-border-bottom-left-radius:7px;
+	-webkit-border-bottom-right-radius:7px;
+	-webkit-box-shadow:0 2px 6px rgba(0,0,0,0.2);
+}
+
+#dashmenu ul a {
+	color: #2583ad;
+	display: block;
+	padding: 0 4px;
+}
+
+#dashmenu ul a:hover {
+	color: #d54e21;
 }
 
 #dashmenu ul li {
