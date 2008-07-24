@@ -637,7 +637,7 @@ a.view-comment-post-link {
 	padding: 0;
 }
 
-#dashmenu li.wp-menu-open .wp-submenu, #adminmenu li.wp-menu-open .wp-submenu {
+#adminmenu li.wp-menu-open .wp-submenu {
 	display: block;
 }
 

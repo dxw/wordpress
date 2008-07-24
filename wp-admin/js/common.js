@@ -52,10 +52,17 @@ jQuery(document).ready( function() {
 }(jQuery));
 
 jQuery( function($) {
-	jQuery('li.wp-has-submenu > a').click( function() {
-		jQuery(this).siblings('ul').slideToggle().parent().toggleClass( 'wp-menu-open' );
+	var menuToggle = function(ul, effect) {
+		if ( !effect ) {
+			effect = 'slideToggle';
+		}
+		ul[effect]().parent().toggleClass( 'wp-menu-open' );
 		return false;
-	} );
+	};
+
+	jQuery('#adminmenu li.wp-has-submenu > a').click( function() { return menuToggle( jQuery(this).siblings('ul') ); } );
+
+	jQuery('#dashmenu li.wp-has-submenu').bind( 'mouseenter mouseleave', function() { return menuToggle( jQuery(this).children('ul'), 'toggle' ); } );
 
 	// Temp
 	if ( !$('#post-search, #widget-search').size() ) {
