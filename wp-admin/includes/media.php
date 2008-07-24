@@ -338,7 +338,7 @@ function media_upload_image() {
 		return media_upload_gallery();
 	}
 
-	return wp_iframe( 'media_edit_single_form', $id );
+	return wp_iframe( 'media_edit_single_form', $id, $errors );
 }
 
 function media_sideload_image($file, $post_id, $desc = null) {
@@ -723,7 +723,7 @@ function get_media_item_link( $attachment_id, $ins ) {
 }
 
 // crazyhorse
-function media_edit_single_form($attachment_id = 0) {
+function media_edit_single_form($attachment_id = 0, $errors = null) {
 	global $redir_tab;
 
 	$redir_tab = 'gallery';
@@ -743,6 +743,24 @@ function media_edit_single_form($attachment_id = 0) {
 	$filename = basename($post->guid);
 
 	media_upload_header();
+
+	if ( $errors ) :
+?>
+
+<div id="media-upload-notice">
+<?php if (isset($errors['upload_notice']) ) { ?>
+	<?php echo $errors['upload_notice']; ?>
+<?php } ?>
+</div>
+<div id="media-upload-error">
+<?php if (isset($errors['upload_error']) && is_wp_error($errors['upload_error'])) { ?>
+	<?php echo $errors['upload_error']->get_error_message(); ?>
+<?php } ?>
+</div>
+
+<?php
+	return;
+	endif; // errors
 ?>
 
 <form enctype="multipart/form-data" method="post" action="<?php echo attribute_escape($form_action_url); ?>" class="media-upload-form validate" id="gallery-form">
@@ -1325,6 +1343,8 @@ function media_upload_library_form($errors) {
 	</form>
 </div>
 
+<?php if ( 'false' !== $_GET['library'] ) : ?>
+
 <div id="html-upload-help"><?php _e('Or select from your Media Library'); ?></div>
 
 <div class="tablenav">
@@ -1351,6 +1371,8 @@ if ( $page_links )
 </div>
 </form>
 <?php
+
+endif; // library
 }
 
 function media_error_nofile() { ?>
