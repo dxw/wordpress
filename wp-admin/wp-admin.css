@@ -1740,7 +1740,7 @@ a.togbox {
 }
 
 #fixedbar .button:hover {
-	border: 1px solid #000;
+	background: #fff;
 }
 
 #fixedbar #publish {
