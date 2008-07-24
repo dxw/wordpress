@@ -642,8 +642,8 @@ a.view-comment-post-link {
 }
 
 #dashmenu {
-	margin: 0 0 0 10px;
-	background: url(images/logo-ghost.png) no-repeat top left;
+	margin: 0 0 0 12px;
+	background: url(images/logo-ghost.png) no-repeat center left;
 	list-style: none;
 	position: absolute;
 	top: 0;
@@ -701,10 +701,19 @@ a.view-comment-post-link {
 	border-style: solid;
 	position: relative;
 	right: -1px;
+	padding: 2px 0;
+}
+
+#adminmenu li .wp-submenu {
+	margin-top: 6px;
 }
 
 #adminmenu li .wp-submenu li {
-	padding: 0 0 0 15px;
+	padding: 0 0 0 1px;
+}
+
+#adminmenu li .wp-submenu li.current {
+	padding: 2px 0;
 }
 
 #adminmenu li.wp-has-submenu > a {
@@ -723,6 +732,10 @@ a.view-comment-post-link {
 	line-height: 1.1;
 	display: block;
 	text-indent: -18px;
+}
+
+#adminmenu li.current a {
+	padding-left: 34px;
 }
 
 #adminmenu li a #awaiting-mod, #sidemenu li a #update-plugins {
@@ -1389,6 +1402,12 @@ p#post-search {
 #post-search .button, #widget-search .button {
 	padding: 3px;
 	font-size: 13px;
+}
+
+#post-search-input {
+	margin-right: 2px;
+	border-width: 1px;
+	border-style: solid;
 }
 
 #posts-filter fieldset {

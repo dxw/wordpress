@@ -60,7 +60,7 @@ strong .post-com-count span {
 	background-color: #2583ad;
 }
 
-#post-body ul#category-tabs li.ui-tabs-selected, .button-secondary, #quicktags, #login form .submit input {
+#post-body ul#category-tabs li.ui-tabs-selected, .button-secondary, #quicktags, #login form .submit input, #post-search .button, #post-search-prep .button {
 	background-color: #cee1ef !important;
 }
 
@@ -125,7 +125,7 @@ ul#widget-list li.widget-list-item h4.widget-title {
 	border-color: #c00 !important;
 }
 
-.form-table input, .form-table textarea {
+.form-table input, .form-table textarea, #post-search-input {
 	border-color: #c6d9e9;
 }
 
@@ -302,6 +302,7 @@ h3.dashboard-widget-title small a:hover {
 
 #adminmenu li.current {
 	background-color: #fff;
+	border-color: #c6d9e9;
 	border-right-color: #fff;
 }
 
