@@ -129,10 +129,12 @@ unset($status_links);
 <input type="hidden" name="comment_status" value="<?php echo $comment_status; ?>" />
 </form>
 
+<!-- crazyhorse
 <ul class="view-switch">
 	<li <?php if ( 'detail' == $mode ) echo "class='current'" ?>><a href="<?php echo clean_url(add_query_arg('mode', 'detail', $_SERVER['REQUEST_URI'])) ?>"><?php _e('Detail View') ?></a></li>
 	<li <?php if ( 'list' == $mode ) echo "class='current'" ?>><a href="<?php echo clean_url(add_query_arg('mode', 'list', $_SERVER['REQUEST_URI'])) ?>"><?php _e('List View') ?></a></li>
 </ul>
+-->
 
 <?php
 
