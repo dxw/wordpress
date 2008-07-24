@@ -752,6 +752,7 @@ function wp_dashboard_empty( $sidebar_args, $callback = false ) {
 
 // Temp
 function wp_dashboard_empty_control() {
+	echo "This feature isn't enabled in this prototype.";
 }
 
 // Calls widget_control callback
