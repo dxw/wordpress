@@ -685,10 +685,14 @@ a.view-comment-post-link {
 }
 
 #dashmenu ul {
-	background: #eee;
+	background: #fff;
+	border: 1px solid #c6d9e9;
 	-webkit-border-bottom-left-radius:7px;
 	-webkit-border-bottom-right-radius:7px;
 	-webkit-box-shadow:0 2px 6px rgba(0,0,0,0.2);
+	-moz-border-radius-bottomleft: 7px;
+	-moz-border-radius-bottomright: 7px;
+	-moz-box-shadow:0 2px 6px rgba(0,0,0,0.2);
 }
 
 #dashmenu ul a {
