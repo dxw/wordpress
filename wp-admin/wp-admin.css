@@ -1798,3 +1798,14 @@ p#post-search-prep {
 #aa {
 	width: 2.7em;
 }
+
+#inbox-filter .actions {
+	margin-left: 6px;
+	background: url(images/archive-link.png) 0px 12px no-repeat;
+	padding-left: 16px;
+}
+
+#inbox-filter .actions .button {
+	font-size: 11px;
+	padding: 2px;
+}
