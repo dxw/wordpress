@@ -85,7 +85,7 @@ div.dashboard-widget {
 }
 
 h3.dashboard-widget-title  {
-	margin: 0;
+	margin: 2px;
 	padding: 0 7px;
 	font-size: 14px;
 	line-height: 2;
