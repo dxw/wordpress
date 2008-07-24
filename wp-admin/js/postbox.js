@@ -3,7 +3,7 @@
 	postboxes = {
 		add_postbox_toggles : function(page) {
 			$('.postbox h3').before('<a class="togbox">+</a> ');
-			$('.postbox h3, .postbox a.togbox').click( function() { $($(this).parent().get(0)).toggleClass('closed'); save_postboxes_state(page); } );
+			$('.postbox a.togbox').click( function() { $($(this).parent().get(0)).toggleClass('closed'); save_postboxes_state(page); } );
 
 			if ( $.browser.msie ) {
 				$('#side-sortables').append( '<div id="make-it-tall"></div>' );
@@ -29,7 +29,7 @@
 			jQuery('.meta-box-sortables').sortable( {
 				connectWith: [ '.meta-box-sortables' ],
 				items: '> .postbox',
-				handle: '.hndle',
+				handle: 'h3',
 				stop: function() {
 					if ( 'side-sortables' == this.id ) { // doing this with jQuery doesn't work for some reason: make-it-tall gets duplicated
 						var makeItTall = document.getElementById( 'make-it-tall' );
