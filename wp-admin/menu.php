@@ -24,7 +24,7 @@ $top_submenu['profile.php'][10] = array( __('Stats'), 'read', 'inbox.php?page=st
 
 $menu[0] = array( __('Dashboard'), 'read', 'index.php' );
 
-$menu[5] = array( __('Content'), 'edit_posts', 'edit.php' );
+$menu[5] = array( __('Content'), 'edit_posts', 'edit.php', 'wp-menu-open' );
 	$submenu['edit.php'][5]  = array( __('Posts'), 'edit_posts', 'edit.php' );
 	$submenu['edit.php'][10] = array( __('Comments'), 'edit_posts', 'edit-comments.php' );
 	$submenu['edit.php'][15] = array( __('Media Library'), 'upload_files', 'upload.php' );
