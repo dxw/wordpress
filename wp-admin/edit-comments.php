@@ -202,8 +202,8 @@ if ($comments) {
     <th scope="col" class="check-column"><input type="checkbox" /></th>
     <th scope="col" class="comment-column"><?php _e('Comment') ?></th>
 	<th scope="col" class="author-column"><?php _e('Author') ?></th>
-    <th scope="col"><?php _e('Comment Submitted') ?></th>
-    <th scope="col"><?php _e('In Response To This Post') ?></th>
+    <th scope="col" class="date-column"><?php _e('Comment Submitted') ?></th>
+    <th scope="col" class="response-column"><?php _e('In Response To This Post') ?></th>
   </tr>
 </thead>
 <tbody id="the-comment-list" class="list:comment">

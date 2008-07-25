@@ -514,6 +514,10 @@ p.pagenav {
 	width: 20%;
 }
 
+.response-column {
+	width: 20%;
+}
+
 .author-column img {
 	float: left;
 	margin-right: 10px;

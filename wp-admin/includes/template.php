@@ -809,9 +809,9 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 	    <a href="edit-comments.php?s=<?php comment_author_IP() ?>&amp;mode=detail"><?php comment_author_IP() ?></a>
 		<?php endif; //current_user_can?>    
 	</td>
-    <td><?php comment_date(__('Y/m/d \a\t g:ia')); ?></td>
+    <td class="date-column"><?php comment_date(__('Y/m/d \a\t g:ia')); ?></td>
 <?php if ( 'single' !== $mode ) : ?>
-    <td>
+    <td class="response-column">
     "<?php echo $post_link ?>" <?php echo sprintf('(%s comments)', $post->comment_count); ?><br/>
     <?php echo get_the_time(__('Y/m/d \a\t g:ia')); ?>
     </td>
