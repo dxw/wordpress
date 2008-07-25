@@ -503,7 +503,21 @@ p.pagenav {
 }
 
 .comment-column {
-	margin-left: 5px;
+	width: 50%;
+}
+
+.comment-column p {
+	margin-top: 0;
+}
+
+.author-column {
+	width: 20%;
+}
+
+.author-column img {
+	float: left;
+	margin-right: 10px;
+	margin-top: 3px;
 }
 
 .tablenav a.button-secondary {

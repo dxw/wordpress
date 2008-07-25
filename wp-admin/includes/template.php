@@ -763,19 +763,9 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 <?php if ( $checkbox ) : ?>
     <td class="check-column"><?php if ( current_user_can('edit_post', $comment->comment_post_ID) ) { ?><input type="checkbox" name="delete_comments[]" value="<?php echo $comment->comment_ID; ?>" /><?php } ?></td>
 <?php endif; ?>
-    <td class="comment">
+    <td class="comment-column">
     <?php if ( 'detail' == $mode || 'single' == $mode ) comment_text(); ?>
-    <p class="comment-author"><strong><?php comment_author(); ?></strong> |
-    <?php if ( !empty($author_url) ) : ?>
-    <a href="<?php echo $author_url ?>"><?php echo $author_url_display; ?></a> |
-    <?php endif; ?>
-    <?php if ( current_user_can( 'edit_post', $post->ID ) ) : ?>
-    <?php if ( !empty($comment->comment_author_email) ): ?>
-    <?php comment_author_email_link() ?> |
-    <?php endif; ?>
-    <a href="edit-comments.php?s=<?php comment_author_IP() ?>&amp;mode=detail"><?php comment_author_IP() ?></a>
-	<?php endif; //current_user_can?>    
-    </p>
+    
 <?php
 	$actions = array();
 
@@ -807,6 +797,18 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 	}
 	?>
     </td>
+	<td class="author-column">
+		<strong><?php comment_author(); ?></strong><br />
+	    <?php if ( !empty($author_url) ) : ?>
+	    <a href="<?php echo $author_url ?>"><?php echo $author_url_display; ?></a><br />
+	    <?php endif; ?>
+	    <?php if ( current_user_can( 'edit_post', $post->ID ) ) : ?>
+	    <?php if ( !empty($comment->comment_author_email) ): ?>
+	    <?php comment_author_email_link() ?><br />
+	    <?php endif; ?>
+	    <a href="edit-comments.php?s=<?php comment_author_IP() ?>&amp;mode=detail"><?php comment_author_IP() ?></a>
+		<?php endif; //current_user_can?>    
+	</td>
     <td><?php comment_date(__('Y/m/d \a\t g:ia')); ?></td>
 <?php if ( 'single' !== $mode ) : ?>
     <td>
