@@ -734,6 +734,10 @@ a.view-comment-post-link {
 	list-style: none;
 }
 
+#adminmenu li {
+	margin-bottom: 10px;
+}
+
 #adminmenu li.current {
 	border-width: 1px;
 	border-style: solid;
@@ -747,7 +751,8 @@ a.view-comment-post-link {
 }
 
 #adminmenu li .wp-submenu li {
-	padding: 0 0 0 1px;
+	padding: 3px 0 3px 1px;
+	margin-bottom: 0;
 }
 
 #adminmenu li .wp-submenu li.current {
@@ -766,7 +771,7 @@ a.view-comment-post-link {
 
 #adminmenu a {
 	font-size: 13px;
-	padding: 2px 7px 2px 36px;
+	padding: 0px 7px 0px 36px;
 	line-height: 1.1;
 	display: block;
 	text-indent: -18px;
