@@ -595,6 +595,23 @@ a.view-comment-post-link {
 	text-decoration:underline;
 }
 
+.pagehead {
+	width: 100%;
+	clear: both;
+	border-bottom: 1px solid #dfdfdf;
+	padding-bottom: 10px;
+	float: left;
+}
+
+.pagehead .new {
+	float: right;
+	margin-right: 6px;
+	padding: 6px 20px;
+	min-width: 180px;
+	text-align: center;
+	font-size: 16px;
+}
+
 /* Admin Header */
 
 #user_info {

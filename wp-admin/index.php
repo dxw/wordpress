@@ -37,7 +37,7 @@ $today = current_time('mysql', 1);
 ?>
 
 <div class="wrap">
-
+<div class="pagehead"><a class="button new" href="/wp-admin/post-new.php">Write New Post</a></div>
 <div id="dashboard-widgets-wrap">
 
 <?php wp_dashboard(); ?>
