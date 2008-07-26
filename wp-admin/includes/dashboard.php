@@ -460,7 +460,7 @@ function wp_dashboard_inbox( $sidebar_args ) {
 					$(':checked').parent().slideUp( 'normal', function() {
 						$('.inbox-count').text( $('#inbox-filter li:visible').size().toString() );
 						$('#inbox-message').addClass('updated');
-						$('#inbox-message').text(done+txt);
+						$('#inbox-message').text(done+txt+" (This feature isn't enabled in this prototype)");
 					} );
 				} );
 		} );
@@ -489,7 +489,7 @@ function wp_dashboard_inbox( $sidebar_args ) {
 				-- <cite><?php
 					echo $item->from; 
 					if ( 'comment' == $item->type ) // crazyhorse
-						echo " on &quot;<a href='#'>{$crazy_posts[$item->parent]}</a>&quot;";
+						echo " on &quot;<a href='#' class='no-crazy'>{$crazy_posts[$item->parent]}</a>&quot;";
 				?></cite>, <?php echo "$item->date, $item->time"; ?>
 				</p>
 				<br class="clear" />

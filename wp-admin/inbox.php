@@ -6,6 +6,18 @@ $parent_file = 'inbox.php';
 
 require_once('admin-header.php');
 
+if ( !empty($_GET['doaction']) ) :
+
+?>
+
+<div class="updated">
+	<p>This feature isn't enabled in this prototype.</p>
+</div>
+
+<?php
+
+endif;
+
 ?>
 <div class="wrap">
 <form id="inbox-filter" action="" method="get">
@@ -48,11 +60,11 @@ require_once('admin-header.php');
 			if ( $item->href )
 				echo '</a>';
 		?></td>
-		<td><a href="#link-to-comment"><abbr title="<?php echo "$item->date at $item->time"; ?>"><?php echo $item->date; ?></abbr></a></td>
+		<td><a href="#link-to-comment" class="no-crazy"><abbr title="<?php echo "$item->date at $item->time"; ?>"><?php echo $item->date; ?></abbr></a></td>
 		<td><?php
 			echo $item->from;
 			if ( 'comment' == $item->type ) // crazyhorse
-				echo "<br/>on &quot;<a href='#'>{$crazy_posts[$item->parent]}</a>&quot;";
+				echo "<br/>on &quot;<a href='#' class='no-crazy'>{$crazy_posts[$item->parent]}</a>&quot;";
 		?></td>
 	</tr>
 
