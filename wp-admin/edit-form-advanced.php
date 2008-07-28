@@ -59,6 +59,9 @@ add_meta_box('tagsdiv', __('Tags'), 'post_tags_meta_box', 'post', 'side', 'core'
 function post_media_meta_box($post) {
 	echo "<p><small><em>This feature isn't fully functional in this prototype.</em></small></p>";
 
+	if ( empty( $post->ID ) )
+		return;
+
 	$atts = get_children( array(
 		'post_parent' => $post->ID,
 		'post_type' => 'attachment'

@@ -266,6 +266,10 @@ div.dashboard-widget-content p.comment-meta {
 	padding-bottom: 0;
 }
 
+#dashboard_quick_press div.dashboard-widget-content {
+	padding-bottom: 0;
+}
+
 #dashboard_inbox p.actions {
 	margin-bottom:0pt;
 	margin-top: 0;
