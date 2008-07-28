@@ -595,23 +595,6 @@ a.view-comment-post-link {
 	text-decoration:underline;
 }
 
-.pagehead {
-	width: 100%;
-	clear: both;
-	border-bottom: 1px solid #dfdfdf;
-	padding-bottom: 10px;
-	float: left;
-}
-
-.pagehead .new {
-	float: right;
-	margin-right: 6px;
-	padding: 6px 20px;
-	min-width: 180px;
-	text-align: center;
-	font-size: 16px;
-}
-
 /* Admin Header */
 
 #user_info {
@@ -656,6 +639,26 @@ a.view-comment-post-link {
 	border-radius: 3px;
 }
 
+ul#adminmenu li.write-new-button {
+	margin: -10px 18px 12px;
+}
+ul#adminmenu li.write-new-button a {
+	line-height: 1.2em;
+	font: 12px "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana, sans-serif;
+	padding: 6px 4px;
+	letter-spacing: normal;
+	border-width: 1px;
+	border-style: solid;
+	-moz-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	text-indent: 0;
+	text-align: center;
+	color: #246;
+}
+	
+
 #wphead h1 {
 	font: normal 36px Georgia, "Times New Roman", Times, serif;
 	padding: 11px 170px 16px 12px;
@@ -699,7 +702,27 @@ a.view-comment-post-link {
 }
 
 #dashmenu li.highlighted {
-	font-weight: bold;
+	margin-left: 6px;
+	text-align: center;
+	padding: 1	px 0;
+}
+
+#dashmenu li.highlighted a {
+	background: #666;
+	border: 1px solid #888;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-border-radius: 3px;
+	color: #ddd;
+	margin-top: 4px;
+	display: block;
+	padding: 5px 10px;
+	line-height: 1em;
+}
+
+#dashmenu li.highlighted a:hover {
+	color: #fff;
+	border-color: #aaa;
 }
 
 /* Temp */
@@ -764,7 +787,7 @@ a.view-comment-post-link {
 }
 
 #adminmenu li .wp-submenu {
-	margin-top: 6px;
+	margin-top: 4px;
 }
 
 #adminmenu li .wp-submenu li {

@@ -101,7 +101,10 @@ do_action( 'dashmenu' );
 
 </ul>
 
+
 <ul id="adminmenu" class="wp-menu">
+
+<li class="write-new-button"><a class="button-secondary">Write New Post</a></li>
 
 <?php
 
