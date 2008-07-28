@@ -55,6 +55,45 @@ function post_tags_meta_box($post) {
 }
 add_meta_box('tagsdiv', __('Tags'), 'post_tags_meta_box', 'post', 'side', 'core');
 
+//crazyhorse
+function post_media_meta_box($post) {
+	echo "<p><small><em>This feature isn't fully functional in this prototype.</em></small></p>";
+
+	$atts = get_children( array(
+		'post_parent' => $post->ID,
+		'post_type' => 'attachment'
+	) );
+
+	if ( !$atts ) {
+		_e( 'No media.' );
+		return;
+	}
+
+	foreach ( $atts as $att ) {
+		if ( $thumb = wp_get_attachment_image( $att->ID, array(60, 45), true ) ) {
+?>
+			<a href="media.php?action=edit&amp;attachment_id=<?php echo $att->ID  ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $att->post_title)); ?>">
+				<?php echo $thumb; ?>
+			</a>
+
+<?php
+		}
+		echo "<h4>$att->post_title</h4>";
+
+		echo "<a href='#' class='no-crazy'>Remove</a> | ";
+		echo "<a href='media.php?action=edit&amp;attachment_id=$att->ID'>Edit</a>";
+
+		echo "<br class='clear' />";
+	}
+
+
+
+}
+add_meta_box( 'mediadiv', __('Media added to this Post' ), 'post_media_meta_box', 'post', 'side', 'core' );
+
+
+
+
 function post_categories_meta_box($post) {
 ?>
 <ul id="category-tabs">

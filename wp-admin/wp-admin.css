@@ -1056,6 +1056,16 @@ table.form-table td .updated {
 	min-width: 195px;
 }
 
+
+#mediadiv img {
+	float: left;
+	margin-right: 1em;
+}
+
+#mediadiv h4 {
+	margin: 0 0 .5em;
+}
+
 #post-body #tagsdiv #newtag {
 	margin-right: 5px;
 	width: 16em;
