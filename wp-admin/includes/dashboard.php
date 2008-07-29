@@ -387,6 +387,10 @@ function wp_dashboard_quick_press_js() {
 var quickPressLoad = function($) {
 	var act = $('#quickpost-action');
 	var t = $('#quick-press').submit( function() {
+		if ( 'post-quickpress-save-cont' == act.val() ) {
+			return true;
+		}
+
 		var head = $('#dashboard_quick_press div.dashboard-widget').children( 'div').hide().end().find('h3 small');
 		head.prepend( '<img src="images/loading.gif" style="margin: 0 6px 0 0; vertical-align: middle" />' );
 
@@ -405,7 +409,7 @@ var quickPressLoad = function($) {
 	} );
 
 	$('#publish').click( function() { act.val( 'post-quickpress-publish' ); } );
-	$('#save-cont').click( function() { act.val( 'post-quickpress-save-cont' ); } );
+	$('#save-cont').click( function() { act.val( 'post-quickpress-save-cont' ); t.attr( 'action', 'post.php' ); } );
 };
 jQuery( quickPressLoad );
 /* ]]> */

@@ -74,7 +74,7 @@ case 'post-quickpress-save-cont':
 		$post_ID = 'postajaxpost' == $action ? edit_post() : write_post();
 	}
 
-	if ( 0 === strpos( $action, 'post-quickpress' ) ) {
+	if ( 'post-quickpress-save-cont' != $action && 0 === strpos( $action, 'post-quickpress' ) ) {
 		$_POST['post_ID'] = $post_ID;
 		// output the quickpress dashboard widget
 		require_once(ABSPATH . 'wp-admin/includes/dashboard.php');
