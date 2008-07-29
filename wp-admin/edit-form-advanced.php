@@ -9,6 +9,7 @@ $messages[3] = __('Custom field deleted.');
 $messages[4] = __('Post updated.');
 $messages[5] = sprintf( __('Post restored to revision from %s'), wp_post_revision_title( $_GET['revision'], false ) );
 $messages[6] = __('Post published.');
+$messages[7] = __('Post saved.');
 
 $notice = false;
 $notices[1] = __( 'There is an autosave of this post that is more recent than the version below.  <a href="%s">View the autosave</a>.' );

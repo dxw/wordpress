@@ -46,6 +46,8 @@ function redirect_post($post_ID = '') {
 		$location = "post-new.php?posted=$post_ID";
 	} elseif ($action == 'editattachment') {
 		$location = 'attachments.php';
+	} elseif ( 'post-quickpress-save-cont' == $_POST['action'] ) {
+		$location = "post.php?action=edit&post=$post_ID&message=7";
 	} else {
 		$location = "post.php?action=edit&post=$post_ID&message=4";
 	}
