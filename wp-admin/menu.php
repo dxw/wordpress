@@ -12,7 +12,20 @@ $inbox_num = count( wp_get_inbox_items() );
 $awaiting_mod = wp_count_comments();
 $awaiting_mod = $awaiting_mod->moderated;
 
+<<<<<<< .working
 $top_menu = $top_submenu = $menu = $submenu = array();
+=======
+$update_plugins = get_option( 'update_plugins' );
+$update_count = 0;
+if ( isset( $update_plugins->response ) )
+	$update_count = count( $update_plugins->response );
+
+$menu[35] = array( sprintf( __('Plugins %s'), "<span id='update-plugins' class='count-$update_count'><span class='plugin-count'>" . number_format_i18n($update_count) . "</span></span>" ), 'activate_plugins', 'plugins.php');
+if ( current_user_can('edit_users') )
+	$menu[40] = array(__('Users'), 'edit_users', 'users.php');
+else
+	$menu[40] = array(__('Profile'), 'read', 'profile.php');
+>>>>>>> .merge-right.r8619
 
 $top_menu[5]  = array( __('My Account'), 'read', 'profile.php' );
 $top_menu[10] = array( __('My Dashboard'), 'read', 'index.php' );
@@ -37,6 +50,7 @@ $menu[5] = array( __('Content'), 'edit_posts', 'edit.php', 'wp-menu-open' );
 $menu[10] = array( __('Templates'), 'switch_themes', 'themes.php' );
 	$submenu['themes.php'][5]  = array(__('Themes'), 'switch_themes', 'themes.php');
 	$submenu['themes.php'][10] = array(__('Theme Editor'), 'edit_themes', 'theme-editor.php');
+$submenu['plugins.php'][15] = array(__('Install Plugins'), 'install_plugins', 'plugin-install.php');
 
 $menu[15] = array( __('Utilities'), 'read', 'users.php' ); // placeholder - should be inbox
 	$submenu['users.php'][5]  = array( __('Inbox'), 'read', 'inbox.php' );

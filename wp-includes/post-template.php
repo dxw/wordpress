@@ -74,7 +74,7 @@ function get_the_guid( $id = 0 ) {
 	return apply_filters('get_the_guid', $post->guid);
 }
 
-function the_content($more_link_text = '(more...)', $stripteaser = 0, $more_file = '') {
+function the_content($more_link_text = NULL, $stripteaser = 0, $more_file = '') {
 	$content = get_the_content($more_link_text, $stripteaser, $more_file);
 	$content = apply_filters('the_content', $content);
 	$content = str_replace(']]>', ']]&gt;', $content);
@@ -82,8 +82,11 @@ function the_content($more_link_text = '(more...)', $stripteaser = 0, $more_file
 }
 
 
-function get_the_content($more_link_text = '(more...)', $stripteaser = 0, $more_file = '') {
+function get_the_content($more_link_text = NULL, $stripteaser = 0, $more_file = '') {
 	global $id, $post, $more, $page, $pages, $multipage, $preview, $pagenow;
+
+	if ( NULL == $more_link_text )
+		$more_link_text = __( '(more...)' );
 
 	$output = '';
 
@@ -252,7 +255,7 @@ function post_custom( $key = '' ) {
 function the_meta() {
 	if ( $keys = get_post_custom_keys() ) {
 		echo "<ul class='post-meta'>\n";
-		foreach ( $keys as $key ) {
+		foreach ( (array) $keys as $key ) {
 			$keyt = trim($key);
 			if ( '_' == $keyt{0} )
 				continue;
@@ -447,7 +450,7 @@ function get_attachment_icon( $id = 0, $fullsize = false, $max_dims = false ) {
 	$id = (int) $id;
 	if ( !$post = & get_post($id) )
 		return false;
-		
+
 	if ( !$src = get_attachment_icon_src( $post->ID, $fullsize ) )
 		return false;
 

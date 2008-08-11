@@ -67,7 +67,11 @@ function get_image_send_to_editor($id, $alt, $title, $align, $url='', $rel = fal
 
 function image_add_caption( $html, $id, $alt, $title, $align, $url, $size ) {
 
+<<<<<<< .working
 	if ( empty($alt) ) return $html;
+=======
+	if ( empty($alt) || apply_filters( 'disable_captions', '' ) ) return $html;
+>>>>>>> .merge-right.r8619
 	$id = ( 0 < (int) $id ) ? 'attachment_' . $id : '';
 
 	preg_match( '/width="([0-9]+)/', $html, $matches );
@@ -102,7 +106,7 @@ function media_handle_upload($file_id, $post_id, $post_data = array()) {
 	$file = wp_handle_upload($_FILES[$file_id], $overrides);
 
 	if ( isset($file['error']) )
-		return new wp_error( 'upload_error', $file['error'] );
+		return new WP_Error( 'upload_error', $file['error'] );
 
 	$url = $file['url'];
 	$type = $file['type'];
@@ -142,7 +146,7 @@ function media_handle_sideload($file_array, $post_id, $desc = null, $post_data =
 	$file = wp_handle_sideload($file_array, $overrides);
 
 	if ( isset($file['error']) )
-		return new wp_error( 'upload_error', $file['error'] );
+		return new WP_Error( 'upload_error', $file['error'] );
 
 	$url = $file['url'];
 	$type = $file['type'];
@@ -280,7 +284,7 @@ function media_upload_form_handler() {
 	if ( isset($_POST['send']) ) {
 		$keys = array_keys($_POST['send']);
 		$send_id = (int) array_shift($keys);
-		$attachment = $_POST['attachments'][$send_id];
+		$attachment = stripslashes_deep( $_POST['attachments'][$send_id] );
 		$html = $attachment['post_title'];
 		if ( !empty($attachment['url']) ) {
 			if ( strpos($attachment['url'], 'attachment_id') || false !== strpos($attachment['url'], get_permalink($_POST['post_id'])) )
@@ -296,7 +300,13 @@ function media_upload_form_handler() {
 
 // crazyhorse
 function media_upload_image() {
+<<<<<<< .working
 
+=======
+	$errors = array();
+	$id = 0;
+
+>>>>>>> .merge-right.r8619
 	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		// Upload File button was clicked
 		if ( $_FILES['async-upload']['name'] == '' )
@@ -364,6 +374,9 @@ function media_sideload_image($file, $post_id, $desc = null) {
 }
 
 function media_upload_audio() {
+	$errors = array();
+	$id = 0;
+
 	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		// Upload File button was clicked
 		$id = media_handle_upload('async-upload', $_REQUEST['post_id']);
@@ -404,6 +417,9 @@ function media_upload_audio() {
 }
 
 function media_upload_video() {
+	$errors = array();
+	$id = 0;
+
 	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		// Upload File button was clicked
 		$id = media_handle_upload('async-upload', $_REQUEST['post_id']);
@@ -444,6 +460,9 @@ function media_upload_video() {
 }
 
 function media_upload_file() {
+	$errors = array();
+	$id = 0;
+
 	if ( isset($_POST['html-upload']) && !empty($_FILES) ) {
 		// Upload File button was clicked
 		$id = media_handle_upload('async-upload', $_REQUEST['post_id']);
@@ -484,6 +503,8 @@ function media_upload_file() {
 }
 
 function media_upload_gallery() {
+	$errors = array();
+
 	if ( !empty($_POST) ) {
 		$return = media_upload_form_handler();
 
@@ -498,6 +519,7 @@ function media_upload_gallery() {
 }
 
 function media_upload_library() {
+	$errors = array();
 	if ( !empty($_POST) ) {
 		$return = media_upload_form_handler();
 
@@ -510,18 +532,64 @@ function media_upload_library() {
 	return wp_iframe( 'media_upload_library_form', $errors );
 }
 
+<<<<<<< .working
 // crazyhorse
+=======
+function image_size_input_fields($post, $checked='') {
+		
+		// get a list of the actual pixel dimensions of each possible intermediate version of this image
+		$sizes = array();
+		$size_names = array('thumbnail' => 'Thumbnail', 'medium' => 'Medium', 'large' => 'Large', 'full' => 'Full size');
+		
+		foreach ( $size_names as $size => $name) {
+			$downsize = image_downsize($post->ID, $size);
+			
+			// is this size selectable?
+			$enabled = ( $downsize[3] || 'full' == $size );
+			$css_id = "image-size-{$size}-{$post->ID}";
+			// if $checked was not specified, default to the first available size that's bigger than a thumbnail
+			if ( !$checked && $enabled && 'thumbnail' != $size )
+				$checked = $size;
+			
+			$html = "<div class='image-size-item'><input type='radio' ".( $enabled ? '' : "disabled='disabled'")."name='attachments[$post->ID][image-size]' id='{$css_id}' value='{$size}'".( $checked == $size ? " checked='checked'" : '') ." />";
+			
+			$html .= "<label for='{$css_id}'>" . __($name). "</label>";
+			// only show the dimensions if that choice is available
+			if ( $enabled )
+				$html .= " <label for='{$css_id}' class='help'>" . sprintf( __("(%d&nbsp;&times;&nbsp;%d)"), $downsize[1], $downsize[2] ). "</label>";
+				
+			$html .= '</div>';
+		
+			$out[] = $html;
+		}
+		
+		return array(
+			'label' => __('Size'),
+			'input' => 'html',
+			'html'  => join("\n", $out),
+		);
+}
+
+>>>>>>> .merge-right.r8619
 function image_attachment_fields_to_edit($form_fields, $post) {
 	if ( substr($post->post_mime_type, 0, 5) == 'image' ) {
 		$form_fields['post_title']['required'] = true;
 
+<<<<<<< .working
 		$form_fields['post_excerpt']['label'] = __('Caption');
 		$form_fields['post_excerpt']['helps'][] = __('Alternate text (e.g. Blue skies)');
+=======
+		$form_fields['post_excerpt']['label'] = __('Caption');
+		$form_fields['post_excerpt']['helps'][] = __('Also used as alternate text for the image');
+>>>>>>> .merge-right.r8619
 
 //		$form_fields['post_content']['label'] = __('Description');
 
+<<<<<<< .working
 //		$thumb = wp_get_attachment_thumb_url($post->ID);
 
+=======
+>>>>>>> .merge-right.r8619
 		$form_fields['align'] = array(
 			'label' => __('Alignment'),
 			'input' => 'html',
@@ -535,6 +603,7 @@ function image_attachment_fields_to_edit($form_fields, $post) {
 				<input type='radio' name='attachments[$post->ID][align]' id='image-align-right-$post->ID' value='right' />
 				<label for='image-align-right-$post->ID' class='align image-align-right-label'>" . __('Right') . "</label>\n",
 		);
+<<<<<<< .working
 /*
 		$form_fields['image-size'] = array(
 			'label' => __('Size'),
@@ -547,6 +616,9 @@ function image_attachment_fields_to_edit($form_fields, $post) {
 				<input type='radio' name='attachments[$post->ID][image-size]' id='image-size-full-$post->ID' value='full' />
 				<label for='image-size-full-$post->ID'>" . __('Full size') . "</label>",
 		);
+=======
+		$form_fields['image-size'] = image_size_input_fields($post);
+>>>>>>> .merge-right.r8619
 */
 	}
 	return $form_fields;
@@ -614,8 +686,13 @@ function get_attachment_fields_to_edit($post, $errors = null) {
 			'value'      => $edit_post->post_title
 		),
 		'post_excerpt' => array(
+<<<<<<< .working
 			'label'      => __('Caption'),
 			'value'      => $edit_post->post_excerpt
+=======
+			'label'      => __('Caption'),
+			'value'      => $edit_post->post_excerpt,
+>>>>>>> .merge-right.r8619
 		),
 /*
 		'post_content' => array(
@@ -1065,7 +1142,6 @@ function media_upload_form( $errors = null ) {
 	$post_id = intval($_REQUEST['post_id']);
 
 ?>
-<input type='hidden' name='post_id' value='<?php echo (int) $post_id; ?>' />
 <div id="media-upload-notice">
 <?php if (isset($errors['upload_notice']) ) { ?>
 	<?php echo $errors['upload_notice']; ?>
@@ -1128,9 +1204,9 @@ jQuery(function($){
 <div id="html-upload-ui">
 <?php do_action('pre-html-upload-ui'); ?>
 	<p>
-	<input type="file" name="async-upload" id="async-upload" /> <input type="submit" class="button" name="html-upload" value="<?php echo attribute_escape(__('Upload')); ?>" /> <a href="#" onClick="return top.tb_remove();"><?php _e('Cancel'); ?></a>
+	<input type="file" name="async-upload" id="async-upload" /> <input type="submit" class="button" name="html-upload" value="<?php echo attribute_escape(__('Upload')); ?>" /> <a href="#" onclick="return top.tb_remove();"><?php _e('Cancel'); ?></a>
 	</p>
-	<input type="hidden" name="post_id" id="post_id" value="<?php echo (int) $post_id; ?>" />
+
 	<br class="clear" />
 	<?php if ( is_lighttpd_before_150() ): ?>
 	<p><?php _e('If you want to use all capabilities of the uploader, like uploading multiple files at once, please upgrade to lighttpd 1.5.'); ?></p>
@@ -1202,6 +1278,10 @@ var addExtImage = {
 
 		if ( f.alt.value ) {
 			alt = f.alt.value.replace(/['"<>]+/g, '');
+<<<<<<< .working
+=======
+<?php if ( ! apply_filters( 'disable_captions', '' ) ) { ?>
+>>>>>>> .merge-right.r8619
 			caption = f.alt.value.replace(/'/g, '&#39;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 		}
 
@@ -1261,6 +1341,7 @@ var addExtImage = {
 </div>
 </div>
 <input type="submit" class="button savebutton" name="save" value="<?php echo attribute_escape( __( 'Save all changes' ) ); ?>" />
+</form>
 <?php
 	endif;
 }
@@ -1320,7 +1401,7 @@ function media_upload_library_form($errors) {
 
 	$form_action_url = admin_url("media-upload.php?type=single&tab=library&post_id=$post_id");
 
-	$_GET['paged'] = intval($_GET['paged']);
+	$_GET['paged'] = isset( $_GET['paged'] ) ? intval($_GET['paged']) : 0;
 	if ( $_GET['paged'] < 1 )
 		$_GET['paged'] = 1;
 	$start = ( $_GET['paged'] - 1 ) * 10;
@@ -1381,14 +1462,23 @@ function media_error_nofile() { ?>
 <?php }
 
 function type_form_image() {
-	$form = '
+
+	if ( apply_filters( 'disable_captions', '' ) ) {
+		$alt = __('Alternate Text');
+		$alt_help = __('Alt text for the image, e.g. "The Mona Lisa"');
+	} else {
+		$alt = __('Image Caption');
+		$alt_help = __('Also used as alternate text for the image');
+	}
+
+	return '
 	<table class="describe"><tbody>
 		<tr>
 			<th valign="top" scope="row" class="label" style="width:120px;">
 				<span class="alignleft"><label for="src">' . __('Source') . '</label></span>
 				<span class="alignright"><img id="status_img" src="images/required.gif" title="required" alt="required" /></span>
 			</th>
-			<td class="field"><input id="src" name="src" value="" type="text" aria-required="true" onblur="addExtImage.getImageData()"></td>
+			<td class="field"><input id="src" name="src" value="" type="text" aria-required="true" onblur="addExtImage.getImageData()" /></td>
 		</tr>
 
 		<tr>
@@ -1398,7 +1488,19 @@ function type_form_image() {
 			</th>
 			<td class="field"><p><input id="title" name="title" value="" type="text" aria-required="true" /></p></td>
 		</tr>
+<<<<<<< .working
+=======
 
+		<tr>
+			<th valign="top" scope="row" class="label">
+				<span class="alignleft"><label for="alt">' . $alt . '</label></span>
+			</th>
+			<td class="field"><input id="alt" name="alt" value="" type="text" aria-required="true" />
+			<p class="help">' . $alt_help . '</p></td>
+		</tr>
+>>>>>>> .merge-right.r8619
+
+<<<<<<< .working
 		<tr>
 			<th valign="top" scope="row" class="label">
 				<span class="alignleft"><label for="alt">' . __('Image Caption') . '</label></span>
@@ -1407,6 +1509,8 @@ function type_form_image() {
 			<p class="help">' . __('Also used as alternate text for the image') . '</p></td>
 		</tr>
 
+=======
+>>>>>>> .merge-right.r8619
 		<tr class="align">
 			<th valign="top" scope="row" class="label"><p><label for="align">' . __('Alignment') . '</label></p></th>
 			<td class="field">
@@ -1441,7 +1545,6 @@ function type_form_image() {
 	</tbody></table>
 ';
 
-	return $form;
 }
 
 function type_form_audio() {

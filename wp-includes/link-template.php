@@ -85,7 +85,7 @@ function get_permalink($id = 0, $leavename=false) {
 			// having to assign it explicitly
 			if ( empty($category) ) {
 				$default_category = get_category( get_option( 'default_category' ) );
-				$category = is_wp_error( $default_category ) ? '' : $default_category->slug; 
+				$category = is_wp_error( $default_category ) ? '' : $default_category->slug;
 			}
 		}
 
@@ -112,10 +112,10 @@ function get_permalink($id = 0, $leavename=false) {
 		);
 		$permalink = get_option('home') . str_replace($rewritecode, $rewritereplace, $permalink);
 		$permalink = user_trailingslashit($permalink, 'single');
-		return apply_filters('post_link', $permalink, $post);
+		return apply_filters('post_link', $permalink, $post, $leavename);
 	} else { // if they're not using the fancy permalink option
 		$permalink = get_option('home') . '/?p=' . $post->ID;
-		return apply_filters('post_link', $permalink, $post);
+		return apply_filters('post_link', $permalink, $post, $leavename);
 	}
 }
 
@@ -478,8 +478,8 @@ function get_edit_post_link( $id = 0, $context = 'display' ) {
 		$var  = 'post';
 		break;
 	endswitch;
-	
-	return apply_filters( 'get_edit_post_link', get_bloginfo( 'wpurl' ) . "/wp-admin/$file.php?{$action}$var=$post->ID", $post->ID );
+
+	return apply_filters( 'get_edit_post_link', admin_url("$file.php?{$action}$var=$post->ID"), $post->ID, $context );
 }
 
 function edit_post_link( $link = 'Edit This', $before = '', $after = '' ) {
@@ -509,7 +509,7 @@ function get_edit_comment_link( $comment_id = 0 ) {
 			return;
 	}
 
-	$location = get_bloginfo( 'wpurl' ) . '/wp-admin/comment.php?action=editcomment&amp;c=' . $comment->comment_ID;
+	$location = admin_url('comment.php?action=editcomment&amp;c=') . $comment->comment_ID;
 	return apply_filters( 'get_edit_comment_link', $location );
 }
 
@@ -696,7 +696,8 @@ function next_posts_link($label='Next Page &raquo;', $max_page=0) {
 	if ( (! is_single()) && (empty($paged) || $nextpage <= $max_page) ) {
 		echo '<a href="';
 		next_posts($max_page);
-		echo '">'. preg_replace('/&([^#])(?![a-z]{1,8};)/', '&#038;$1', $label) .'</a>';
+		$attr = apply_filters( 'next_posts_link_attributes', '' );
+		echo "\" $attr>". preg_replace('/&([^#])(?![a-z]{1,8};)/', '&#038;$1', $label) .'</a>';
 	}
 }
 
@@ -720,7 +721,8 @@ function previous_posts_link($label='&laquo; Previous Page') {
 	if ( (!is_single())	&& ($paged > 1) ) {
 		echo '<a href="';
 		previous_posts();
-		echo '">'. preg_replace('/&([^#])(?![a-z]{1,8};)/', '&#038;$1', $label) .'</a>';
+		$attr = apply_filters( 'previous_posts_link_attributes', '' );
+		echo "\" $attr>". preg_replace('/&([^#])(?![a-z]{1,8};)/', '&#038;$1', $label) .'</a>';
 	}
 }
 
@@ -778,7 +780,7 @@ function get_shortcut_link() {
  * @package WordPress
  * @since 2.6
  *
- * Returns the 'site_url' option with the appropriate protocol,  'https' if is_ssl() and 'http' otherwise. 
+ * Returns the 'site_url' option with the appropriate protocol,  'https' if is_ssl() and 'http' otherwise.
  * If $scheme is 'http' or 'https', is_ssl() is overridden.
  *
  * @param string $path Optional path relative to the site url

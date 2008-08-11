@@ -34,6 +34,7 @@ while (have_posts()) : the_post();
 $class = 'alternate' == $class ? '' : 'alternate';
 global $current_user;
 $post_owner = ( $current_user->ID == $post->post_author ? 'self' : 'other' );
+$edit_link = get_edit_post_link( $post->ID );
 $title = get_the_title();
 if ( empty($title) )
 	$title = __('(no title)');
@@ -83,7 +84,12 @@ foreach($posts_columns as $column_name=>$column_display_name) {
 		break;
 	case 'title':
 		?>
+<<<<<<< .working
 		<td class="post-title"><strong><?php if ( current_user_can( 'edit_post', $post->ID ) ) { ?><a class="row-title" href="post.php?action=edit&amp;post=<?php the_ID(); ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $title)); ?>"><?php echo $title ?></a><?php } else { echo $title; } ?></strong>
+=======
+		<td><strong><?php if ( current_user_can( 'edit_post', $post->ID ) ) { ?><a class="row-title" href="<?php echo $edit_link; ?>" title="<?php echo attribute_escape(sprintf(__('Edit "%s"'), $title)); ?>"><?php echo $title ?></a><?php } else { echo $title; } ?></strong>
+		<?php if ( !empty($post->post_password) ) { _e(' &#8212; <strong>Protected</strong>'); } elseif ('private' == $post->post_status) { _e(' &#8212; <strong>Private</strong>'); } ?></td>
+>>>>>>> .merge-right.r8619
 		<?php
 		if ( !empty($post->post_password) ) { _e(' &#8212; <strong>Protected</strong>'); } elseif ('private' == $post->post_status) { _e(' &#8212; <strong>Private</strong>'); }
 
@@ -193,7 +199,7 @@ foreach($posts_columns as $column_name=>$column_display_name) {
 
 	case 'control_edit':
 		?>
-		<td><?php if ( current_user_can('edit_post',$post->ID) ) { echo "<a href='post.php?action=edit&amp;post=$id' class='edit'>" . __('Edit') . "</a>"; } ?></td>
+		<td><?php if ( current_user_can('edit_post',$post->ID) ) { echo "<a href='$edit_link' class='edit'>" . __('Edit') . "</a>"; } ?></td>
 		<?php
 		break;
 

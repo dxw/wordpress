@@ -1,44 +1,109 @@
 <?php
+/**
+ * WordPress Plugin Administration API
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
 
+/**
+ * Parse the plugin contents to retrieve plugin's metadata.
+ *
+ * The metadata of the plugin's data searches for the following in the plugin's
+ * header. All plugin data must be on its own line. For plugin description, it
+ * must not have any newlines or only parts of the description will be displayed
+ * and the same goes for the plugin data. The below is formatted for printing.
+ *
+ * <code>
+ * /*
+ * Plugin Name: Name of Plugin
+ * Plugin URI: Link to plugin information
+ * Description: Plugin Description
+ * Author: Plugin author's name
+ * Author URI: Link to the author's web site
+ * Version: Must be set in the plugin for WordPress 2.3+
+ * Text Domain: Optional. Unique identifier, should be same as the one used in
+ *		plugin_text_domain()
+ * Domain Path: Optional. Only useful if the translations are located in a
+ *		folder above the plugin's base path. For example, if .mo files are
+ *		located in the locale folder then Domain Path will be "/locale/" and
+ *		must have the first slash. Defaults to the base folder the plugin is
+ *		located in.
+ *  * / # Remove the space to close comment
+ * </code>
+ *
+ * Plugin data returned array contains the following:
+ *		'Name' - Name of the plugin, must be unique.
+ *		'Title' - Title of the plugin and the link to the plugin's web site.
+ *		'Description' - Description of what the plugin does and/or notes
+ *		from the author.
+ *		'Author' - The author's name
+ *		'AuthorURI' - The authors web site address.
+ *		'Version' - The plugin version number.
+ *		'PluginURI' - Plugin web site address.
+ *		'TextDomain' - Plugin's text domain for localization.
+ *		'DomainPath' - Plugin's relative directory path to .mo files.
+ *
+ * Some users have issues with opening large files and manipulating the contents
+ * for want is usually the first 1kiB or 2kiB. This function stops pulling in
+ * the plugin contents when it has all of the required plugin data.
+ *
+ * The first 8kiB of the file will be pulled in and if the plugin data is not
+ * within that first 8kiB, then the plugin author should correct their plugin
+ * and move the plugin data headers to the top.
+ *
+ * The plugin file is assumed to have permissions to allow for scripts to read
+ * the file. This is not checked however and the file is only opened for
+ * reading.
+ *
+ * @link http://trac.wordpress.org/ticket/5651 Previous Optimizations.
+ * @link http://trac.wordpress.org/ticket/7372 Further and better Optimizations.
+ * @since 1.5.0
+ *
+ * @param string $plugin_file Path to the plugin file
+ * @return array See above for description.
+ */
 function get_plugin_data( $plugin_file ) {
-	$plugin_data = implode( '', file( $plugin_file ));
-	preg_match( '|Plugin Name:(.*)$|mi', $plugin_data, $plugin_name );
-	preg_match( '|Plugin URI:(.*)$|mi', $plugin_data, $plugin_uri );
+	// We don't need to write to the file, so just open for reading.
+	$fp = fopen($plugin_file, 'r');
+
+	// Pull only the first 8kiB of the file in.
+	$plugin_data = fread( $fp, 8192 );
+
+	// PHP will close file handle, but we are good citizens.
+	fclose($fp);
+
+	preg_match( '|Plugin Name:(.*)$|mi', $plugin_data, $name );
+	preg_match( '|Plugin URI:(.*)$|mi', $plugin_data, $uri );
+	preg_match( '|Version:(.*)|i', $plugin_data, $version );
 	preg_match( '|Description:(.*)$|mi', $plugin_data, $description );
 	preg_match( '|Author:(.*)$|mi', $plugin_data, $author_name );
 	preg_match( '|Author URI:(.*)$|mi', $plugin_data, $author_uri );
+	preg_match( '|Text Domain:(.*)$|mi', $plugin_data, $text_domain );
+	preg_match( '|Domain Path:(.*)$|mi', $plugin_data, $domain_path );
 
-	if ( preg_match( "|Version:(.*)|i", $plugin_data, $version ))
-		$version = trim( $version[1] );
-	else
-		$version = '';
-
-	$description = wptexturize( trim( $description[1] ));
-
-	$name = $plugin_name[1];
-	$name = trim( $name );
-	$plugin = $name;
-	if ('' != trim($plugin_uri[1]) && '' != $name ) {
-		$plugin = '<a href="' . trim( $plugin_uri[1] ) . '" title="'.__( 'Visit plugin homepage' ).'">'.$plugin.'</a>';
+	foreach ( array( 'name', 'uri', 'version', 'description', 'author_name', 'author_uri', 'text_domain', 'domain_path' ) as $field ) {
+		if ( !empty( ${$field} ) )
+			${$field} = trim(${$field}[1]);
+		else
+			${$field} = '';
 	}
 
-	if ('' == $author_uri[1] ) {
-		$author = trim( $author_name[1] );
-	} else {
-		$author = '<a href="' . trim( $author_uri[1] ) . '" title="'.__( 'Visit author homepage' ).'">' . trim( $author_name[1] ) . '</a>';
-	}
-
-	return array('Name' => $name, 'Title' => $plugin, 'Description' => $description, 'Author' => $author, 'Version' => $version);
+	return array(
+				'Name' => $name, 'PluginURI' => $uri, 'Description' => $description,
+				'Author' => $author_name, 'AuthorURI' => $author_uri, 'Version' => $version,
+				'TextDomain' => $text_domain, 'DomainPath' => $domain_path
+				);
 }
 
 function get_plugins($plugin_folder = '') {
-	
+
 	if ( ! $cache_plugins = wp_cache_get('plugins', 'plugins') )
-		$cached_plugins = array();
-	
+		$cache_plugins = array();
+
 	if ( isset($cache_plugins[ $plugin_folder ]) )
 		return $cache_plugins[ $plugin_folder ];
-	
+
 	$wp_plugins = array ();
 	$plugin_root = WP_PLUGIN_DIR;
 	if( !empty($plugin_folder) )
@@ -86,13 +151,21 @@ function get_plugins($plugin_folder = '') {
 
 	uasort( $wp_plugins, create_function( '$a, $b', 'return strnatcasecmp( $a["Name"], $b["Name"] );' ));
 
-	$cache_plugins[ $plugin_folder ] = $wp_plugins; 
-	wp_cache_set('plugins', $cache_plugins, 'plugins'); 
+	$cache_plugins[ $plugin_folder ] = $wp_plugins;
+	wp_cache_set('plugins', $cache_plugins, 'plugins');
 
 	return $wp_plugins;
 }
 
-function is_plugin_active($plugin){
+/**
+ * Check whether the plugin is active by checking the active_plugins list.
+ *
+ * @since 2.5.0
+ *
+ * @param string $plugin Base plugin path from plugins directory.
+ * @return bool True, if in the active plugins list. False, not in the list.
+ */
+function is_plugin_active($plugin) {
 	return in_array($plugin, get_option('active_plugins'));
 }
 
@@ -206,26 +279,30 @@ function delete_plugins($plugins, $redirect = '' ) {
 	$plugins_dir = $wp_filesystem->wp_plugins_dir();
 	if ( empty($plugins_dir) )
 		return new WP_Error('fs_no_plugins_dir', __('Unable to locate WordPress Plugin directory.'));
-	
+
 	$plugins_dir = trailingslashit( $plugins_dir );
 
 	$errors = array();
 
 	foreach( $plugins as $plugin_file ) {
+		// Run Uninstall hook
+		if ( is_uninstallable_plugin( $plugin_file ) )
+			uninstall_plugin($plugin_file);
+
 		$this_plugin_dir = trailingslashit( dirname($plugins_dir . $plugin_file) );
 		// If plugin is in its own directory, recursively delete the directory.
 		if ( strpos($plugin_file, '/') && $this_plugin_dir != $plugins_dir ) //base check on if plugin includes directory seperator AND that its not the root plugin folder
 			$deleted = $wp_filesystem->delete($this_plugin_dir, true);
 		else
 			$deleted = $wp_filesystem->delete($plugins_dir . $plugin_file);
-	
+
 		if ( ! $deleted )
 			$errors[] = $plugin_file;
 	}
-	
+
 	if( ! empty($errors) )
 		return new WP_Error('could_not_remove_plugin', sprintf(__('Could not fully remove the plugin(s) %s'), implode(', ', $errors)) );
-	
+
 	return true;
 }
 
@@ -239,23 +316,85 @@ function validate_active_plugins() {
 		return;
 	}
 
+	//Invalid is any plugin that is deactivated due to error.
+	$invalid = array();
+
 	// If a plugin file does not exist, remove it from the list of active
 	// plugins.
 	foreach ( $check_plugins as $check_plugin ) {
 		$result = validate_plugin($check_plugin);
 		if ( is_wp_error( $result ) ) {
+			$invalid[$check_plugin] = $result;
 			deactivate_plugins( $check_plugin, true);
 		}
 	}
+	return $invalid;
 }
 
 function validate_plugin($plugin) {
 	if ( validate_file($plugin) )
-		return new WP_Error('plugin_invalid', __('Invalid plugin.'));
+		return new WP_Error('plugin_invalid', __('Invalid plugin path.'));
 	if ( ! file_exists(WP_PLUGIN_DIR . '/' . $plugin) )
 		return new WP_Error('plugin_not_found', __('Plugin file does not exist.'));
 
 	return 0;
+}
+
+/**
+ * Whether the plugin can be uninstalled.
+ *
+ * @since 2.7
+ *
+ * @param string $plugin Plugin path to check.
+ * @return bool Whether plugin can be uninstalled.
+ */
+function is_uninstallable_plugin($plugin) {
+	$file = plugin_basename($plugin);
+
+	$uninstallable_plugins = (array) get_option('uninstall_plugins');
+	if ( isset( $uninstallable_plugins[$file] ) || file_exists( WP_PLUGIN_DIR . '/' . dirname($file) . '/uninstall.php' ) )
+		return true;
+
+	return false;
+}
+
+/**
+ * Uninstall a single plugin.
+ *
+ * Calls the uninstall hook, if it is available.
+ *
+ * @since 2.7
+ *
+ * @param string $plugin Relative plugin path from Plugin Directory.
+ */
+function uninstall_plugin($plugin) {
+	$file = plugin_basename($plugin);
+
+	$uninstallable_plugins = (array) get_option('uninstall_plugins');
+	if ( file_exists( WP_PLUGIN_DIR . '/' . dirname($file) . '/uninstall.php' ) ) {
+		if ( isset( $uninstallable_plugins[$file] ) ) {
+			unset($uninstallable_plugins[$file]);
+			update_option('uninstall_plugins', $uninstallable_plugins);
+		}
+		unset($uninstallable_plugins);
+
+		define('WP_UNINSTALL_PLUGIN', $file);
+		include WP_PLUGIN_DIR . '/' . dirname($file) . '/uninstall.php';
+
+		return true;
+	}
+
+	if ( isset( $uninstallable_plugins[$file] ) ) {
+		$callable = $uninstallable_plugins[$file];
+		unset($uninstallable_plugins[$file]);
+		update_option('uninstall_plugins', $uninstallable_plugins);
+		unset($uninstallable_plugins);
+
+		include WP_PLUGIN_DIR . '/' . $file;
+
+		add_action( 'uninstall_' . $file, $callable );
+		do_action( 'uninstall_' . $file );
+	}
 }
 
 //

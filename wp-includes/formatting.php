@@ -27,7 +27,7 @@ function wptexturize($text) {
 	for ( $i = 0; $i < $stop; $i++ ) {
  		$curl = $textarr[$i];
 
-		if (isset($curl{0}) && '<' != $curl{0} && '[' != $curl{0} && $next && !$has_pre_parent) { // If it's not a tag
+		if ( !empty($curl) && '<' != $curl{0} && '[' != $curl{0} && $next && !$has_pre_parent) { // If it's not a tag
 			// static strings
 			$curl = str_replace($static_characters, $static_replacements, $curl);
 			// regular expressions
@@ -682,8 +682,8 @@ function _make_email_clickable_cb($matches) {
 function make_clickable($ret) {
 	$ret = ' ' . $ret;
 	// in testing, using arrays here was found to be faster
-	$ret = preg_replace_callback('#([\s>])([\w]+?://[\w\#$%&~/.\-;:=,?@\[\]+]*)#is', '_make_url_clickable_cb', $ret);
-	$ret = preg_replace_callback('#([\s>])((www|ftp)\.[\w\#$%&~/.\-;:=,?@\[\]+]*)#is', '_make_web_ftp_clickable_cb', $ret);
+	$ret = preg_replace_callback('#([\s>])([\w]+?://[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is', '_make_url_clickable_cb', $ret);
+	$ret = preg_replace_callback('#([\s>])((www|ftp)\.[\w\\x80-\\xff\#$%&~/.\-;:=,?@\[\]+]*)#is', '_make_web_ftp_clickable_cb', $ret);
 	$ret = preg_replace_callback('#([\s>])([.0-9a-z_+-]+)@(([0-9a-z-]+\.)+[0-9a-z]{2,})#i', '_make_email_clickable_cb', $ret);
 	// this one is not in an array because we need it to run last, for cleanup of accidental links within links
 	$ret = preg_replace("#(<a( [^>]+?>|>))<a [^>]+?>([^>]+?)</a></a>#i", "$1$3</a>", $ret);
@@ -844,9 +844,9 @@ function human_time_diff( $from, $to = '' ) {
 function wp_trim_excerpt($text) { // Fakes an excerpt if needed
 	if ( '' == $text ) {
 		$text = get_the_content('');
-		
-		$text = strip_shortcodes( $text ); 
-		
+
+		$text = strip_shortcodes( $text );
+
 		$text = apply_filters('the_content', $text);
 		$text = str_replace(']]>', ']]&gt;', $text);
 		$text = strip_tags($text);
@@ -1147,7 +1147,7 @@ function clean_url( $url, $protocols = null, $context = 'display' ) {
 	$original_url = $url;
 
 	if ('' == $url) return $url;
-	$url = preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@()]|i', '', $url);
+	$url = preg_replace('|[^a-z0-9-~+_.?#=!&;,/:%@()\\x80-\\xff]|i', '', $url);
 	$strip = array('%0d', '%0a');
 	$url = str_replace($strip, '', $url);
 	$url = str_replace(';//', '://', $url);
@@ -1418,6 +1418,87 @@ function wp_html_excerpt( $str, $count ) {
 	// remove part of an entity at the end
 	$str = preg_replace( '/&[^;\s]{0,6}$/', '', $str );
 	return $str;
+}
+
+/**
+ * Add a Base url to relative links in passed content.
+ *
+ * By default it supports the 'src' and 'href' attributes,
+ * However this may be changed via the 3rd param.
+ *
+ * @package WordPress
+ * @since 2.7
+ *
+ * @param string $content String to search for links in
+ * @param string $base The base URL to prefix to links
+ * @param array $attrs The attributes which should be processed.
+ * @eaturn string The processed content.
+ */
+function links_add_base_url( $content, $base, $attrs = array('src', 'href') ) {
+	$attrs = implode('|', (array)$attrs);
+	return preg_replace_callback("!($attrs)=(['\"])(.+?)\\2!i",
+			create_function('$m', 'return _links_add_base($m, "' . $base . '");'),
+			$content);
+}
+
+/**
+ * Callback to add a base url to relative links in passed content.
+ *
+ *
+ * @package WordPress
+ * @since 2.7
+ *
+ * @internal
+ * @param string $m The matched link
+ * @param string $base The base URL to prefix to links
+ * @eaturn string The processed link
+ */
+function _links_add_base($m, $base) {
+	//1 = attribute name  2 = quotation mark  3 = URL
+	return $m[1] . '=' . $m[2] .
+		(strpos($m[3], 'http://') === false ?
+			path_join($base, $m[3]) :
+			$m[3])
+		. $m[2];
+}
+
+/**
+ * Adds a Target attribute to all links in passed content.
+ *
+ * This function by default only applies to <a> tags,
+ * however this can be modified by the 3rd param.
+ * NOTE: Any current target attributed will be striped and replaced.
+ *
+ * @package WordPress
+ * @since 2.7
+ *
+ * @param string $content String to search for links in
+ * @param string $target The Target to add to the links
+ * @param array $tags An array of tags to apply to.
+ * @eaturn string The processed content.
+ */
+function links_add_target( $content, $target = '_blank', $tags = array('a') ) {
+	$tags = implode('|', (array)$tags);
+	return preg_replace_callback("!<($tags)(.+?)>!i",
+			create_function('$m', 'return _links_add_target($m, "' . $target . '");'),
+			$content);
+}
+/**
+ * Callback to add a target attribute to all links in passed content
+ *
+ *
+ * @package WordPress
+ * @since 2.7
+ *
+ * @internal
+ * @param string $m The matched link
+ * @param string $target The Target to add to the links
+ * @eaturn string The processed link.
+ */
+function _links_add_target( $m, $target ) {
+	$tag = $m[1];
+	$link = preg_replace('|(target=[\'"](.*?)[\'"])|i', '', $m[2]);
+	return '<' . $tag . $link . ' target="' . $target . '">';
 }
 
 ?>

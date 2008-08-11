@@ -91,7 +91,7 @@ foreach ( $post_stati as $status => $label ) {
 	if ( !in_array($status, $avail_post_stati) )
 		continue;
 
-	if ( $status == $_GET['post_status'] )
+	if ( isset( $_GET['post_status'] ) && $status == $_GET['post_status'] )
 		$class = ' class="current"';
 
 	$status_links[] = "<li><a href=\"edit-pages.php?post_status=$status\"$class>" .
@@ -107,7 +107,7 @@ unset($status_links);
 <?php
 endif;
 if ( isset($_GET['posted']) && $_GET['posted'] ) : $_GET['posted'] = (int) $_GET['posted']; ?>
-<div id="message" class="updated fade"><p><strong><?php _e('Your page has been saved.'); ?></strong> <a href="<?php echo get_permalink( $_GET['posted'] ); ?>"><?php _e('View page'); ?></a> | <a href="page.php?action=edit&amp;post=<?php echo $_GET['posted']; ?>"><?php _e('Edit page'); ?></a></p></div>
+<div id="message" class="updated fade"><p><strong><?php _e('Your page has been saved.'); ?></strong> <a href="<?php echo get_permalink( $_GET['posted'] ); ?>"><?php _e('View page'); ?></a> | <a href="<?php echo get_edit_post_link( $_GET['posted'] ); ?>"><?php _e('Edit page'); ?></a></p></div>
 <?php $_SERVER['REQUEST_URI'] = remove_query_arg(array('posted'), $_SERVER['REQUEST_URI']);
 endif;
 ?>
@@ -121,10 +121,10 @@ endif;
 <div class="tablenav">
 
 <?php
-$pagenum = absint( $_GET['pagenum'] );
+$pagenum = isset( $_GET['pagenum'] ) ? absint( $_GET['pagenum'] ) : 0;
 if ( empty($pagenum) )
 	$pagenum = 1;
-if( !$per_page || $pre_page < 0 )
+if( ! isset( $per_page ) || $per_page < 0 )
 	$per_page = 20;
 
 $num_pages = ceil(count($posts) / $per_page);

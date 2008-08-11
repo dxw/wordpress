@@ -90,7 +90,7 @@ class WP {
 
 			// Look for matches.
 			$request_match = $request;
-			foreach ($rewrite as $match => $query) {
+			foreach ( (array) $rewrite as $match => $query) {
 				// Don't try to match against AtomPub calls
 				if ( $req_uri == 'wp-app.php' )
 					break;
@@ -110,7 +110,7 @@ class WP {
 					$query = preg_replace("!^.+\?!", '', $query);
 
 					// Substitute the substring matches into the query.
-					eval("\$query = \"$query\";");
+					eval("\$query = \"" . addslashes($query) . "\";");
 					$this->matched_query = $query;
 
 					// Parse the query.
@@ -171,7 +171,7 @@ class WP {
 			}
 		}
 
-		foreach ($this->private_query_vars as $var) {
+		foreach ( (array) $this->private_query_vars as $var) {
 			if (isset($this->extra_query_vars[$var]))
 				$this->query_vars[$var] = $this->extra_query_vars[$var];
 			elseif (isset($GLOBALS[$var]) && '' != $GLOBALS[$var])
@@ -242,7 +242,7 @@ class WP {
 
 	function build_query_string() {
 		$this->query_string = '';
-		foreach (array_keys($this->query_vars) as $wpvar) {
+		foreach ( (array) array_keys($this->query_vars) as $wpvar) {
 			if ( '' != $this->query_vars[$wpvar] ) {
 				$this->query_string .= (strlen($this->query_string) < 1) ? '' : '&';
 				if ( !is_scalar($this->query_vars[$wpvar]) ) // Discard non-scalars.
@@ -261,7 +261,7 @@ class WP {
 	function register_globals() {
 		global $wp_query;
 		// Extract updated query vars back into global namespace.
-		foreach ($wp_query->query_vars as $key => $value) {
+		foreach ( (array) $wp_query->query_vars as $key => $value) {
 			$GLOBALS[$key] = $value;
 		}
 
@@ -350,7 +350,7 @@ class WP_Error {
 		// Return all messages if no code specified.
 		if ( empty($code) ) {
 			$all_messages = array();
-			foreach ( $this->errors as $code => $messages )
+			foreach ( (array) $this->errors as $code => $messages )
 				$all_messages = array_merge($all_messages, $messages);
 
 			return $all_messages;
@@ -424,34 +424,27 @@ class Walker {
 			return;
 
 		$id_field = $this->db_fields['id'];
-		$parent_field = $this->db_fields['parent'];
 
 		//display this element
 		$cb_args = array_merge( array(&$output, $element, $depth), $args);
 		call_user_func_array(array(&$this, 'start_el'), $cb_args);
 
-		if ( $max_depth == 0 ||
-		     ($max_depth != 0 &&  $max_depth > $depth+1 )) { //whether to descend
+		$id = $element->$id_field;
 
-			$num_elements = sizeof( $children_elements );
-			for ( $i = 0; $i < $num_elements; $i++ ) {
+		// descend only the depth is right and there are chilrens for this element
+		if ( ($max_depth == 0 || $max_depth > $depth+1 ) && isset( $children_elements[$id]) ) {
 
-				$child = $children_elements[$i];
-				if ( $child->$parent_field == $element->$id_field ) {
+			foreach( $children_elements[ $id ] as $child ){
 
-					if ( !isset($newlevel) ) {
-						$newlevel = true;
-						//start the child delimiter
-						$cb_args = array_merge( array(&$output, $depth), $args);
-						call_user_func_array(array(&$this, 'start_lvl'), $cb_args);
-					}
-
-					array_splice( $children_elements, $i, 1 );
-					$num_elements--;
-					$this->display_element( $child, $children_elements, $max_depth, $depth + 1, $args, $output );
-					$i = -1;
+				if ( !isset($newlevel) ) {
+					$newlevel = true;
+					//start the child delimiter
+					$cb_args = array_merge( array(&$output, $depth), $args);
+					call_user_func_array(array(&$this, 'start_lvl'), $cb_args);
 				}
+				$this->display_element( $child, $children_elements, $max_depth, $depth + 1, $args, $output );
 			}
+			unset( $children_elements[ $id ] );
 		}
 
 		if ( isset($newlevel) && $newlevel ){
@@ -496,7 +489,9 @@ class Walker {
 
 		/*
 		 * need to display in hierarchical order
-		 * splice elements into two buckets: those without parent and those with parent
+		 * seperate elements into two buckets: top level and children elements
+		 * children_elements is two dimensional array, eg.
+		 * children_elements[10][] contains all sub-elements whose parent is 10.
 		 */
 		$top_level_elements = array();
 		$children_elements  = array();
@@ -504,26 +499,24 @@ class Walker {
 			if ( 0 == $e->$parent_field )
 				$top_level_elements[] = $e;
 			else
-				$children_elements[] = $e;
+				$children_elements[ $e->$parent_field ][] = $e;
 		}
 
 		/*
-		 * none of the elements is top level
-		 * the first one must be root of the sub elements
+		 * when none of the elements is top level
+		 * assume the first one must be root of the sub elements
 		 */
-		if ( !$top_level_elements ) {
+		if ( empty($top_level_elements) ) {
 
-			$root = $children_elements[0];
-			$num_elements = sizeof($children_elements);
-			for ( $i = 0; $i < $num_elements; $i++ ) {
+			$root = $elements[0];
 
-				$child = $children_elements[$i];
-				if ($root->$parent_field == $child->$parent_field ) {
-					$top_level_elements[] = $child;
-					array_splice( $children_elements, $i, 1 );
-					$num_elements--;
-					$i--;
-				}
+			$top_level_elements = array();
+			$children_elements  = array();
+			foreach ( $elements as $e) {
+				if ( $root->$parent_field == $e->$parent_field )
+					$top_level_elements[] = $e;
+				else
+					$children_elements[ $e->$parent_field ][] = $e;
 			}
 		}
 
@@ -534,11 +527,13 @@ class Walker {
 		* if we are displaying all levels, and remaining children_elements is not empty,
 		* then we got orphans, which should be displayed regardless
 	 	*/
-		if ( ( $max_depth == 0 ) && sizeof( $children_elements ) > 0 ) {
+		if ( ( $max_depth == 0 ) && count( $children_elements ) > 0 ) {
 			$empty_array = array();
-			foreach ( $children_elements as $orphan_e )
-				$this->display_element( $orphan_e, $empty_array, 1, 0, $args, $output );
+			foreach ( $children_elements as $orphans )
+				foreach( $orphans as $op )
+					$this->display_element( $op, $empty_array, 1, 0, $args, $output );
 		 }
+
 		 return $output;
 	}
 }
@@ -755,7 +750,7 @@ class WP_Ajax_Response {
 
 		$response = '';
 		if ( is_wp_error($data) ) {
-			foreach ( $data->get_error_codes() as $code ) {
+			foreach ( (array) $data->get_error_codes() as $code ) {
 				$response .= "<wp_error code='$code'><![CDATA[" . $data->get_error_message($code) . "]]></wp_error>";
 				if ( !$error_data = $data->get_error_data($code) )
 					continue;
@@ -781,7 +776,7 @@ class WP_Ajax_Response {
 		}
 
 		$s = '';
-		if ( (array) $supplemental ) {
+		if ( is_array($supplemental) ) {
 			foreach ( $supplemental as $k => $v )
 				$s .= "<$k><![CDATA[$v]]></$k>";
 			$s = "<supplemental>$s</supplemental>";
@@ -805,7 +800,7 @@ class WP_Ajax_Response {
 	function send() {
 		header('Content-Type: text/xml');
 		echo "<?xml version='1.0' standalone='yes'?><wp_ajax>";
-		foreach ( $this->responses as $response )
+		foreach ( (array) $this->responses as $response )
 			echo $response;
 		echo '</wp_ajax>';
 		die();

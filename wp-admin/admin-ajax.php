@@ -1,4 +1,16 @@
 <?php
+/**
+ * WordPress AJAX Process Execution.
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
+
+/**
+ * Executing AJAX process.
+ *
+ * @since unknown
+ */
 define('DOING_AJAX', true);
 
 require_once('../wp-load.php');
@@ -13,9 +25,9 @@ if ( isset($_GET['action']) && 'ajax-tag-search' == $_GET['action'] ) {
 
 	$s = $_GET['q']; // is this slashed already?
 
-	if ( strstr( $s, ',' ) ) { 
-		$s = explode( ',', $s ); 
-		$s = $s[count( $s ) - 1]; 
+	if ( strstr( $s, ',' ) ) {
+		$s = explode( ',', $s );
+		$s = $s[count( $s ) - 1];
 	}
 	$s = trim( $s );
 	if ( strlen( $s ) < 2 )
@@ -278,7 +290,7 @@ case 'add-cat' : // From Manage->Categories
 		) );
 		$x->send();
 	}
-	
+
 	$cat = wp_insert_category( $_POST, true );
 
 	if ( is_wp_error($cat) ) {
@@ -392,13 +404,16 @@ case 'add-comment' :
 
 	list($comments, $total) = _wp_get_comment_list( $status, $search, $start, 1 );
 
+	if ( get_option('show_avatars') )
+		add_filter( 'comment_author', 'floated_admin_avatar' );
+
 	if ( !$comments )
 		die('1');
 	$x = new WP_Ajax_Response();
 	foreach ( (array) $comments as $comment ) {
 		get_comment( $comment );
 		ob_start();
-			_wp_comment_row( $comment->comment_ID, $mode, false );
+			_wp_comment_row( $comment->comment_ID, $mode, $status );
 			$comment_list_item = ob_get_contents();
 		ob_end_clean();
 		$x->add( array(

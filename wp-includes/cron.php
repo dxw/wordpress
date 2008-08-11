@@ -71,6 +71,13 @@ function wp_next_scheduled( $hook, $args = array() ) {
 	return false;
 }
 
+/**
+ * Send request to run cron through HTTP request that doesn't halt page loading.
+ *
+ * @since 2.1.0
+ *
+ * @return null CRON could not be spawned, because it is not needed to run.
+ */
 function spawn_cron() {
 	$crons = _get_cron_array();
 
@@ -81,27 +88,9 @@ function spawn_cron() {
 	if ( array_shift( $keys ) > time() )
 		return;
 
-	$cron_url = get_option( 'siteurl' ) . '/wp-cron.php';
-	$parts = parse_url( $cron_url );
+	$cron_url = get_option( 'siteurl' ) . '/wp-cron.php?check=' . wp_hash('187425');
 
-	if ($parts['scheme'] == 'https') {
-		// support for SSL was added in 4.3.0
-		if (version_compare(phpversion(), '4.3.0', '>=') && function_exists('openssl_open')) {
-			$port = isset($parts['port']) ? $parts['port'] : 443;
-			$argyle = @fsockopen('ssl://' . $parts['host'], $port, $errno, $errstr, 0.01);
-		} else {
-			return false;
-		}
-	} else {
-		$port = isset($parts['port']) ? $parts['port'] : 80;
-		$argyle = @ fsockopen( $parts['host'], $port, $errno, $errstr, 0.01 );
-	}
-
-	if ( $argyle )
-		fputs( $argyle,
-			  "GET {$parts['path']}?check=" . wp_hash('187425') . " HTTP/1.0\r\n"
-			. "Host: {$_SERVER['HTTP_HOST']}\r\n\r\n"
-		);
+	wp_remote_post($cron_url, array('timeout' => 0.01, 'blocking' => false));
 }
 
 function wp_cron() {
@@ -121,7 +110,7 @@ function wp_cron() {
 	$schedules = wp_get_schedules();
 	foreach ( $crons as $timestamp => $cronhooks ) {
 		if ( $timestamp > time() ) break;
-		foreach ( $cronhooks as $hook => $args ) {
+		foreach ( (array) $cronhooks as $hook => $args ) {
 			if ( isset($schedules[$hook]['callback']) && !call_user_func( $schedules[$hook]['callback'] ) )
 				continue;
 			spawn_cron();
@@ -133,6 +122,7 @@ function wp_cron() {
 function wp_get_schedules() {
 	$schedules = array(
 		'hourly' => array( 'interval' => 3600, 'display' => __('Once Hourly') ),
+		'twicedaily' => array( 'interval' => 43200, 'display' => __('Twice Daily') ),
 		'daily' => array( 'interval' => 86400, 'display' => __('Once Daily') ),
 	);
 	return array_merge( apply_filters( 'cron_schedules', array() ), $schedules );
@@ -178,8 +168,8 @@ function _upgrade_cron_array($cron) {
 
 	$new_cron = array();
 
-	foreach ($cron as $timestamp => $hooks) {
-		foreach ( $hooks as $hook => $args ) {
+	foreach ( (array) $cron as $timestamp => $hooks) {
+		foreach ( (array) $hooks as $hook => $args ) {
 			$key = md5(serialize($args['args']));
 			$new_cron[$timestamp][$hook][$key] = $args;
 		}

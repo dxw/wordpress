@@ -37,7 +37,11 @@ function wp_default_scripts( &$scripts ) {
 	$scripts->add( 'editor_functions', '/wp-admin/js/editor.js', false, '20080710' );
 
 	// Modify this version when tinyMCE plugins are changed.
+<<<<<<< .working
 	$mce_version = apply_filters('tiny_mce_version', '20080723');
+=======
+	$mce_version = apply_filters('tiny_mce_version', '20080730');
+>>>>>>> .merge-right.r8619
 	$scripts->add( 'tiny_mce', '/wp-includes/js/tinymce/tiny_mce_config.php', array('editor_functions'), $mce_version );
 
 	$scripts->add( 'prototype', '/wp-includes/js/prototype.js', false, '1.6');
@@ -50,7 +54,7 @@ function wp_default_scripts( &$scripts ) {
 
 	$scripts->add( 'autosave', '/wp-includes/js/autosave.js', array('schedule', 'wp-ajax-response'), '20080701' );
 
-	$scripts->add( 'wp-lists', '/wp-includes/js/wp-lists.js', array('wp-ajax-response'), '20080411' );
+	$scripts->add( 'wp-lists', '/wp-includes/js/wp-lists.js', array('wp-ajax-response'), '20080729' );
 	$scripts->localize( 'wp-lists', 'wpListL10n', array(
 		'url' => admin_url('admin-ajax.php')
 	) );
@@ -100,9 +104,9 @@ function wp_default_scripts( &$scripts ) {
 			'deleted' => __('Deleted'),
 	) );
 
-	$scripts->add( 'jquery-ui-core', '/wp-includes/js/jquery/ui.core.js', array('jquery'), '1.5.1' );
-	$scripts->add( 'jquery-ui-tabs', '/wp-includes/js/jquery/ui.tabs.js', array('jquery-ui-core'), '1.5.1' );
-	$scripts->add( 'jquery-ui-sortable', '/wp-includes/js/jquery/ui.sortable.js', array('jquery-ui-core'), '1.5.1' );
+	$scripts->add( 'jquery-ui-core', '/wp-includes/js/jquery/ui.core.js', array('jquery'), '1.5.2' );
+	$scripts->add( 'jquery-ui-tabs', '/wp-includes/js/jquery/ui.tabs.js', array('jquery-ui-core'), '1.5.2' );
+	$scripts->add( 'jquery-ui-sortable', '/wp-includes/js/jquery/ui.sortable.js', array('jquery-ui-core'), '1.5.2' );
 
 	if ( is_admin() ) {
 		$scripts->add( 'ajaxcat', '/wp-admin/js/cat.js', array( 'wp-lists' ), '20071101' );
@@ -125,7 +129,7 @@ function wp_default_scripts( &$scripts ) {
 			'pending' => __('%i% pending') // must look like: "# blah blah"
 		) );
 		$scripts->add( 'admin-users', '/wp-admin/js/users.js', array('wp-lists'), '20070823' );
-		$scripts->add( 'admin-forms', '/wp-admin/js/forms.js', false, '20080401');
+		$scripts->add( 'admin-forms', '/wp-admin/js/forms.js', array('jquery'), '20080729');
 		$scripts->add( 'xfn', '/wp-admin/js/xfn.js', false, '3517' );
 		$scripts->add( 'upload', '/wp-admin/js/upload.js', array('jquery'), '20070518' );
 		$scripts->add( 'postbox', '/wp-admin/js/postbox.js', array('jquery-ui-sortable'), '20080723' );
@@ -193,14 +197,20 @@ function wp_default_scripts( &$scripts ) {
 		$scripts->localize( 'word-count', 'wordCountL10n', array(
 			'count' => __('Word count: %d')
 		));
-		
-		$scripts->add( 'wp-gears', '/wp-admin/js/wp-gears.js', false, '20080511' );
+
+		$scripts->add( 'wp-gears', '/wp-admin/js/wp-gears.js', false, '20080721' );
 		$scripts->localize( 'wp-gears', 'wpGearsL10n', array(
 			'updateCompleted' => __('Update completed.'),
 			'error' => __('Error:')
 		));
-		
+
 		$scripts->add( 'theme-preview', '/wp-admin/js/theme-preview.js', array( 'thickbox', 'jquery' ), '20080625' );
+
+		$scripts->add( 'plugin-install', '/wp-admin/js/plugin-install.js', array( 'thickbox', 'jquery' ), '20080803' );
+		$scripts->localize( 'plugin-install', 'plugininstallL10n', array(
+			'plugin_information' => __('Plugin Information:')
+		) );
+
 	}
 }
 
@@ -234,6 +244,7 @@ function wp_default_styles( &$styles ) {
 	$styles->add_data( 'press-this-ie', 'conditional', 'gte IE 6' );
 	$styles->add( 'thickbox', '/wp-includes/js/thickbox/thickbox.css', array(), '20080613' );
 	$styles->add( 'login', '/wp-admin/css/login.css' );
+	$styles->add( 'plugin-install', '/wp-admin/css/plugin-install.css' );
 
 	foreach ( $rtl_styles as $rtl_style )
 		$styles->add_data( $rtl_style, 'rtl', true );

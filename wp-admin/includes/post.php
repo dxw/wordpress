@@ -59,7 +59,7 @@ function _wp_translate_postdata( $update = false ) {
 
 	$previous_status = get_post_field('post_status',  $_POST['ID']);
 
-	// Posts 'submitted for approval' present are submitted to $_POST the same as if they were being published. 
+	// Posts 'submitted for approval' present are submitted to $_POST the same as if they were being published.
 	// Change status from 'publish' to 'pending' if user lacks permissions to publish or to resave published posts.
 	if ( 'page' == $_POST['post_type'] ) {
 		if ( 'publish' == $_POST['post_status'] && !current_user_can( 'publish_pages' ) )
@@ -160,6 +160,13 @@ function edit_post() {
 	_fix_attachment_links( $post_ID );
 
 	wp_set_post_lock( $post_ID, $GLOBALS['current_user']->ID );
+
+	if ( current_user_can( 'edit_others_posts' ) ) {
+		if ( !empty($_POST['sticky']) )
+			stick_post($post_ID);
+		else
+			unstick_post($post_ID);
+	}
 
 	return $post_ID;
 }
@@ -349,7 +356,7 @@ function add_meta( $post_ID ) {
 
 		wp_cache_delete($post_ID, 'post_meta');
 
-		$wpdb->query( $wpdb->prepare("INSERT INTO $wpdb->postmeta 
+		$wpdb->query( $wpdb->prepare("INSERT INTO $wpdb->postmeta
 			(post_id,meta_key,meta_value ) VALUES (%s, %s, %s)",
 			$post_ID, $metakey, $metavalue) );
 		return $wpdb->insert_id;
@@ -413,7 +420,7 @@ function update_meta( $meta_id, $meta_key, $meta_value ) {
 
 	$meta_value = maybe_serialize( stripslashes( $meta_value ));
 	$meta_id = (int) $meta_id;
-	
+
 	$data  = compact( 'meta_key', 'meta_value' );
 	$where = compact( 'meta_id' );
 
@@ -530,8 +537,9 @@ function wp_edit_attachments_query( $q = false ) {
 	global $wpdb;
 	if ( false === $q )
 		$q = $_GET;
-	$q['m']   = (int) $q['m'];
-	$q['cat'] = (int) $q['cat'];
+
+	$q['m']   = isset( $q['m'] ) ? (int) $q['m'] : 0;
+	$q['cat'] = isset( $q['cat'] ) ? (int) $q['cat'] : 0;
 	$q['post_type'] = 'attachment';
 	$q['post_status'] = 'any';
 	$q['posts_per_page'] = 15;
@@ -577,7 +585,7 @@ function get_sample_permalink($id, $title=null, $name = null) {
 	if (in_array($post->post_status, array('draft', 'pending'))) {
 		$post->post_status = 'publish';
 		$post->post_date = date('Y-m-d H:i:s');
-		$post->post_name = sanitize_title($post->post_name? $post->post_name : $post->post_title, $post->ID); 
+		$post->post_name = sanitize_title($post->post_name? $post->post_name : $post->post_title, $post->ID);
 	}
 
 	// If the user wants to set a new name -- override the current one
@@ -603,7 +611,6 @@ function get_sample_permalink($id, $title=null, $name = null) {
 	$post->post_status = $original_status;
 	$post->post_date = $original_date;
 	$post->post_name = $original_name;
-	$post->post_title = $original_title;
 	return $permalink;
 }
 

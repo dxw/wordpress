@@ -4,6 +4,7 @@
 
 // scale down the default size of an image so it's a better fit for the editor and theme
 function image_constrain_size_for_editor($width, $height, $size = 'medium') {
+	global $content_width;
 
 	if ( is_array($size) ) {
 		$max_width = $size[0];
@@ -23,19 +24,23 @@ function image_constrain_size_for_editor($width, $height, $size = 'medium') {
 		$max_height = intval(get_option('medium_size_h'));
 		// if no width is set, default to the theme content width if available
 	}
-	else { // $size == 'full'
-		// we're inserting a full size image into the editor.  if it's a really big image we'll scale it down to fit reasonably
+	elseif ( $size == 'large' ) {
+		// we're inserting a large size image into the editor.  if it's a really big image we'll scale it down to fit reasonably
 		// within the editor itself, and within the theme's content width if it's known.  the user can resize it in the editor
 		// if they wish.
-		if ( !empty($GLOBALS['content_width']) ) {
-			$max_width = $GLOBALS['content_width'];
-		}
-		else
-			$max_width = 500;
+		$max_width = intval(get_option('large_size_w'));
+		$max_height = intval(get_option('large_size_h'));
+		if ( intval($content_width) > 0 )
+			$max_width = min( intval($content_width), $max_width );
+	}
+	// $size == 'full' has no constraint
+	else {
+		$max_width = $width;
+		$max_height = $height;
 	}
 
 	list( $max_width, $max_height ) = apply_filters( 'editor_max_image_size', array( $max_width, $max_height ), $size );
-
+	
 	return wp_constrain_dimensions( $width, $height, $max_width, $max_height );
 }
 
@@ -51,7 +56,8 @@ function image_hwstring($width, $height) {
 
 // Scale an image to fit a particular size (such as 'thumb' or 'medium'), and return an image URL, height and width.
 // The URL might be the original image, or it might be a resized version.  This function won't create a new resized copy, it will just return an already resized one if it exists.
-// returns an array($url, $width, $height)
+// returns an array($url, $width, $height, $is_intermediate)
+// $is_intermediate is true if $url is a resized image, false if it is the original
 function image_downsize($id, $size = 'medium') {
 
 	if ( !wp_attachment_is_image($id) )
@@ -60,6 +66,7 @@ function image_downsize($id, $size = 'medium') {
 	$img_url = wp_get_attachment_url($id);
 	$meta = wp_get_attachment_metadata($id);
 	$width = $height = 0;
+	$is_intermediate = false;
 
 	// plugins can use this to provide resize services
 	if ( $out = apply_filters('image_downsize', false, $id, $size) )
@@ -70,6 +77,7 @@ function image_downsize($id, $size = 'medium') {
 		$img_url = str_replace(basename($img_url), $intermediate['file'], $img_url);
 		$width = $intermediate['width'];
 		$height = $intermediate['height'];
+		$is_intermediate = true;
 	}
 	elseif ( $size == 'thumbnail' ) {
 		// fall back to the old thumbnail
@@ -77,15 +85,21 @@ function image_downsize($id, $size = 'medium') {
 			$img_url = str_replace(basename($img_url), basename($thumb_file), $img_url);
 			$width = $info[0];
 			$height = $info[1];
+			$is_intermediate = true;
 		}
 	}
 	if ( !$width && !$height && isset($meta['width'], $meta['height']) ) {
-		// any other type: use the real image and constrain it
-		list( $width, $height ) = image_constrain_size_for_editor( $meta['width'], $meta['height'], $size );
+		// any other type: use the real image
+		$width = $meta['width'];
+		$height = $meta['height'];
 	}
+	
+	if ( $img_url) {
+		// we have the actual image size, but might need to further constrain it if content_width is narrower
+		list( $width, $height ) = image_constrain_size_for_editor( $width, $height, $size );
 
-	if ( $img_url)
-		return array( $img_url, $width, $height );
+		return array( $img_url, $width, $height, $is_intermediate );
+	}
 	return false;
 
 }
@@ -305,7 +319,7 @@ function image_get_intermediate_size($post_id, $size='thumbnail') {
 
 	if ( is_array($size) || empty($size) || empty($imagedata['sizes'][$size]) )
 		return false;
-		
+
 	$data = $imagedata['sizes'][$size];
 	// include the full filesystem path of the intermediate file
 	if ( empty($data['path']) && !empty($data['file']) ) {
@@ -319,7 +333,7 @@ function image_get_intermediate_size($post_id, $size='thumbnail') {
 // get an image to represent an attachment - a mime icon for files, thumbnail or intermediate size for images
 // returns an array (url, width, height), or false if no image is available
 function wp_get_attachment_image_src($attachment_id, $size='thumbnail', $icon = false) {
-	
+
 	// get a thumbnail or intermediate image if there is one
 	if ( $image = image_downsize($attachment_id, $size) )
 		return $image;
@@ -346,7 +360,7 @@ function wp_get_attachment_image($attachment_id, $size='thumbnail', $icon = fals
 			$size = join('x', $size);
 		$html = '<img src="'.attribute_escape($src).'" '.$hwstring.'class="attachment-'.attribute_escape($size).'" alt="" />';
 	}
-	
+
 	return $html;
 }
 
@@ -354,9 +368,6 @@ add_shortcode('wp_caption', 'img_caption_shortcode');
 add_shortcode('caption', 'img_caption_shortcode');
 
 function img_caption_shortcode($attr, $content = null) {
-
-	if ( defined('CAPTIONS_OFF') && true == CAPTIONS_OFF )
-		return $content;
 
 	// Allow plugins/themes to override the default caption template.
 	$output = apply_filters('img_caption_shortcode', '', $attr, $content);
@@ -369,12 +380,12 @@ function img_caption_shortcode($attr, $content = null) {
 		'width'	=> '',
 		'caption' => ''
 	), $attr));
-	
+
 	if ( 1 > (int) $width || empty($caption) )
 		return $content;
-	
+
 	if ( $id ) $id = 'id="' . $id . '" ';
-	
+
 	return '<div ' . $id . 'class="wp-caption ' . $align . '" style="width: ' . (10 + (int) $width) . 'px">'
 	. $content . '<p class="wp-caption-text">' . $caption . '</p></div>';
 }
@@ -425,7 +436,7 @@ function gallery_shortcode($attr) {
 	$captiontag = tag_escape($captiontag);
 	$columns = intval($columns);
 	$itemwidth = $columns > 0 ? floor(100/$columns) : 100;
-	
+
 	$output = apply_filters('gallery_style', "
 		<style type='text/css'>
 			.gallery {

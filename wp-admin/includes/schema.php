@@ -15,11 +15,12 @@ if ( $wpdb->supports_collation() ) {
 
 $wp_queries="CREATE TABLE $wpdb->terms (
  term_id bigint(20) NOT NULL auto_increment,
- name varchar(55) NOT NULL default '',
+ name varchar(200) NOT NULL default '',
  slug varchar(200) NOT NULL default '',
  term_group bigint(10) NOT NULL default 0,
  PRIMARY KEY  (term_id),
- UNIQUE KEY slug (slug)
+ UNIQUE KEY slug (slug),
+ KEY name (name)
 ) $charset_collate;
 CREATE TABLE $wpdb->term_taxonomy (
  term_taxonomy_id bigint(20) NOT NULL auto_increment,
@@ -153,11 +154,11 @@ CREATE TABLE $wpdb->usermeta (
 
 function populate_options() {
 	global $wpdb, $wp_db_version;
-	
+
 	$guessurl = wp_guess_url();
-	
+
 	do_action('populate_options');
-	
+
 	add_option('siteurl', $guessurl);
 	add_option('blogname', __('My Blog'));
 	add_option('blogdescription', __('Just another WordPress weblog'));
@@ -256,7 +257,11 @@ function populate_options() {
 	add_option('avatar_default', 'mystery');
 	add_option('enable_app', 0);
 	add_option('enable_xmlrpc', 0);
-	
+
+	// 2.7
+	add_option('large_size_w', 1024);
+	add_option('large_size_h', 1024);
+
 	// Delete unused options
 	$unusedoptions = array ('blodotgsping_url', 'bodyterminator', 'emailtestonly', 'phoneemail_separator', 'smilies_directory', 'subjectprefix', 'use_bbcode', 'use_blodotgsping', 'use_phoneemail', 'use_quicktags', 'use_weblogsping', 'weblogs_cache_file', 'use_preview', 'use_htmltrans', 'smilies_directory', 'fileupload_allowedusers', 'use_phoneemail', 'default_post_status', 'default_post_category', 'archive_mode', 'time_difference', 'links_minadminlevel', 'links_use_adminlevels', 'links_rating_type', 'links_rating_char', 'links_rating_ignore_zero', 'links_rating_single_image', 'links_rating_image0', 'links_rating_image1', 'links_rating_image2', 'links_rating_image3', 'links_rating_image4', 'links_rating_image5', 'links_rating_image6', 'links_rating_image7', 'links_rating_image8', 'links_rating_image9', 'weblogs_cacheminutes', 'comment_allowed_tags', 'search_engine_friendly_urls', 'default_geourl_lat', 'default_geourl_lon', 'use_default_geourl', 'weblogs_xml_url', 'new_users_can_blog', '_wpnonce', '_wp_http_referer', 'Update', 'action', 'rich_editing', 'autosave_interval', 'deactivated_plugins');
 	foreach ($unusedoptions as $option) :
@@ -276,6 +281,7 @@ function populate_roles() {
 	populate_roles_230();
 	populate_roles_250();
 	populate_roles_260();
+	populate_roles_270();
 }
 
 function populate_roles_160() {
@@ -437,6 +443,14 @@ function populate_roles_260() {
 	if ( !empty( $role ) ) {
 		$role->add_cap( 'update_plugins' );
 		$role->add_cap( 'delete_plugins' );
+	}
+}
+
+function populate_roles_270() {
+	$role = get_role( 'administrator' );
+
+	if ( !empty( $role ) ) {
+		$role->add_cap( 'install_plugins' );
 	}
 }
 

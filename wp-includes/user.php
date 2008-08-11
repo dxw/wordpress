@@ -23,7 +23,7 @@ function wp_signon( $credentials = '', $secure_cookie = '' ) {
 
 	if ( '' === $secure_cookie )
 		$secure_cookie = is_ssl() ? true : false;
-	
+
 	// If no credential info provided, check cookie.
 	if ( empty($credentials['user_login']) && empty($credentials['user_password']) ) {
 			$user = wp_validate_auth_cookie();
@@ -102,7 +102,7 @@ function get_user_option( $option, $user = 0 ) {
 		$result = $user->{$option};
 	else // Blog global
 		$result = get_option( $option );
-	
+
 	return apply_filters("get_user_option_{$option}", $result, $option, $user);
 }
 
@@ -286,7 +286,7 @@ function wp_dropdown_users( $args = '' ) {
 		if ( $show_option_none )
 			$output .= "\t<option value='-1'>$show_option_none</option>\n";
 
-		foreach ( $users as $user ) {
+		foreach ( (array) $users as $user ) {
 			$user->ID = (int) $user->ID;
 			$_selected = $user->ID == $selected ? " selected='selected'" : '';
 			$output .= "\t<option value='$user->ID'$_selected>" . wp_specialchars($user->$show) . "</option>\n";
@@ -311,7 +311,7 @@ function _fill_user( &$user ) {
 	$wpdb->show_errors($show);
 
 	if ( $metavalues ) {
-		foreach ( $metavalues as $meta ) {
+		foreach ( (array) $metavalues as $meta ) {
 			$value = maybe_unserialize($meta->meta_value);
 			$user->{$meta->meta_key} = $value;
 		}

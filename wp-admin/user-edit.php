@@ -41,24 +41,24 @@ function profile_js ( ) {
 		}
 
 	}
-	
+
 	function update_nickname ( ) {
-		
+
 		var nickname = jQuery('#nickname').val();
 		var display_nickname = jQuery('#display_nickname').val();
-		
+
 		if ( nickname == '' ) {
 			jQuery('#display_nickname').remove();
 		}
 		jQuery('#display_nickname').val(nickname).html(nickname);
-		
+
 	}
 
-	jQuery(function($) { 
-		$('#pass1').keyup( check_pass_strength ) 
+	jQuery(function($) {
+		$('#pass1').keyup( check_pass_strength )
 		$('.color-palette').click(function(){$(this).siblings('input[name=admin_color]').attr('checked', 'checked')});
 	} );
-	
+
 	jQuery(document).ready( function() {
 		jQuery('#pass1,#pass2').attr('autocomplete','off');
 		jQuery('#nickname').blur(update_nickname);
@@ -173,6 +173,7 @@ include ('admin-header.php');
 		<td><label for="rich_editing"><input name="rich_editing" type="checkbox" id="rich_editing" value="true" <?php checked('true', $profileuser->rich_editing); ?> /> <?php _e('Use the visual editor when writing'); ?></label></td>
 	</tr>
 <?php endif; ?>
+<?php if (count($_wp_admin_css_colors) > 1 ) : ?>
 <tr>
 <th scope="row"><?php _e('Admin Color Scheme')?></th>
 <td><fieldset><legend class="hidden"><?php _e('Admin Color Scheme')?></legend>
@@ -184,20 +185,19 @@ foreach ( $_wp_admin_css_colors as $color => $color_info ): ?>
 <div class="color-option"><input name="admin_color" id="admin_color_<?php echo $color; ?>" type="radio" value="<?php echo $color ?>" class="tog" <?php checked($color, $current_color); ?> />
 	<table class="color-palette">
 	<tr>
-	<?php
-	foreach ( $color_info->colors as $html_color ): ?>
+	<?php foreach ( $color_info->colors as $html_color ): ?>
 	<td style="background-color: <?php echo $html_color ?>" title="<?php echo $color ?>">&nbsp;</td>
 	<?php endforeach; ?>
 	</tr>
 	</table>
-	
+
 	<label for="admin_color_<?php echo $color; ?>"><?php echo $color_info->name ?></label>
 </div>
-<?php endforeach; ?>
+	<?php endforeach; ?>
 </fieldset></td>
 </tr>
+<?php endif; ?>
 </table>
-
 <?php
 	if ( $is_profile_page ) {
 		do_action('profile_personal_options');

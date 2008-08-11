@@ -280,7 +280,7 @@ function wp_mail( $to, $subject, $message, $headers = '' ) {
 		// If it's actually got contents
 		if ( !empty( $tempheaders ) ) {
 			// Iterate through the raw headers
-			foreach ( $tempheaders as $header ) {
+			foreach ( (array) $tempheaders as $header ) {
 				if ( strpos($header, ':') === false )
 					continue;
 				// Explode them out
@@ -363,12 +363,12 @@ function wp_mail( $to, $subject, $message, $headers = '' ) {
 
 	// Add any CC and BCC recipients
 	if ( !empty($cc) ) {
-		foreach ($cc as $recipient) {
+		foreach ( (array) $cc as $recipient ) {
 			$phpmailer->AddCc( trim($recipient) );
 		}
 	}
 	if ( !empty($bcc) ) {
-		foreach ($bcc as $recipient) {
+		foreach ( (array) $bcc as $recipient) {
 			$phpmailer->AddBcc( trim($recipient) );
 		}
 	}
@@ -401,7 +401,7 @@ function wp_mail( $to, $subject, $message, $headers = '' ) {
 
 	// Set custom headers
 	if ( !empty( $headers ) ) {
-		foreach ( $headers as $name => $content ) {
+		foreach( (array) $headers as $name => $content ) {
 			$phpmailer->AddCustomHeader( sprintf( '%1$s: %2$s', $name, $content ) );
 		}
 	}
@@ -667,7 +667,7 @@ function auth_redirect() {
 			exit();
 		} else {
 			wp_redirect('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-			exit();			
+			exit();
 		}
 	}
 
@@ -756,7 +756,7 @@ function wp_redirect($location, $status = 302) {
 
 	$location = apply_filters('wp_redirect', $location, $status);
 	$status = apply_filters('wp_redirect_status', $status, $location);
-	
+
 	if ( !$location ) // allows the wp_redirect filter to cancel a redirect
 		return false;
 
@@ -789,7 +789,7 @@ function wp_sanitize_redirect($location) {
 	$found = true;
 	while($found) {
 		$found = false;
-		foreach($strip as $val) {
+		foreach( (array) $strip as $val ) {
 			while(strpos($location, $val) !== false) {
 				$found = true;
 				$location = str_replace($val, '', $location);
@@ -829,7 +829,7 @@ function wp_safe_redirect($location, $status = 302) {
 
 	// In php 5 parse_url may fail if the URL query part contains http://, bug #38143
 	$test = ( $cut = strpos($location, '?') ) ? substr( $location, 0, $cut ) : $location;
-	
+
 	$lp  = parse_url($test);
 	$wpp = parse_url(get_option('home'));
 
@@ -974,7 +974,7 @@ function wp_notify_moderator($comment_id) {
 	$notify_message .= sprintf( __('Delete it: %s'), admin_url("comment.php?action=cdc&c=$comment_id") ) . "\r\n";
 	$notify_message .= sprintf( __('Spam it: %s'), admin_url("comment.php?action=cdc&dt=spam&c=$comment_id") ) . "\r\n";
 
-	$notify_message .= sprintf( __ngettext('Currently %s comment is waiting for approval. Please visit the moderation panel:', 
+	$notify_message .= sprintf( __ngettext('Currently %s comment is waiting for approval. Please visit the moderation panel:',
  		'Currently %s comments are waiting for approval. Please visit the moderation panel:', $comments_waiting), number_format_i18n($comments_waiting) ) . "\r\n";
 	$notify_message .= admin_url("edit-comments.php?comment_status=moderated") . "\r\n";
 
@@ -987,6 +987,24 @@ function wp_notify_moderator($comment_id) {
 	@wp_mail($admin_email, $subject, $notify_message);
 
 	return true;
+}
+endif;
+
+if ( !function_exists('wp_password_change_notification') ) :
+/**
+ * Notify the blog admin of a user changing password, normally via email.
+ *
+ * @since 2.7
+ *
+ * @param object $user User Object
+ */
+function wp_password_change_notification(&$user) {
+	// send a copy of password change notification to the admin
+	// but check to see if it's the admin whose password we're changing, and skip this
+	if ( $user->user_email != get_option('admin_email') ) {
+		$message = sprintf(__('Password Lost and Changed for user: %s'), $user->user_login) . "\r\n";
+		wp_mail(get_option('admin_email'), sprintf(__('[%s] Password Lost/Changed'), get_option('blogname')), $message);
+	}
 }
 endif;
 
@@ -1512,10 +1530,6 @@ function wp_text_diff( $left_string, $right_string, $args = null ) {
 	$defaults = array( 'title' => '', 'title_left' => '', 'title_right' => '' );
 	$args = wp_parse_args( $args, $defaults );
 
-	// PEAR Text_Diff is lame; it includes things from include_path rather than it's own path.
-	// Not sure of the ramifications of disttributing modified code.
-	ini_set('include_path', '.' . PATH_SEPARATOR . ABSPATH . WPINC );
-
 	if ( !class_exists( 'WP_Text_Diff_Renderer_Table' ) )
 		require( ABSPATH . WPINC . '/wp-diff.php' );
 
@@ -1526,15 +1540,13 @@ function wp_text_diff( $left_string, $right_string, $args = null ) {
 	$right_string = str_replace("\r", "\n", $right_string);
 	$left_string  = preg_replace( array( '/\n+/', '/[ \t]+/' ), array( "\n", ' ' ), $left_string );
 	$right_string = preg_replace( array( '/\n+/', '/[ \t]+/' ), array( "\n", ' ' ), $right_string );
-	
+
 	$left_lines  = split("\n", $left_string);
 	$right_lines = split("\n", $right_string);
 
 	$text_diff = new Text_Diff($left_lines, $right_lines);
 	$renderer  = new WP_Text_Diff_Renderer_Table();
 	$diff = $renderer->render($text_diff);
-
-	ini_restore('include_path');
 
 	if ( !$diff )
 		return '';

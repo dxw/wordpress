@@ -22,9 +22,16 @@ function redirect_post($post_ID = '') {
 		$location = 'sidebar.php?a=b';
 	} elseif ( ( isset($_POST['save']) || isset($_POST['publish']) ) && ( empty($referredby) || $referredby == $referer || 'redo' != $referredby ) ) {
 		if ( $_POST['_wp_original_http_referer'] && strpos( $_POST['_wp_original_http_referer'], '/wp-admin/post.php') === false && strpos( $_POST['_wp_original_http_referer'], '/wp-admin/post-new.php') === false )
-			$location = add_query_arg( '_wp_original_http_referer', urlencode( stripslashes( $_POST['_wp_original_http_referer'] ) ), "post.php?action=edit&post=$post_ID&message=1" );
+			$location = add_query_arg( array(
+				'_wp_original_http_referer' => urlencode( stripslashes( $_POST['_wp_original_http_referer'] ) ),
+				'message' => 1
+			), get_edit_post_link( $post_ID, 'url' ) );
 		else
+<<<<<<< .working
 			$location = "post.php?action=edit&post=$post_ID&message=6";
+=======
+			$location = add_query_arg( 'message', 4, get_edit_post_link( $post_ID, 'url' ) );
+>>>>>>> .merge-right.r8619
 	} elseif (isset($_POST['addmeta']) && $_POST['addmeta']) {
 		$location = add_query_arg( 'message', 2, wp_get_referer() );
 		$location = explode('#', $location);
@@ -39,7 +46,7 @@ function redirect_post($post_ID = '') {
 		if ( $_POST['referredby'] == 'redo' )
 			$location = get_permalink( $post_ID );
 		elseif ( false !== strpos($location, 'edit.php') )
-			$location = add_query_arg('posted', $post_ID, $location);		
+			$location = add_query_arg('posted', $post_ID, $location);
 		elseif ( false !== strpos($location, 'wp-admin') )
 			$location = "post-new.php?posted=$post_ID";
 	} elseif ( isset($_POST['publish']) ) {
@@ -49,7 +56,7 @@ function redirect_post($post_ID = '') {
 	} elseif ( 'post-quickpress-save-cont' == $_POST['action'] ) {
 		$location = "post.php?action=edit&post=$post_ID&message=7";
 	} else {
-		$location = "post.php?action=edit&post=$post_ID&message=4";
+		$location = add_query_arg( 'message', 4, get_edit_post_link( $post_ID, 'url' ) );
 	}
 
 	wp_redirect( $location );

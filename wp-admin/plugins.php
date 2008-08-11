@@ -74,21 +74,21 @@ if( !empty($action) ) {
 		case 'delete-selected':
 			if( ! current_user_can('delete_plugins') )
 				wp_die(__('You do not have sufficient permissions to delete plugins for this blog.'));
-			
+
 			check_admin_referer('bulk-manage-plugins');
-			
+
 			$plugins = $_REQUEST['checked']; //$_POST = from the plugin form; $_GET = from the FTP details screen.
 			include(ABSPATH . 'wp-admin/update.php');
 
 			$title = __('Delete Plugin');
 			$parent_file = 'plugins.php';
-			
+
 			if( ! isset($_REQUEST['verify-delete']) ) {
 				wp_enqueue_script('jquery');
 				require_once('admin-header.php');
 				?>
 			<div class="wrap">
-				<h2><?php _e('Delete Plugin(s)'); ?></h2>		
+				<h2><?php _e('Delete Plugin(s)'); ?></h2>
 				<?php
 					$files_to_delete = $plugin_info = array();
 					foreach( (array) $plugins as $plugin ) {
@@ -111,9 +111,9 @@ if( !empty($action) ) {
 				<p><?php _e('Deleting the selected plugins will remove the following plugin(s) and their files:'); ?></p>
 				<p>
 					<ul>
-						<?php 
+						<?php
 						foreach( $plugin_info as $plugin )
-							echo '<li>', $plugin['Title'], ' ', __('By'), ' ', $plugin['Author'], '</li>';
+							echo '<li>', sprintf(__('%s by %s'), $plugin['Name'], $plugin['Author']), '</li>';
 						?>
 					</ul>
 				</p>
@@ -122,10 +122,8 @@ if( !empty($action) ) {
 					<input type="hidden" name="verify-delete" value="1" />
 					<input type="hidden" name="delete-selected" value="1" />
 					<?php
-						foreach( (array)$plugins as $plugin ) {
-							$plugin = attribute_escape($plugin);
-							echo "<input type='hidden' name='checked[]' value='$plugin' />";
-						}
+						foreach( (array)$plugins as $plugin )
+							echo '<input type="hidden" name="checked[]" value="' . attribute_escape($plugin) . '" />';
 					?>
 					<?php wp_nonce_field('bulk-manage-plugins') ?>
 					<input type="submit" name="submit" value="<?php _e('Yes, Delete these files') ?>" class="button" />
@@ -138,13 +136,11 @@ if( !empty($action) ) {
 				<div id="files-list" style="display:none;">
 					<ul>
 					<?php
-						foreach( (array)$files_to_delete as $file ) {
-							$file = str_replace(ABSPATH, '', $file);
-							echo "<li>$file</li>";
-						}
+						foreach( (array)$files_to_delete as $file )
+							echo '<li>' . str_replace(WP_PLUGIN_DIR, '', $file) . '</li>';
 					?>
 					</ul>
-				</div>				
+				</div>
 			</div>
 				<?php
 				require_once('admin-footer.php');
@@ -161,12 +157,16 @@ if( !empty($action) ) {
 }
 
 wp_enqueue_script('admin-forms');
+wp_enqueue_script('plugin-install');
+add_thickbox();
 
 $title = __('Manage Plugins');
 require_once('admin-header.php');
 
-validate_active_plugins();
-
+$invalid = validate_active_plugins();
+if( !empty($invalid) )
+	foreach($invalid as $plugin_file => $error)
+		echo '<div id="message" class="error"><p>' . sprintf(__('The plugin <code>%s</code> has been <strong>deactivated</strong> due to an error: %s'), wp_specialchars($plugin_file), $error->get_error_message()) . '</p></div>';
 ?>
 
 <?php if ( isset($_GET['error']) ) : ?>
@@ -203,7 +203,7 @@ $all_plugins = get_plugins();
 $active_plugins = array();
 $inactive_plugins = array();
 $recent_plugins = array();
-$recently_activated = (array)get_option('recently_activated');
+$recently_activated = (array) get_option('recently_activated');
 
 //Clean out any plugins which were deactivated over a week ago.
 foreach( $recently_activated as $key => $time )
@@ -215,6 +215,27 @@ if( $recently_activated != get_option('recently_activated') ) //If array changed
 $plugins_allowedtags = array('a' => array('href' => array(),'title' => array()),'abbr' => array('title' => array()),'acronym' => array('title' => array()),'code' => array(),'em' => array(),'strong' => array());
 
 foreach( (array)$all_plugins as $plugin_file => $plugin_data) {
+
+	//Translate fields
+	if( !empty($plugin_data['TextDomain']) ) {
+		if( !empty( $plugin_data['DomainPath'] ) )
+			load_plugin_textdomain($plugin_data['TextDomain'], dirname($plugin_file). $plugin_data['DomainPath']);
+		else
+			load_plugin_textdomain($plugin_data['TextDomain'], dirname($plugin_file));
+
+		foreach ( array('Name', 'PluginURI', 'Description', 'Author', 'AuthorURI', 'Version') as $field )
+			$plugin_data[ $field ] = translate($plugin_data[ $field ], $plugin_data['TextDomain']);
+	}
+
+	//Apply Markup
+	$plugin_data['Title'] = $plugin_data['Name'];
+	if ( !empty($plugin_data['PluginURI']) && !empty($plugin_data['Name']) )
+		$plugin_data['Title'] = '<a href="' . $plugin_data['PluginURI'] . '" title="'.__( 'Visit plugin homepage' ).'">' . $plugin_data['Name'] . '</a>';
+
+	if ( ! empty($plugin_data['AuthorURI']) )
+		$plugin_data['Author'] = '<a href="' . $plugin_data['AuthorURI'] . '" title="'.__( 'Visit author homepage' ).'">' . $plugin_data['Author'] . '</a>';
+
+	$plugin_data['Description'] = wptexturize( $plugin_data['Description'] );
 
 	// Sanitize all displayed data
 	$plugin_data['Title']       = wp_kses($plugin_data['Title'], $plugins_allowedtags);
@@ -263,7 +284,7 @@ function print_plugins_table($plugins, $context = '') {
 
 		if( 'active' == $context )
 			$action_links[] = '<a href="' . wp_nonce_url('plugins.php?action=deactivate&amp;plugin=' . $plugin_file, 'deactivate-plugin_' . $plugin_file) . '" title="' . __('Deactivate this plugin') . '" class="delete">' . __('Deactivate') . '</a>';
-		else //Available or Recently deactivated
+		else //Inactive or Recently deactivated
 			$action_links[] = '<a href="' . wp_nonce_url('plugins.php?action=activate&amp;plugin=' . $plugin_file, 'activate-plugin_' . $plugin_file) . '" title="' . __('Activate this plugin') . '" class="edit">' . __('Activate') . '</a>';
 
 		if ( current_user_can('edit_plugins') && is_writable(WP_PLUGIN_DIR . '/' . $plugin_file) )
@@ -277,17 +298,17 @@ function print_plugins_table($plugins, $context = '') {
 		<td class='name'>{$plugin_data['Title']}</td>
 		<td class='vers'>{$plugin_data['Version']}</td>
 		<td class='desc'><p>{$plugin_data['Description']}</p></td>
-		<td class='togl action-links'>";  
+		<td class='togl action-links'>";
 		if ( !empty($action_links) )
 			echo implode(' | ', $action_links);
-		echo '</td> 
+		echo '</td>
 	</tr>';
 		do_action( 'after_plugin_row', $plugin_file, $plugin_data, $context );
 	}
 ?>
 	</tbody>
 </table>
-<?php 
+<?php
 } //End print_plugins_table()
 ?>
 
@@ -359,8 +380,9 @@ function print_plugins_table($plugins, $context = '') {
 <?php endif; ?>
 
 <h2><?php _e('Get More Plugins'); ?></h2>
-<p><?php _e('You can find additional plugins for your site in the <a href="http://wordpress.org/extend/plugins/">WordPress plugin directory</a>.'); ?></p>
-<p><?php printf(__('To install a plugin you generally just need to upload the plugin file into your <code>%s</code> directory. Once a plugin is uploaded, you may activate it here.'), WP_PLUGIN_DIR); ?></p>
+<p><?php _e('You can find additional plugins for your site by using the new <a href="plugin-install.php">Plugin Browser/Installer</a> functionality, Or by browsing the <a href="http://wordpress.org/extend/plugins/">WordPress Plugin Directory</a> directly and installing manually.'); ?></p>
+<p><?php printf(__('To <em>manually</em> install a plugin you generally just need to upload the plugin file into your <code>%s</code> directory.'), WP_PLUGIN_DIR); ?></p>
+<p><?php _e('Once a plugin has been installed, you may activate it here.'); ?></p>
 
 </div>
 

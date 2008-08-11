@@ -339,12 +339,12 @@ class wpdb {
 				if (!empty($this->collate) )
 					$collation_query .= " COLLATE '{$this->collate}'";
 			}
-			
+
 			if ( !empty($collation_query) )
 				$this->query($collation_query);
-			
+
 		}
-		
+
 		$this->select($dbname);
 	}
 
@@ -378,7 +378,7 @@ class wpdb {
 		$old_prefix = $this->prefix;
 		$this->prefix = $prefix;
 
-		foreach ( $this->tables as $table )
+		foreach ( (array) $this->tables as $table )
 			$this->$table = $this->prefix . $table;
 
 		if ( defined('CUSTOM_USER_TABLE') )
@@ -677,7 +677,7 @@ class wpdb {
 	function update($table, $data, $where){
 		$data = add_magic_quotes($data);
 		$bits = $wheres = array();
-		foreach ( array_keys($data) as $k )
+		foreach ( (array) array_keys($data) as $k )
 			$bits[] = "`$k` = '$data[$k]'";
 
 		if ( is_array( $where ) )
@@ -685,7 +685,7 @@ class wpdb {
 				$wheres[] = "$c = '" . $this->escape( $v ) . "'";
 		else
 			return false;
-			
+
 		return $this->query( "UPDATE $table SET " . implode( ', ', $bits ) . ' WHERE ' . implode( ' AND ', $wheres ) );
 	}
 
@@ -805,7 +805,7 @@ class wpdb {
 			// Return an integer-keyed array of...
 			if ( $this->last_result ) {
 				$i = 0;
-				foreach( $this->last_result as $row ) {
+				foreach( (array) $this->last_result as $row ) {
 					if ( $output == ARRAY_N ) {
 						// ...integer-keyed row arrays
 						$new_array[$i] = array_values( get_object_vars( $row ) );
@@ -833,7 +833,7 @@ class wpdb {
 		if ( $this->col_info ) {
 			if ( $col_offset == -1 ) {
 				$i = 0;
-				foreach($this->col_info as $col ) {
+				foreach( (array) $this->col_info as $col ) {
 					$new_array[$i] = $col->{$info_type};
 					$i++;
 				}
@@ -941,7 +941,7 @@ class wpdb {
 		$bt = debug_backtrace();
 		$caller = '';
 
-		foreach ( $bt as $trace ) {
+		foreach ( (array) $bt as $trace ) {
 			if ( @$trace['class'] == __CLASS__ )
 				continue;
 			elseif ( strtolower(@$trace['function']) == 'call_user_func_array' )

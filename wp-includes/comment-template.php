@@ -320,10 +320,11 @@ function comment_ID() {
  * @since 1.5
  * @uses $comment
  *
+ * @param object|string|int $comment Comment to retrieve.
  * @return string The permalink to the current comment
  */
-function get_comment_link() {
-	global $comment;
+function get_comment_link($comment = null) {
+	$comment = get_comment($comment);
 	return get_permalink( $comment->comment_post_ID ) . '#comment-' . $comment->comment_ID;
 }
 
@@ -664,11 +665,14 @@ function comments_template( $file = '/comments.php' ) {
 	update_comment_cache($comments);
 
 	define('COMMENTS_TEMPLATE', true);
-	$include = apply_filters('comments_template', TEMPLATEPATH . $file );
+
+	$include = apply_filters('comments_template', STYLESHEETPATH . $file );
 	if ( file_exists( $include ) )
 		require( $include );
+	elseif ( file_exists( TEMPLATEPATH . $file ) )
+		require( TEMPLATEPATH .  $file );
 	else
-		require( WP_CONTENT_DIR . '/themes/default/comments.php');
+		require( get_theme_root() . '/default/comments.php');
 }
 
 /**

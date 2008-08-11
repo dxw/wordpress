@@ -1,11 +1,24 @@
 <?php
+/**
+ * Dashboard Administration Panel
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
 
+/** Load WordPress Bootstrap */
 require_once('admin.php');
 
+/** Load WordPress dashboard API */
 require_once(ABSPATH . 'wp-admin/includes/dashboard.php');
 
 wp_dashboard_setup();
 
+/**
+ * Display dashboard widget custom JavaScript.
+ *
+ * @since unknown
+ */
 function index_js() {
 ?>
 <script type="text/javascript">
@@ -27,7 +40,10 @@ jQuery(function($) {
 add_action( 'admin_head', 'index_js' );
 
 wp_enqueue_script( 'jquery' );
+wp_enqueue_script( 'plugin-install' );
 wp_admin_css( 'dashboard' );
+wp_admin_css( 'plugin-install' );
+add_thickbox();
 
 $title = __('Dashboard');
 $parent_file = 'index.php';

@@ -84,7 +84,7 @@ case 'diff' :
 		( !wp_get_post_revision( $left_revision->ID ) && !wp_get_post_revision( $right_revision->ID ) )
 	)
 		break;
-	
+
 	$post_title = '<a href="' . get_edit_post_link() . '">' . get_the_title() . '</a>';
 	$h2 = sprintf( __( 'Compare Revisions of &#8220;%1$s&#8221;' ), $post_title );
 
@@ -134,9 +134,6 @@ if ( 'page' == $post->post_type ) {
 	$title = __( 'Post Revisions' );
 }
 
-// Converts post_author ID# into name
-add_filter( '_wp_post_revision_field_post_author', 'get_author_name' );
-
 require_once( 'admin-header.php' );
 
 ?>
@@ -157,7 +154,7 @@ require_once( 'admin-header.php' );
 </tr>
 <?php endif;
 
-// use get_post_to_edit filters? 
+// use get_post_to_edit filters?
 $identical = true;
 foreach ( _wp_post_revision_fields() as $field => $field_title ) :
 	if ( 'diff' == $action ) {

@@ -82,7 +82,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base{
 	function setDefaultPermissions($perm) {
 		$this->permission = $perm;
 	}
-	
+
 	function get_contents($file, $type = '', $resumepos = 0 ){
 		if( empty($type) ){
 			$extension = substr(strrchr($file, "."), 1);
@@ -119,7 +119,7 @@ class WP_Filesystem_FTPext extends WP_Filesystem_Base{
 		return $ret;
 	}
 	function cwd() {
-		$cwd = ftp_pwd($this->link);
+		$cwd = @ftp_pwd($this->link);
 		if( $cwd )
 			$cwd = trailingslashit($cwd);
 		return $cwd;

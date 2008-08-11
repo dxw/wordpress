@@ -64,11 +64,13 @@ function add_rewrite_endpoint($name, $places) {
   * _wp_filter_taxonomy_base() - filter the URL base for taxonomies, to remove any manually prepended /index.php/
   * @param string $base the taxonomy base that we're going to filter
   * @return string
-  * @author Mark Jaquith 
+  * @author Mark Jaquith
   */
 function _wp_filter_taxonomy_base( $base ) {
-	if ( !empty( $base ) )
-		$base = preg_replace( '|^/index\.php/|', '/', $base );
+	if ( !empty( $base ) ) {
+		$base = preg_replace( '|^/index\.php/|', '', $base );
+		$base = trim( $base, '/' );
+	}
 	return $base;
 }
 
@@ -150,12 +152,12 @@ function url_to_postid($url) {
 			$query = preg_replace("!^.+\?!", '', $query);
 
 			// Substitute the substring matches into the query.
-			eval("\$query = \"$query\";");
+			eval("\$query = \"" . addslashes($query) . "\";");
 			// Filter out non-public query vars
 			global $wp;
 			parse_str($query, $query_vars);
 			$query = array();
-			foreach ( $query_vars as $key => $value ) {
+			foreach ( (array) $query_vars as $key => $value ) {
 				if ( in_array($key, $wp->public_query_vars) )
 					$query[$key] = $value;
 			}
@@ -388,7 +390,7 @@ class WP_Rewrite {
 		$front = $this->front;
 		preg_match_all('/%.+?%/', $this->permalink_structure, $tokens);
 		$tok_index = 1;
-		foreach ($tokens[0] as $token) {
+		foreach ( (array) $tokens[0] as $token) {
 			if ( ($token == '%post_id%') && ($tok_index <= 3) ) {
 				$front = $front . 'date/';
 				break;
@@ -445,9 +447,9 @@ class WP_Rewrite {
 		}
 
 		if (empty($this->category_base))
-			$this->category_structure = $this->front . 'category/';
+			$this->category_structure = trailingslashit( $this->front . 'category' );
 		else
-			$this->category_structure = $this->category_base . '/';
+			$this->category_structure = trailingslashit( '/' . $this->root . $this->category_base );
 
 		$this->category_structure .= '%category%';
 
@@ -465,9 +467,9 @@ class WP_Rewrite {
 		}
 
 		if (empty($this->tag_base))
-			$this->tag_structure = $this->front . 'tag/';
+			$this->tag_structure = trailingslashit( $this->front . 'tag' );
 		else
-			$this->tag_structure = $this->tag_base . '/';
+			$this->tag_structure = trailingslashit( '/' . $this->root . $this->tag_base );
 
 		$this->tag_structure .= '%tag%';
 
@@ -574,7 +576,7 @@ class WP_Rewrite {
 	function generate_rewrite_rules($permalink_structure, $ep_mask = EP_NONE, $paged = true, $feed = true, $forcomments = false, $walk_dirs = true, $endpoints = true) {
 		//build a regex to match the feed section of URLs, something like (feed|atom|rss|rss2)/?
 		$feedregex2 = '';
-		foreach ($this->feeds as $feed_name) {
+		foreach ( (array) $this->feeds as $feed_name) {
 			$feedregex2 .= $feed_name . '|';
 		}
 		$feedregex2 = '(' . trim($feedregex2, '|') .  ')/?$';
@@ -589,7 +591,7 @@ class WP_Rewrite {
 		//build up an array of endpoint regexes to append => queries to append
 		if ($endpoints) {
 			$ep_query_append = array ();
-			foreach ($this->endpoints as $endpoint) {
+			foreach ( (array) $this->endpoints as $endpoint) {
 				//match everything after the endpoint name, but allow for nothing to appear there
 				$epmatch = $endpoint[1] . '(/(.*))?/?$';
 				//this will be appended on to the rest of the query for each dir
@@ -688,7 +690,7 @@ class WP_Rewrite {
 
 			//do endpoints
 			if ($endpoints) {
-				foreach ($ep_query_append as $regex => $ep) {
+				foreach ( (array) $ep_query_append as $regex => $ep) {
 					//add the endpoints on if the mask fits
 					if ($ep[0] & $ep_mask || $ep[0] & $ep_mask_specific) {
 						$rewrite[$match . $regex] = $index . '?' . $query . $ep[1] . $this->preg_index($num_toks + 2);
@@ -745,7 +747,7 @@ class WP_Rewrite {
 					$subfeedquery = $subquery . '&feed=' . $this->preg_index(2);
 
 					//do endpoints for attachments
-					if (! empty($endpoint) ) { foreach ($ep_query_append as $regex => $ep) {
+					if ( !empty($endpoint) ) { foreach ( (array) $ep_query_append as $regex => $ep ) {
 						if ($ep[0] & EP_ATTACHMENT) {
 							$rewrite[$sub1 . $regex] = $subquery . '?' . $ep[1] . $this->preg_index(2);
 							$rewrite[$sub2 . $regex] = $subquery . '?' . $ep[1] . $this->preg_index(2);
@@ -893,7 +895,7 @@ class WP_Rewrite {
 		$rules .= "RewriteBase $home_root\n";
 
 		//add in the rules that don't redirect to WP's index.php (and thus shouldn't be handled by WP at all)
-		foreach ($this->non_wp_rules as $match => $query) {
+		foreach ( (array) $this->non_wp_rules as $match => $query) {
 			// Apache 1.3 does not support the reluctant (non-greedy) modifier.
 			$match = str_replace('.+?', '.+', $match);
 
@@ -914,7 +916,7 @@ class WP_Rewrite {
 				"RewriteCond %{REQUEST_FILENAME} -d\n" .
 				"RewriteRule ^.*$ - [S=$num_rules]\n";
 
-			foreach ($rewrite as $match => $query) {
+			foreach ( (array) $rewrite as $match => $query) {
 				// Apache 1.3 does not support the reluctant (non-greedy) modifier.
 				$match = str_replace('.+?', '.+', $match);
 
@@ -993,8 +995,8 @@ class WP_Rewrite {
 		if ($this->using_index_permalinks()) {
 			$this->root = $this->index . '/';
 		}
-		$this->category_base = ( ( $this->using_index_permalinks() ) ? '/' . $this->index : '' ) . get_option( 'category_base' );
-		$this->tag_base = ( ( $this->using_index_permalinks() ) ? '/' . $this->index : '' ) . get_option( 'tag_base' );
+		$this->category_base = get_option( 'category_base' );
+		$this->tag_base = get_option( 'tag_base' );
 		unset($this->category_structure);
 		unset($this->author_structure);
 		unset($this->date_structure);

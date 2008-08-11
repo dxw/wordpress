@@ -29,6 +29,8 @@ if ( !empty( $_REQUEST['delete_comments'] ) && isset($_REQUEST['action']) ) {
 		}
 	endforeach;
 	$redirect_to = basename( __FILE__ ) . '?deleted=' . $comments_deleted . '&approved=' . $comments_approved . '&spam=' . $comments_spammed . '&unapproved=' . $comments_unapproved;
+	if ( isset($_REQUEST['apage']) )
+		$redirect_to = add_query_arg( 'apage', absint($_REQUEST['apage']), $redirect_to );
 	if ( !empty($_REQUEST['mode']) )
 		$redirect_to = add_query_arg('mode', $_REQUEST['mode'], $redirect_to);
 	if ( !empty($_REQUEST['comment_status']) )
@@ -185,7 +187,13 @@ if ( $page_links )
 </select>
 <?php do_action('manage_comments_nav', $comment_status); ?>
 <?php wp_nonce_field('bulk-comments'); ?>
+<<<<<<< .working
 <input type="submit" name="doaction" value="Apply" class="button-secondary apply" />
+=======
+<?php if ( isset($_GET['apage']) ) { ?>
+	<input type="hidden" name="apage" value="<?php echo absint( $_GET['apage'] ); ?>" />
+<?php } ?>
+>>>>>>> .merge-right.r8619
 </div>
 
 <br class="clear" />

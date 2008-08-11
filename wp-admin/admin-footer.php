@@ -1,6 +1,17 @@
+<<<<<<< .working
 <?php if ( ! $fixed_bar ) { ?>
 <br class="clear" /></div><!-- wpbody-content -->
 <?php } ?>
+=======
+<?php
+/**
+ * WordPress Administration Template Footer
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
+?>
+>>>>>>> .merge-right.r8619
 </div><!-- wpbody -->
 </div><!-- wpcontent -->
 </div><!-- wpwrap -->

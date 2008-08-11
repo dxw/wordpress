@@ -285,11 +285,11 @@ function wp_handle_sideload( &$file, $overrides = false ) {
 		return $upload_error_handler( $file, $uploads['error'] );
 
 	$filename = wp_unique_filename( $uploads['path'], $file['name'], $unique_filename_callback );
-	
+
 	// Strip the query strings.
 	$filename = str_replace('?','-', $filename);
 	$filename = str_replace('&','-', $filename);
-	
+
 	// Move the file to the uploads dir
 	$new_file = $uploads['path'] . "/$filename";
 	if ( false === @ rename( $file['tmp_name'], $new_file ) ) {
@@ -384,10 +384,11 @@ function unzip_file($file, $to) {
 		}
 
 		// We've made sure the folders are there, so let's extract the file now:
-		if ( ! $file['folder'] )
+		if ( ! $file['folder'] ) {
 			if ( !$fs->put_contents( $to . $file['filename'], $file['content']) )
 				return new WP_Error('copy_failed', __('Could not copy file'), $to . $file['filename']);
 			$fs->chmod($to . $file['filename'], 0644);
+		}
 	}
 
 	return true;
@@ -407,8 +408,10 @@ function copy_dir($from, $to) {
 				return new WP_Error('copy_failed', __('Could not copy file'), $to . $filename);
 			$wp_filesystem->chmod($to . $filename, 0644);
 		} elseif ( 'd' == $fileinfo['type'] ) {
-			if ( !$wp_filesystem->mkdir($to . $filename, 0755) )
-				return new WP_Error('mkdir_failed', __('Could not create directory'), $to . $filename);
+			if ( !$wp_filesystem->is_dir($to . $filename) ) {
+				if ( !$wp_filesystem->mkdir($to . $filename, 0755) )
+					return new WP_Error('mkdir_failed', __('Could not create directory'), $to . $filename);
+			}
 			$result = copy_dir($from . $filename, $to . $filename);
 			if ( is_wp_error($result) )
 				return $result;
@@ -456,6 +459,80 @@ function get_filesystem_method() {
 	if ( ! $method && extension_loaded('ftp') ) $method = 'ftpext';
 	if ( ! $method && ( extension_loaded('sockets') || function_exists('fsockopen') ) ) $method = 'ftpsockets'; //Sockets: Socket extension; PHP Mode: FSockopen / fwrite / fread
 	return apply_filters('filesystem_method', $method);
+}
+
+function request_filesystem_credentials($form_post, $type = '', $error = false) {
+	$req_cred = apply_filters('request_filesystem_credentials', '', $form_post, $type, $error);
+	if ( '' !== $req_cred )
+		return $req_cred;
+
+	if ( empty($type) )
+		$type = get_filesystem_method();
+
+	if ( 'direct' == $type )
+		return true;
+
+	if( ! $credentials = get_option('ftp_credentials') )
+		$credentials = array();
+	// If defined, set it to that, Else, If POST'd, set it to that, If not, Set it to whatever it previously was(saved details in option)
+	$credentials['hostname'] = defined('FTP_HOST') ? FTP_HOST : (!empty($_POST['hostname']) ? $_POST['hostname'] : $credentials['hostname']);
+	$credentials['username'] = defined('FTP_USER') ? FTP_USER : (!empty($_POST['username']) ? $_POST['username'] : $credentials['username']);
+	$credentials['password'] = defined('FTP_PASS') ? FTP_PASS : (!empty($_POST['password']) ? $_POST['password'] : $credentials['password']);
+	$credentials['ssl']      = defined('FTP_SSL')  ? FTP_SSL  : ( isset($_POST['ssl'])      ? $_POST['ssl']      : $credentials['ssl']);
+
+	if ( ! $error && !empty($credentials['password']) && !empty($credentials['username']) && !empty($credentials['hostname']) ) {
+		$stored_credentials = $credentials;
+		unset($stored_credentials['password']);
+		update_option('ftp_credentials', $stored_credentials);
+		return $credentials;
+	}
+	$hostname = '';
+	$username = '';
+	$password = '';
+	$ssl = '';
+	if ( !empty($credentials) )
+		extract($credentials, EXTR_OVERWRITE);
+	if( $error )
+		echo '<div id="message" class="error"><p>' . __('<strong>Error:</strong> There was an error connecting to the server, Please verify the settings are correct.') . '</p></div>';
+?>
+<form action="<?php echo $form_post ?>" method="post">
+<div class="wrap">
+<h2><?php _e('FTP Connection Information') ?></h2>
+<p><?php _e('To perform the requested action, FTP connection information is required.') ?></p>
+<table class="form-table">
+<tr valign="top">
+<th scope="row"><label for="hostname"><?php _e('Hostname:') ?></label></th>
+<td><input name="hostname" type="text" id="hostname" value="<?php echo attribute_escape($hostname) ?>"<?php if( defined('FTP_HOST') ) echo ' disabled="disabled"' ?> size="40" /></td>
+</tr>
+<tr valign="top">
+<th scope="row"><label for="username"><?php _e('Username:') ?></label></th>
+<td><input name="username" type="text" id="username" value="<?php echo attribute_escape($username) ?>"<?php if( defined('FTP_USER') ) echo ' disabled="disabled"' ?> size="40" /></td>
+</tr>
+<tr valign="top">
+<th scope="row"><label for="password"><?php _e('Password:') ?></label></th>
+<td><input name="password" type="password" id="password" value=""<?php if( defined('FTP_PASS') ) echo ' disabled="disabled"' ?> size="40" /><?php if( defined('FTP_PASS') && !empty($password) ) echo '<em>'.__('(Password not shown)').'</em>'; ?></td>
+</tr>
+<tr valign="top">
+<th scope="row"><label for="ssl"><?php _e('Use SSL:') ?></label></th>
+<td>
+<select name="ssl" id="ssl"<?php if( defined('FTP_SSL') ) echo ' disabled="disabled"' ?>>
+<?php
+foreach ( array(0 => __('No'), 1 => __('Yes')) as $key => $value ) :
+	$selected = ($ssl == $value) ? 'selected="selected"' : '';
+	echo "\n\t<option value='$key' $selected>" . $value . '</option>';
+endforeach;
+?>
+</select>
+</td>
+</tr>
+</table>
+<p class="submit">
+<input type="submit" name="submit" value="<?php _e('Proceed'); ?>" />
+</p>
+</div>
+</form>
+<?php
+	return false;
 }
 
 ?>

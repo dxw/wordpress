@@ -18,7 +18,7 @@ if ( force_ssl_admin() && !is_ssl() ) {
 		exit();
 	} else {
 		wp_redirect('https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-		exit();			
+		exit();
 	}
 }
 
@@ -129,6 +129,13 @@ function retrieve_password() {
 	do_action('retreive_password', $user_login);  // Misspelled and deprecated
 	do_action('retrieve_password', $user_login);
 
+	$allow = apply_filters('allow_password_reset', true, $user_data->ID);
+
+	if ( ! $allow )
+		return new WP_Error('no_password_reset', __('Password reset is not allowed for this user'));
+	else if ( is_wp_error($allow) )
+		return $allow;
+
 	$key = $wpdb->get_var($wpdb->prepare("SELECT user_activation_key FROM $wpdb->users WHERE user_login = %s", $user_login));
 	if ( empty($key) ) {
 		// Generate something random for a key...
@@ -183,12 +190,7 @@ function reset_password($key) {
 	if (  !wp_mail($user->user_email, sprintf(__('[%s] Your new password'), get_option('blogname')), $message) )
 		die('<p>' . __('The e-mail could not be sent.') . "<br />\n" . __('Possible reason: your host may have disabled the mail() function...') . '</p>');
 
-	// send a copy of password change notification to the admin
-	// but check to see if it's the admin whose password we're changing, and skip this
-	if ( $user->user_email != get_option('admin_email') ) {
-		$message = sprintf(__('Password Lost and Changed for user: %s'), $user->user_login) . "\r\n";
-		wp_mail(get_option('admin_email'), sprintf(__('[%s] Password Lost/Changed'), get_option('blogname')), $message);
-	}
+	wp_password_change_notification($user);
 
 	return true;
 }
@@ -442,13 +444,16 @@ default:
 	elseif	( isset($_GET['checkemail']) && 'registered' == $_GET['checkemail'] )	$errors->add('registered', __('Registration complete. Please check your e-mail.'), 'message');
 
 	login_header(__('Login'), '', $errors);
+
+	if ( isset($_POST['log']) )
+		$user_login = ( 'incorrect_password' == $errors->get_error_code() || 'empty_password' == $errors->get_error_code() ) ? attribute_escape(stripslashes($_POST['log'])) : '';
 ?>
 
 <form name="loginform" id="loginform" action="<?php echo site_url('wp-login.php', 'login_post') ?>" method="post">
 <?php if ( !isset($_GET['checkemail']) || !in_array( $_GET['checkemail'], array('confirm', 'newpass') ) ) : ?>
 	<p>
 		<label><?php _e('Username') ?><br />
-		<input type="text" name="log" id="user_login" class="input" value="<?php echo attribute_escape(stripslashes($user_login)); ?>" size="20" tabindex="10" /></label>
+		<input type="text" name="log" id="user_login" class="input" value="<?php echo $user_login; ?>" size="20" tabindex="10" /></label>
 	</p>
 	<p>
 		<label><?php _e('Password') ?><br />
@@ -481,7 +486,16 @@ default:
 <p id="backtoblog"><a href="<?php bloginfo('url'); ?>/" title="<?php _e('Are you lost?') ?>"><?php printf(__('&laquo; Back to %s'), get_bloginfo('title', 'display' )); ?></a></p>
 
 <script type="text/javascript">
+<?php if ( $user_login ) { ?>
+setTimeout( function(){ try{
+d = document.getElementById('user_pass');
+d.value = '';
+d.focus();
+} catch(e){}
+}, 200);
+<?php } else { ?>
 try{document.getElementById('user_login').focus();}catch(e){}
+<?php } ?>
 </script>
 </body>
 </html>
