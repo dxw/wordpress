@@ -1,8 +1,3 @@
-<<<<<<< .working
-<?php if ( ! $fixed_bar ) { ?>
-<br class="clear" /></div><!-- wpbody-content -->
-<?php } ?>
-=======
 <?php
 /**
  * WordPress Administration Template Footer
@@ -10,12 +5,14 @@
  * @package WordPress
  * @subpackage Administration
  */
-?>
->>>>>>> .merge-right.r8619
+
+if ( ! $fixed_bar ) { ?>
+<br class="clear" /></div><!-- wpbody-content -->
+<?php } ?>
+
 </div><!-- wpbody -->
 </div><!-- wpcontent -->
 </div><!-- wpwrap -->
-
 <div id="footer">
 <p><?php
 do_action('in_admin_footer', '');

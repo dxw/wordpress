@@ -289,6 +289,7 @@ if($_REQUEST['ajax'] == 'photo') { ?>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
 	<title><?php _e('Press This') ?></title>
 
+	<script type="text/javascript" src="../wp-includes/js/tinymce/tiny_mce.js?ver=311"></script>
 <?php
 	add_thickbox();
 	wp_enqueue_style('press-this');
@@ -297,16 +298,12 @@ if($_REQUEST['ajax'] == 'photo') { ?>
 	wp_enqueue_script( 'post' );
 	wp_enqueue_script('editor_functions');
 
-	wp_teeny_mce();
+//	wp_teeny_mce();
 
 	do_action('admin_print_styles');
 	do_action('admin_print_scripts');
 	do_action('admin_head');
 ?>
-<<<<<<< .working
-<script type="text/javascript">
-	jQuery('#tags-input').hide();
-=======
 	<script type="text/javascript">
 	<?php if ( user_can_richedit() ) {
 		$language = ( '' == get_locale() ) ? 'en' : strtolower( substr(get_locale(), 0, 2) );
@@ -353,7 +350,6 @@ if($_REQUEST['ajax'] == 'photo') { ?>
 
     jQuery('#tags-input').hide();
 
->>>>>>> .merge-right.r8619
 	tag_update_quickclicks();
 
 	// add the quickadd form

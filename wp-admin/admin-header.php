@@ -76,7 +76,7 @@ unset($hook_suffixes, $hook_suffix);
 <div id="wpwrap">
 <div id="wpcontent">
 <div id="wphead">
-<h1><a href="<?php echo clean_url( admin_url() ); ?>"><?php if ( '' == get_bloginfo('name', 'display') ) echo '&nbsp;'; else echo get_bloginfo('name', 'display'); ?></a><span id="viewsite"><a href="<?php echo trailingslashit( get_option('home') ); ?>"><?php _e('Visit Site') ?></a></span></h1>
+<h1><?php if ( '' == get_bloginfo('name', 'display') ) echo '&nbsp;'; else echo get_bloginfo('name', 'display'); ?><span id="viewsite"><a href="<?php echo trailingslashit( get_option('home') ); ?>"><?php _e('Visit Site') ?></a></span></h1>
 </div>
 
 <?php
@@ -126,15 +126,7 @@ if ( ! $is_opera ) {
 	</div>
 <?php } ?>
 
-<<<<<<< .working
-<div id="user_info"><p>
-	<?php printf(__('Howdy, <a href="%1$s">%2$s</a>!'), 'profile.php', $user_identity) ?> |
-	<a href="<?php echo site_url('wp-login.php?action=logout', 'login') ?>" title="<?php _e('Log Out') ?>"><?php _e('Log Out'); ?></a>
-	<?php if ( $gears_compat ) { ?>| <span id="gears-menu"><a href="#" onclick="wpGears.message(1);return false;"><?php _e('Turbo') ?></a></span><?php } ?>
-</p></div>
-=======
 <div id="user_info"><p><?php printf(__('Howdy, <a href="%1$s">%2$s</a>!'), 'profile.php', $user_identity) ?> | <a href="<?php echo site_url('wp-login.php?action=logout', 'login') ?>" title="<?php _e('Log Out') ?>"><?php _e('Log Out'); ?></a> | <?php _e('<a href="http://codex.wordpress.org/">Help</a>') ?> | <?php _e('<a href="http://wordpress.org/support/">Forums</a>'); if ( ! $is_opera ) { ?> | <span id="gears-menu"><a href="#" onclick="wpGears.message(1);return false;"><?php _e('Turbo') ?></a></span><?php } ?></p></div>
->>>>>>> .merge-right.r8619
 
 <?php
 require(ABSPATH . 'wp-admin/menu-header.php');
