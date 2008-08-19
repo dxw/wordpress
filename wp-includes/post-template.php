@@ -160,6 +160,91 @@ function has_excerpt( $id = 0 ) {
 	return ( !empty( $post->post_excerpt ) );
 }
 
+/**
+ * Echo the classes for the post div
+ *
+ * {@internal Missing Long Description}}
+ *
+ * @package WordPress
+ * @subpackage Post
+ * @since 2.7
+ *
+ * @param string|array $class One or more classes to add to the class list
+ * @param int $post_id An optional post ID
+ */
+function post_class( $class = '', $post_id = null ) {
+	// Separates classes with a single space, collates classes for post DIV
+	echo 'class="' . join( ' ', get_post_class( $class, $post_id ) ) . '"';
+}
+
+/**
+ * Returns the classes for the post div as an array
+ *
+ * {@internal Missing Long Description}}
+ *
+ * @package WordPress
+ * @subpackage Post
+ * @since 2.7
+ *
+ * @param string|array $class One or more classes to add to the class list
+ * @param int $post_id An optional post ID
+ * @return array Array of classes
+ */
+function get_post_class( $class = '', $post_id = null ) {
+	$post = get_post($post_id);
+
+	$classes = array();
+
+	$classes[] = $post->post_type;
+
+	// sticky for Sticky Posts
+	if ( is_sticky($post->ID) )
+		$classes[] = 'sticky';
+
+	// hentry for hAtom compliace
+	$classes[] = 'hentry';
+
+	// Categories
+	foreach ( (array) get_the_category($post->ID) as $cat ) {
+		if ( empty($cat->slug ) )
+			continue;
+		$classes[] = 'category-' . $cat->slug;
+	}
+
+	// Tags
+	foreach ( (array) get_the_tags($post->ID) as $tag ) {
+		if ( empty($tag->slug ) )
+			continue;
+		$classes[] = 'tag-' . $tag->slug;
+	}
+
+	if ( !empty($class) ) {
+		if ( !is_array( $class ) )
+			$class = preg_split('#\s+#', $class);
+		$classes = array_merge($classes, $class);
+	}
+
+	return apply_filters('post_class', $classes, $class, $post_id);
+}
+
+/**
+ * Echo "sticky" CSS class if a post is sticky
+ *
+ * {@internal Missing Long Description}}
+ *
+ * @package WordPress
+ * @subpackage Post
+ * @since 2.7
+ *
+ * @param int $post_id An optional post ID
+ */
+function sticky_class( $post_id = null ) {
+	if ( !is_sticky($post_id) )
+		return;
+
+	echo " sticky";
+}
+
 function wp_link_pages($args = '') {
 	$defaults = array(
 		'before' => '<p>' . __('Pages:'), 'after' => '</p>',

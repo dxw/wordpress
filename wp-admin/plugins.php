@@ -1,4 +1,12 @@
 <?php
+/**
+ * Plugins administration panel.
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
+
+/** WordPress Administration Bootstrap */
 require_once('admin.php');
 
 $action = '';
@@ -12,7 +20,7 @@ foreach( array('activate-selected', 'deactivate-selected', 'delete-selected', 'c
 if( isset($_REQUEST['action']) )
 	$action = $_REQUEST['action'];
 
-$plugin = $_REQUEST['plugin'];
+$plugin = isset($_REQUEST['plugin']) ? $_REQUEST['plugin'] : '';
 
 if( !empty($action) ) {
 	switch( $action ) {

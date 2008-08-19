@@ -125,10 +125,10 @@ class WP_Http {
 		if ( is_null($working_transport) ) {
 			if ( true === WP_Http_ExtHttp::test() && apply_filters('use_http_extension_transport', true) )
 				$working_transport[] = new WP_Http_ExtHttp();
-			else if ( true === WP_Http_Fsockopen::test() && apply_filters('use_fsockopen_transport', true) )
-				$working_transport[] = new WP_Http_Fsockopen();
 			else if ( true === WP_Http_Streams::test() && apply_filters('use_streams_transport', true) )
 				$working_transport[] = new WP_Http_Streams();
+			else if ( true === WP_Http_Fsockopen::test() && apply_filters('use_fsockopen_transport', true) )
+				$working_transport[] = new WP_Http_Fsockopen();
 		}
 
 		return $working_transport;
@@ -136,6 +136,12 @@ class WP_Http {
 
 	/**
 	 * Send a HTTP request to a URI.
+	 *
+	 * The body and headers are part of the arguments. The 'body' argument is
+	 * for the body and will accept either a string or an array. The 'headers'
+	 * argument should be an array, but a string is acceptable. If the 'body'
+	 * argument is an array, then it will automatically be escaped using
+	 * http_build_query().
 	 *
 	 * The only URI that are supported in the HTTP Transport implementation are
 	 * the HTTP and HTTPS protocols. HTTP and HTTPS are assumed so the server
@@ -171,50 +177,54 @@ class WP_Http {
 	 *
 	 * @param string $url URI resource.
 	 * @param str|array $args Optional. Override the defaults.
-	 * @param string|array $headers Optional. Either the header string or array of Header name and value pairs. Expects sanitized.
-	 * @param string $body Optional. The body that should be sent. Will be automatically escaped and processed.
 	 * @return boolean
 	 */
-	function request($url, $args = array(), $headers = null, $body = null) {
+	function request( $url, $args = array() ) {
 		global $wp_version;
 
 		$defaults = array(
 			'method' => 'GET', 'timeout' => apply_filters('http_request_timeout', 3),
 			'redirection' => 5, 'httpversion' => '1.0',
 			'user-agent' => apply_filters('http_headers_useragent', 'WordPress/' . $wp_version ),
-			'blocking' => true
+			'blocking' => true,
+			'headers' => array(), 'body' => null
 		);
 
 		$r = wp_parse_args( $args, $defaults );
 
-		if ( is_null($headers) )
-			$headers = array();
+		if ( is_null( $r['headers'] ) )
+			$r['headers'] = array();
 
-		if ( ! is_array($headers) ) {
-			$processedHeaders = WP_Http::processHeaders($headers);
-			$headers = $processedHeaders['headers'];
+		if ( ! is_array($r['headers']) ) {
+			$processedHeaders = WP_Http::processHeaders($r['headers']);
+			$r['headers'] = $processedHeaders['headers'];
 		}
 
-		if ( isset($headers['User-Agent']) ) {
-			$headers['user-agent'] = $headers['User-Agent'];
-			unset($headers['User-Agent']);
+		if ( isset($r['headers']['User-Agent']) ) {
+			$r['user-agent'] = $r['headers']['User-Agent'];
+			unset($r['headers']['User-Agent']);
 		}
 
-		if ( ! isset($headers['user-agent']) )
-			$headers['user-agent'] = $r['user-agent'];
+		if ( isset($r['headers']['user-agent']) ) {
+			$r['user-agent'] = $r['headers']['user-agent'];
+			unset($r['headers']['user-agent']);
+		}
 
-		if ( is_null($body) ) {
+		if ( is_null($r['body']) ) {
 			$transports = WP_Http::_getTransport();
 		} else {
-			if ( is_array($body) || is_object($body) )
-				$body = http_build_query($body);
+			if ( is_array( $r['body'] ) || is_object( $r['body'] ) ) {
+				$r['body'] = http_build_query($r['body'], null, '&');
+				$r['headers']['Content-Type'] = 'application/x-www-form-urlencoded; charset=' . get_option('blog_charset');
+				$r['headers']['Content-Length'] = strlen($r['body']);
+			}
 
 			$transports = WP_Http::_postTransport();
 		}
 
 		$response = array( 'headers' => array(), 'body' => '', 'response' => array('code', 'message') );
 		foreach( (array) $transports as $transport ) {
-			$response = $transport->request($url, $r, $headers, $body);
+			$response = $transport->request($url, $r);
 
 			if( !is_wp_error($response) )
 				return $response;
@@ -233,14 +243,12 @@ class WP_Http {
 	 *
 	 * @param string $url URI resource.
 	 * @param str|array $args Optional. Override the defaults.
-	 * @param string|array $headers Optional. Either the header string or array of Header name and value pairs.
-	 * @param string $body Optional. The body that should be sent. Expected to be already processed.
 	 * @return boolean
 	 */
-	function post($url, $args = array(), $headers = null, $body = null) {
+	function post($url, $args = array()) {
 		$defaults = array('method' => 'POST');
 		$r = wp_parse_args( $args, $defaults );
-		return $this->request($url, $r, $headers, $body);
+		return $this->request($url, $r);
 	}
 
 	/**
@@ -253,14 +261,12 @@ class WP_Http {
 	 *
 	 * @param string $url URI resource.
 	 * @param str|array $args Optional. Override the defaults.
-	 * @param string|array $headers Optional. Either the header string or array of Header name and value pairs.
-	 * @param string $body Optional. The body that should be sent. Expected to be already processed.
 	 * @return boolean
 	 */
-	function get($url, $args = array(), $headers = null, $body = null) {
+	function get($url, $args = array()) {
 		$defaults = array('method' => 'GET');
 		$r = wp_parse_args( $args, $defaults );
-		return $this->request($url, $r, $headers, $body);
+		return $this->request($url, $r);
 	}
 
 	/**
@@ -273,14 +279,12 @@ class WP_Http {
 	 *
 	 * @param string $url URI resource.
 	 * @param str|array $args Optional. Override the defaults.
-	 * @param string|array $headers Optional. Either the header string or array of Header name and value pairs.
-	 * @param string $body Optional. The body that should be sent. Expected to be already processed.
 	 * @return boolean
 	 */
-	function head($url, $args = array(), $headers = null, $body = null) {
+	function head($url, $args = array()) {
 		$defaults = array('method' => 'HEAD');
 		$r = wp_parse_args( $args, $defaults );
-		return $this->request($url, $r, $headers, $body);
+		return $this->request($url, $r);
 	}
 
 	/**
@@ -296,40 +300,6 @@ class WP_Http {
 	function processResponse($strResponse) {
 		list($theHeaders, $theBody) = explode("\r\n\r\n", $strResponse, 2);
 		return array('headers' => $theHeaders, 'body' => $theBody);
-	}
-
-	/**
-	 * Whether response code is in the 400 range.
-	 *
-	 * @access public
-	 * @static
-	 * @since 2.7
-	 *
-	 * @param array $response Array with code and message keys
-	 * @return bool True if 40x Response, false if something else.
-	 */
-	function is400Response($response) {
-		if ( (int) substr($response, 0, 1) == 4 )
-			return true;
-		return false;
-	}
-
-	/**
-	 * Whether the headers returned a redirect location.
-	 *
-	 * Actually just checks whether the location header exists.
-	 *
-	 * @access public
-	 * @static
-	 * @since 2.7
-	 *
-	 * @param array $headers Array with headers
-	 * @return bool True if Location header is found.
-	 */
-	function isRedirect($headers) {
-		if ( isset($headers['location']) )
-			return true;
-		return false;
 	}
 
 	/**
@@ -357,7 +327,6 @@ class WP_Http {
 			if ( empty($tempheader) )
 				continue;
 
-
 			if ( false === strpos($tempheader, ':') ) {
 				list( , $iResponseCode, $strResponseMsg) = explode(' ', $tempheader, 3);
 				$response['code'] = $iResponseCode;
@@ -372,6 +341,59 @@ class WP_Http {
 		}
 
 		return array('response' => $response, 'headers' => $newheaders);
+	}
+
+	/**
+	 * Decodes chunk transfer-encoding, based off the HTTP 1.1 specification.
+	 *
+	 * Based off the HTTP http_encoding_dechunk function. Does not support
+	 * UTF-8. Does not support returning footer headers. Shouldn't be too
+	 * difficult to support it though.
+	 *
+	 * @todo Add support for footer chunked headers.
+	 * @access public
+	 * @since 2.7
+	 * @static
+	 *
+	 * @param string $body Body content
+	 * @return bool|string|WP_Error False if not chunked encoded. WP_Error on failure. Chunked decoded body on success.
+	 */
+	function chunkTransferDecode($body) {
+		$body = str_replace(array("\r\n", "\r"), "\n", $body);
+		// The body is not chunked encoding or is malformed.
+		if ( ! preg_match( '/^[0-9a-f]+(\s|\n)+/mi', trim($body) ) )
+			return false;
+
+		$parsedBody = '';
+		//$parsedHeaders = array(); Unsupported
+
+		$done = false;
+
+		do {
+			$hasChunk = (bool) preg_match( '/^([0-9a-f]+)(\s|\n)+/mi', $body, $match );
+
+			if ( $hasChunk ) {
+				if ( empty($match[1]) ) {
+					return new WP_Error('http_chunked_decode', __('Does not appear to be chunked encoded or body is malformed.') );
+				}
+
+				$length = hexdec( $match[1] );
+				$chunkLength = strlen( $match[0] );
+
+				$strBody = substr($body, strlen( $match[0] ), $length);
+				$parsedBody .= $strBody;
+
+				$body = ltrim(str_replace(array($match[0], $strBody), '', $body), "\n");
+
+				if( "0" == trim($body) ) {
+					$done = true;
+					return $parsedBody; // Ignore footer headers.
+					break;
+				}
+			} else {
+				return new WP_Error('http_chunked_decode', __('Does not appear to be chunked encoded or body is malformed.') );
+			}
+		} while ( false === $done );
 	}
 }
 
@@ -391,24 +413,31 @@ class WP_Http_Fsockopen {
 	 *
 	 * Does not support non-blocking mode.
 	 *
-	 * @see WP_Http::retrieve For default options descriptions.
+	 * @see WP_Http::request For default options descriptions.
 	 *
 	 * @since 2.7
 	 * @access public
 	 * @param string $url URI resource.
 	 * @param str|array $args Optional. Override the defaults.
-	 * @param string|array $headers Optional. Either the header string or array of Header name and value pairs. Expects sanitized.
-	 * @param string $body Optional. The body that should be sent. Expected to be already processed.
 	 * @return array 'headers', 'body', and 'response' keys.
 	 */
-	function request($url, $args = array(), $headers = null, $body = null) {
+	function request($url, $args = array()) {
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 3,
 			'redirection' => 5, 'httpversion' => '1.0',
-			'blocking' => true
+			'blocking' => true,
+			'headers' => array(), 'body' => null
 		);
 
 		$r = wp_parse_args( $args, $defaults );
+
+		if ( isset($r['headers']['User-Agent']) ) {
+			$r['user-agent'] = $r['headers']['User-Agent'];
+			unset($r['headers']['User-Agent']);
+		} else if( isset($r['headers']['user-agent']) ) {
+			$r['user-agent'] = $r['headers']['user-agent'];
+			unset($r['headers']['user-agent']);
+		}
 
 		$iError = null; // Store error number
 		$strError = null; // Store error string
@@ -434,10 +463,27 @@ class WP_Http_Fsockopen {
 		if ( true === $secure_transport )
 			$error_reporting = error_reporting(0);
 
-		$handle = fsockopen($arrURL['host'], $arrURL['port'], $iError, $strError, $r['timeout'] );
+		$startDelay = time();
+
+		if ( !defined('WP_DEBUG') || ( defined('WP_DEBUG') && false === WP_DEBUG ) )
+			$handle = @fsockopen($arrURL['host'], $arrURL['port'], $iError, $strError, $r['timeout'] );
+		else
+			$handle = fsockopen($arrURL['host'], $arrURL['port'], $iError, $strError, $r['timeout'] );
+
+		$endDelay = time();
+
+		// If the delay is greater than the timeout then fsockopen should't be
+		// used, because it will cause a long delay.
+		$elapseDelay = ($endDelay-$startDelay) > $r['timeout'];
+		if ( true === $elapseDelay )
+			add_option( 'disable_fsockopen', $endDelay, null, true );
 
 		if ( false === $handle )
 			return new WP_Error('http_request_failed', $iError . ': ' . $strError);
+
+		// WordPress supports PHP 4.3, which has this function. Removed sanity
+		// checking for performance reasons.
+		stream_set_timeout($handle, $r['timeout'] );
 
 		$requestPath = $arrURL['path'] . ( isset($arrURL['query']) ? '?' . $arrURL['query'] : '' );
 		$requestPath = empty($requestPath) ? '/' : $requestPath;
@@ -445,22 +491,21 @@ class WP_Http_Fsockopen {
 		$strHeaders = '';
 		$strHeaders .= strtoupper($r['method']) . ' ' . $requestPath . ' HTTP/' . $r['httpversion'] . "\r\n";
 		$strHeaders .= 'Host: ' . $arrURL['host'] . "\r\n";
-		if ( ! is_null($body) ) {
-			$strHeaders .= 'Content-Type: application/x-www-form-urlencoded; charset=' . get_option('blog_charset') . "\r\n";
-			$strHeaders .= 'Content-Length: ' . strlen($body) . "\r\n";
-		}
 
-		if ( is_array($headers) ) {
-			foreach ( (array) $headers as $header => $headerValue )
+		if( isset($r['user-agent']) )
+			$strHeaders .= 'User-agent: ' . $r['user-agent'] . "\r\n";
+
+		if ( is_array($r['headers']) ) {
+			foreach ( (array) $r['headers'] as $header => $headerValue )
 				$strHeaders .= $header . ': ' . $headerValue . "\r\n";
 		} else {
-			$strHeaders .= $headers;
+			$strHeaders .= $r['headers'];
 		}
 
 		$strHeaders .= "\r\n";
 
-		if ( ! is_null($body) )
-			$strHeaders .= $body;
+		if ( ! is_null($r['body']) )
+			$strHeaders .= $r['body'];
 
 		fwrite($handle, $strHeaders);
 
@@ -481,12 +526,19 @@ class WP_Http_Fsockopen {
 		$process = WP_Http::processResponse($strResponse);
 		$arrHeaders = WP_Http::processHeaders($process['headers']);
 
-		if ( WP_Http::is400Response($arrHeaders['response']) )
+		// Is the response code within the 400 range?
+		if ( (int) $arrHeaders['response']['code'] >= 400 && (int) $arrHeaders['response']['code'] < 500 )
 			return new WP_Error('http_request_failed', $arrHeaders['response']['code'] . ': ' . $arrHeaders['response']['message']);
 
+		// If the body was chunk encoded, then decode it.
+		if ( ! empty( $process['body'] ) && isset( $arrHeaders['headers']['transfer-encoding'] ) && 'chunked' == $arrHeaders['headers']['transfer-encoding'] )
+			$process['body'] = WP_Http::chunkTransferDecode($process['body']);
+
+		// If location is found, then assume redirect and redirect to location.
 		if ( isset($arrHeaders['headers']['location']) ) {
-			if ( $r['redirection']-- > 0 )
-				return $this->request($arrHeaders['headers']['location'], $r, $headers, $body);
+			if ( $r['redirection']-- > 0 ) {
+				return $this->request($arrHeaders['headers']['location'], $r);
+			}
 			else
 				return new WP_Error('http_request_failed', __('Too many redirects.'));
 		}
@@ -502,6 +554,9 @@ class WP_Http_Fsockopen {
 	 * @return boolean False means this class can not be used, true means it can.
 	 */
 	function test() {
+		if ( false !== ($option = get_option( 'disable_fsockopen' )) && time()-$option < 43200 ) // 12 hours
+			return false;
+
 		if ( function_exists( 'fsockopen' ) )
 			return true;
 
@@ -536,17 +591,16 @@ class WP_Http_Fopen {
 	 *
 	 * @param string $url URI resource.
 	 * @param str|array $args Optional. Override the defaults.
-	 * @param string|array $headers Optional. Either the header string or array of Header name and value pairs. Expects sanitized.
-	 * @param string $body Optional. The body that should be sent. Expected to be already processed.
 	 * @return array 'headers', 'body', and 'response' keys.
 	 */
-	function request($url, $args = array(), $headers = null, $body = null) {
+	function request($url, $args = array()) {
 		global $http_response_header;
 
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 3,
 			'redirection' => 5, 'httpversion' => '1.0',
-			'blocking' => true
+			'blocking' => true,
+			'headers' => array(), 'body' => null
 		);
 
 		$r = wp_parse_args( $args, $defaults );
@@ -567,8 +621,9 @@ class WP_Http_Fopen {
 		if (! $handle)
 			return new WP_Error('http_request_failed', sprintf(__('Could not open handle for fopen() to %s'), $url));
 
-		if ( function_exists('stream_set_timeout') )
-			stream_set_timeout($handle, $r['timeout'] );
+		// WordPress supports PHP 4.3, which has this function. Removed sanity
+		// checking for performance reasons.
+		stream_set_timeout($handle, $r['timeout'] );
 
 		if ( ! $r['blocking'] ) {
 			fclose($handle);
@@ -590,6 +645,9 @@ class WP_Http_Fopen {
 		fclose($handle);
 
 		$processedHeaders = WP_Http::processHeaders($theHeaders);
+
+		if ( ! empty( $strResponse ) && isset( $processedHeaders['headers']['transfer-encoding'] ) && 'chunked' == $processedHeaders['headers']['transfer-encoding'] )
+			$strResponse = WP_Http::chunkTransferDecode($strResponse);
 
 		return array('headers' => $processedHeaders['headers'], 'body' => $strResponse, 'response' => $processedHeaders['response']);
 	}
@@ -629,27 +687,24 @@ class WP_Http_Streams {
 	 *
 	 * @param string $url
 	 * @param str|array $args Optional. Override the defaults.
-	 * @param string|array $headers Optional. Either the header string or array of Header name and value pairs. Expects sanitized.
-	 * @param string $body Optional. The body that should be sent. Expected to be already processed.
 	 * @return array 'headers', 'body', and 'response' keys.
 	 */
-	function request($url, $args = array(), $headers = null, $body = null) {
+	function request($url, $args = array()) {
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 3,
 			'redirection' => 5, 'httpversion' => '1.0',
-			'blocking' => true
+			'blocking' => true,
+			'headers' => array(), 'body' => null
 		);
 
 		$r = wp_parse_args( $args, $defaults );
 
-		if ( isset($headers['User-Agent']) ) {
-			$r['user-agent'] = $headers['User-Agent'];
-			unset($headers['User-Agent']);
-		} else if( isset($headers['user-agent']) ) {
-			$r['user-agent'] = $headers['user-agent'];
-			unset($headers['user-agent']);
-		} else {
-			$r['user-agent'] = apply_filters('http_headers_useragent', 'WordPress/' . $wp_version );
+		if ( isset($r['headers']['User-Agent']) ) {
+			$r['user-agent'] = $r['headers']['User-Agent'];
+			unset($r['headers']['User-Agent']);
+		} else if( isset($r['headers']['user-agent']) ) {
+			$r['user-agent'] = $r['headers']['user-agent'];
+			unset($r['headers']['user-agent']);
 		}
 
 		$arrURL = parse_url($url);
@@ -660,19 +715,27 @@ class WP_Http_Streams {
 		if ( 'http' != $arrURL['scheme'] || 'https' != $arrURL['scheme'] )
 			$url = str_replace($arrURL['scheme'], 'http', $url);
 
+		// Convert Header array to string.
+		$strHeaders = '';
+		if ( is_array( $r['headers'] ) )
+			foreach( $r['headers'] as $name => $value )
+				$strHeaders .= "{$name}: $value\r\n";
+		else if ( is_string( $r['headers'] ) )
+			$strHeaders = $r['headers'];
+
 		$arrContext = array('http' =>
 			array(
 				'method' => strtoupper($r['method']),
 				'user-agent' => $r['user-agent'],
 				'max_redirects' => $r['redirection'],
 				'protocol_version' => (float) $r['httpversion'],
-				'header' => $headers,
+				'header' => $strHeaders,
 				'timeout' => $r['timeout']
 			)
 		);
 
-		if ( ! is_null($body) )
-			$arrContext['http']['content'] = $body;
+		if ( ! is_null($r['body']) && ! empty($r['body'] ) )
+			$arrContext['http']['content'] = $r['body'];
 
 		$context = stream_context_create($arrContext);
 
@@ -684,6 +747,8 @@ class WP_Http_Streams {
 		if ( ! $handle)
 			return new WP_Error('http_request_failed', sprintf(__('Could not open handle for fopen() to %s'), $url));
 
+		// WordPress supports PHP 4.3, which has this function. Removed sanity
+		// checking for performance reasons.
 		stream_set_timeout($handle, $r['timeout'] );
 
 		if ( ! $r['blocking'] ) {
@@ -694,6 +759,9 @@ class WP_Http_Streams {
 		$strResponse = stream_get_contents($handle);
 		$meta = stream_get_meta_data($handle);
 		$processedHeaders = WP_Http::processHeaders($meta['wrapper_data']);
+
+		if ( ! empty( $strResponse ) && isset( $processedHeaders['headers']['transfer-encoding'] ) && 'chunked' == $processedHeaders['headers']['transfer-encoding'] )
+			$strResponse = WP_Http::chunkTransferDecode($strResponse);
 
 		fclose($handle);
 
@@ -743,29 +811,24 @@ class WP_Http_ExtHTTP {
 	 *
 	 * @param string $url
 	 * @param str|array $args Optional. Override the defaults.
-	 * @param array $headers Optional. Either the header string or array of Header name and value pairs. Expects sanitized.
-	 * @param string $body Optional. The body that should be sent. Expected to be already processed.
 	 * @return array 'headers', 'body', and 'response' keys.
 	 */
-	function request($url, $args = array(), $headers = null, $body = null) {
-		global $wp_version;
-
+	function request($url, $args = array()) {
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 3,
 			'redirection' => 5, 'httpversion' => '1.0',
-			'blocking' => true
+			'blocking' => true,
+			'headers' => array(), 'body' => null
 		);
 
 		$r = wp_parse_args( $args, $defaults );
 
-		if ( isset($headers['User-Agent']) ) {
-			$r['user-agent'] = $headers['User-Agent'];
-			unset($headers['User-Agent']);
-		} else if( isset($headers['user-agent']) ) {
-			$r['user-agent'] = $headers['user-agent'];
-			unset($headers['user-agent']);
-		} else {
-			$r['user-agent'] = apply_filters('http_headers_useragent', 'WordPress/' . $wp_version );
+		if ( isset($r['headers']['User-Agent']) ) {
+			$r['user-agent'] = $r['headers']['User-Agent'];
+			unset($r['headers']['User-Agent']);
+		} else if( isset($r['headers']['user-agent']) ) {
+			$r['user-agent'] = $r['headers']['user-agent'];
+			unset($r['headers']['user-agent']);
 		}
 
 		switch ( $r['method'] ) {
@@ -792,10 +855,10 @@ class WP_Http_ExtHTTP {
 			'connecttimeout' => $r['timeout'],
 			'redirect' => $r['redirection'],
 			'useragent' => $r['user-agent'],
-			'headers' => $headers,
+			'headers' => $r['headers'],
 		);
 
-		$strResponse = http_request($r['method'], $url, $body, $options, $info);
+		$strResponse = http_request($r['method'], $url, $r['body'], $options, $info);
 
 		if ( false === $strResponse )
 			return new WP_Error('http_request_failed', $info['response_code'] . ': ' . $info['error']);
@@ -850,29 +913,24 @@ class WP_Http_Curl {
 	 *
 	 * @param string $url
 	 * @param str|array $args Optional. Override the defaults.
-	 * @param string|array $headers Optional. Either the header string or array of Header name and value pairs. Expects sanitized.
-	 * @param string $body Optional. The body that should be sent. Expected to be already processed.
 	 * @return array 'headers', 'body', and 'response' keys.
 	 */
-	function request($url, $args = array(), $headers = null, $body = null) {
-		global $wp_version;
-
+	function request($url, $args = array()) {
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 3,
 			'redirection' => 5, 'httpversion' => '1.0',
-			'blocking' => true
+			'blocking' => true,
+			'headers' => array(), 'body' => null
 		);
 
 		$r = wp_parse_args( $args, $defaults );
 
-		if ( isset($headers['User-Agent']) ) {
-			$r['user-agent'] = $headers['User-Agent'];
-			unset($headers['User-Agent']);
-		} else if( isset($headers['user-agent']) ) {
-			$r['user-agent'] = $headers['user-agent'];
-			unset($headers['user-agent']);
-		} else {
-			$r['user-agent'] = apply_filters('http_headers_useragent', 'WordPress/' . $wp_version );
+		if ( isset($r['headers']['User-Agent']) ) {
+			$r['user-agent'] = $r['headers']['User-Agent'];
+			unset($r['headers']['User-Agent']);
+		} else if( isset($r['headers']['user-agent']) ) {
+			$r['user-agent'] = $r['headers']['user-agent'];
+			unset($r['headers']['user-agent']);
 		}
 
 		$handle = curl_init();
@@ -896,8 +954,8 @@ class WP_Http_Curl {
 		if ( !ini_get('safe_mode') && !ini_get('open_basedir') )
 			curl_setopt( $handle, CURLOPT_FOLLOWLOCATION, true );
 
-		if( ! is_null($headers) )
-			curl_setopt( $handle, CURLOPT_HTTPHEADER, $headers );
+		if( ! is_null($r['headers']) )
+			curl_setopt( $handle, CURLOPT_HTTPHEADER, $r['headers'] );
 
 		if ( $r['httpversion'] == '1.0' )
 			curl_setopt( $handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_0 );
@@ -914,6 +972,9 @@ class WP_Http_Curl {
 
 		list($theHeaders, $theBody) = explode("\r\n\r\n", $theResponse, 2);
 		$theHeaders = WP_Http::processHeaders($theHeaders);
+
+		if ( ! empty( $theBody ) && isset( $theHeaders['headers']['transfer-encoding'] ) && 'chunked' == $theHeaders['headers']['transfer-encoding'] )
+			$theBody = WP_Http::chunkTransferDecode($theBody);
 
 		$response = array();
 		$response['code'] = curl_getinfo( $handle, CURLINFO_HTTP_CODE );
@@ -986,14 +1047,11 @@ function &_wp_http_get_object() {
  *
  * @param string $url Site URL to retrieve.
  * @param array $args Optional. Override the defaults.
- * @param string|array $headers Optional. Either the header string or array of Header name and value pairs.
- * @param string $body Optional. The body that should be sent. Expected to be already processed.
  * @return string The body of the response
  */
-function wp_remote_request($url, $args = array(), $headers = null, $body = null) {
+function wp_remote_request($url, $args = array()) {
 	$objFetchSite = _wp_http_get_object();
-
-	return $objFetchSite->request($url, $args, $headers, $body);
+	return $objFetchSite->request($url, $args);
 }
 
 /**
@@ -1005,14 +1063,12 @@ function wp_remote_request($url, $args = array(), $headers = null, $body = null)
  *
  * @param string $url Site URL to retrieve.
  * @param array $args Optional. Override the defaults.
- * @param string|array $headers Optional. Either the header string or array of Header name and value pairs.
- * @param string $body Optional. The body that should be sent. Expected to be already processed.
  * @return string The body of the response
  */
-function wp_remote_get($url, $args = array(), $headers = null, $body = null) {
+function wp_remote_get($url, $args = array()) {
 	$objFetchSite = _wp_http_get_object();
 
-	return $objFetchSite->get($url, $args, $headers, $body);
+	return $objFetchSite->get($url, $args);
 }
 
 /**
@@ -1024,14 +1080,11 @@ function wp_remote_get($url, $args = array(), $headers = null, $body = null) {
  *
  * @param string $url Site URL to retrieve.
  * @param array $args Optional. Override the defaults.
- * @param string|array $headers Optional. Either the header string or array of Header name and value pairs.
- * @param string $body Optional. The body that should be sent. Expected to be already processed.
  * @return string The body of the response
  */
-function wp_remote_post($url, $args = array(), $headers = null, $body = null) {
+function wp_remote_post($url, $args = array()) {
 	$objFetchSite = _wp_http_get_object();
-
-	return $objFetchSite->post($url, $args, $headers, $body);
+	return $objFetchSite->post($url, $args);
 }
 
 /**
@@ -1043,14 +1096,11 @@ function wp_remote_post($url, $args = array(), $headers = null, $body = null) {
  *
  * @param string $url Site URL to retrieve.
  * @param array $args Optional. Override the defaults.
- * @param string|array $headers Optional. Either the header string or array of Header name and value pairs.
- * @param string $body Optional. The body that should be sent. Expected to be already processed.
  * @return string The body of the response
  */
-function wp_remote_head($url, $args = array(), $headers = null, $body = null) {
+function wp_remote_head($url, $args = array()) {
 	$objFetchSite = _wp_http_get_object();
-
-	return $objFetchSite->head($url, $args, $headers, $body);
+	return $objFetchSite->head($url, $args);
 }
 
 /**

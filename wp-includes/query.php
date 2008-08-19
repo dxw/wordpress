@@ -524,6 +524,8 @@ class WP_Query {
 		$qv['w'] = absint($qv['w']);
 		$qv['m'] = absint($qv['m']);
 		$qv['cat'] = preg_replace( '|[^0-9,-]|', '', $qv['cat'] ); // comma separated list of positive or negative integers
+		$qv['pagename'] = trim( $qv['pagename'] );
+		$qv['name'] = trim( $qv['name'] );
 		if ( '' !== $qv['hour'] ) $qv['hour'] = absint($qv['hour']);
 		if ( '' !== $qv['minute'] ) $qv['minute'] = absint($qv['minute']);
 		if ( '' !== $qv['second'] ) $qv['second'] = absint($qv['second']);
@@ -686,7 +688,7 @@ class WP_Query {
 			if ( empty($qv['taxonomy']) || empty($qv['term']) ) {
 				$this->is_tax = false;
 				foreach ( $GLOBALS['wp_taxonomies'] as $t ) {
-					if ( isset($t->query_var) && '' != $qv[$t->query_var] ) {
+					if ( isset($t->query_var) && isset($qv[$t->query_var]) && '' != $qv[$t->query_var] ) {
 						$this->is_tax = true;
 						break;
 					}
@@ -1523,14 +1525,16 @@ class WP_Query {
 			}
 
 			// Fetch sticky posts that weren't in the query results
-			$stickies__in = implode(',', array_map( 'absint', $sticky_posts ));
-			$stickies = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE $wpdb->posts.ID IN ($stickies__in)" );
-			// TODO Make sure post is published or viewable by the current user
-			foreach ( $stickies as $sticky_post ) {
-				if ( 'publish' != $sticky_post->post_status )
-					continue;
-				array_splice($this->posts, $sticky_offset, 0, array($sticky_post));
-				$sticky_offset++;
+			if ( !empty($sticky_posts) ) {
+				$stickies__in = implode(',', array_map( 'absint', $sticky_posts ));
+				$stickies = $wpdb->get_results( "SELECT * FROM $wpdb->posts WHERE $wpdb->posts.ID IN ($stickies__in)" );
+				// TODO Make sure post is published or viewable by the current user
+				foreach ( $stickies as $sticky_post ) {
+					if ( 'publish' != $sticky_post->post_status )
+						continue;
+						array_splice($this->posts, $sticky_offset, 0, array($sticky_post));
+						$sticky_offset++;
+				}
 			}
 		}
 

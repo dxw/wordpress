@@ -15,6 +15,6 @@ $wp_version = '2.7-crazyhorse';
  *
  * @global int $wp_db_version
  */
-$wp_db_version = 8586;
+$wp_db_version = 8645;
 
 ?>

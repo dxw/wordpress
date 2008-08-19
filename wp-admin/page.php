@@ -1,4 +1,14 @@
 <?php
+/**
+ * Edit page administration panel.
+ *
+ * Manage edit page: post, edit, delete, etc.
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
+
+/** WordPress Administration Bootstrap */
 require_once('admin.php');
 
 $parent_file = 'edit.php';
@@ -6,6 +16,11 @@ $submenu_file = 'edit-pages.php';
 
 wp_reset_vars(array('action'));
 
+/**
+ * Redirect to previous page.
+ *
+ * @param int $page_ID Page ID.
+ */
 function redirect_page($page_ID) {
 	$referredby = '';
 	if ( !empty($_POST['referredby']) ) {
@@ -37,9 +52,7 @@ function redirect_page($page_ID) {
 	} elseif (!empty($referredby) && $referredby != $referer) {
 		$location = $_POST['referredby'];
 		$location = remove_query_arg('_wp_original_http_referer', $location);
-		if ( $_POST['referredby'] == 'redo' )
-			$location = get_permalink( $page_ID );
-		elseif ( false !== strpos($location, 'edit-pages.php') )
+		if ( false !== strpos($location, 'edit-pages.php') )
 			$location = add_query_arg('posted', $page_ID, $location);
 		elseif ( false !== strpos($location, 'wp-admin') )
 			$location = "page-new.php?posted=$page_ID";

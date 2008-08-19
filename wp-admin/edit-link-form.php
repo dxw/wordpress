@@ -1,4 +1,11 @@
 <?php
+/**
+ * Edit links form for inclusion in administration panels.
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
+
 if ( ! empty($link_id) ) {
 	$heading = sprintf( __( '<a href="%s">Links</a> / Edit Link' ), 'link-manager.php' );
 	$submit_text = __('Save Changes');

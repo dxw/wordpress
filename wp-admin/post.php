@@ -1,4 +1,14 @@
 <?php
+/**
+ * Edit post administration panel.
+ *
+ * Manage Post actions: post, edit, delete, etc.
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
+
+/** WordPress Administration Bootstrap */
 require_once('admin.php');
 
 $parent_file = 'edit.php';
@@ -6,6 +16,11 @@ $submenu_file = 'edit.php';
 
 wp_reset_vars(array('action', 'safe_mode', 'withcomments', 'posts', 'content', 'edited_post_title', 'comment_error', 'profile', 'trackback_url', 'excerpt', 'showcomments', 'commentstart', 'commentend', 'commentorder'));
 
+/**
+ * Redirect to previous page.
+ *
+ * @param int $post_ID Optional. Post ID.
+ */
 function redirect_post($post_ID = '') {
 	global $action;
 
@@ -39,9 +54,7 @@ function redirect_post($post_ID = '') {
 	} elseif (!empty($referredby) && $referredby != $referer) {
 		$location = $_POST['referredby'];
 		$location = remove_query_arg('_wp_original_http_referer', $location);
-		if ( $_POST['referredby'] == 'redo' )
-			$location = get_permalink( $post_ID );
-		elseif ( false !== strpos($location, 'edit.php') )
+		if ( false !== strpos($location, 'edit.php') )
 			$location = add_query_arg('posted', $post_ID, $location);
 		elseif ( false !== strpos($location, 'wp-admin') )
 			$location = "post-new.php?posted=$post_ID";

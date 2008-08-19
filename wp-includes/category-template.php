@@ -383,7 +383,7 @@ function wp_tag_cloud( $args = '' ) {
 function wp_generate_tag_cloud( $tags, $args = '' ) {
 	global $wp_rewrite;
 	$defaults = array(
-		'smallest' => 8, 'largest' => 22, 'unit' => 'pt',
+		'smallest' => 8, 'largest' => 22, 'unit' => 'pt', 'number' => 0,
 		'format' => 'flat', 'orderby' => 'name', 'order' => 'ASC',
 		'single_text' => '%d topic', 'multiple_text' => '%d topics'
 	);
@@ -392,6 +392,25 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 
 	if ( empty( $tags ) )
 		return;
+
+	// SQL cannot save you; this is a second (potentially different) sort on a subset of data.
+	if ( 'name' == $orderby )
+		uasort( $tags, create_function('$a, $b', 'return strnatcasecmp($a->name, $b->name);') );
+	else
+		uasort( $tags, create_function('$a, $b', 'return ($a->count < $b->count);') );
+
+	if ( 'DESC' == $order )
+		$tags = array_reverse( $tags, true );
+	elseif ( 'RAND' == $order ) {
+		$keys = array_rand( $tags, count( $tags ) );
+		foreach ( $keys as $key )
+			$temp[$key] = $tags[$key];
+		$tags = $temp;
+		unset( $temp );
+	}
+
+	if ( $number > 0 )
+		$tags = array_slice($tags, 0, $number);
 
 	$counts = array();
 	foreach ( (array) $tags as $key => $tag )
@@ -406,29 +425,14 @@ function wp_generate_tag_cloud( $tags, $args = '' ) {
 		$font_spread = 1;
 	$font_step = $font_spread / $spread;
 
-	// SQL cannot save you; this is a second (potentially different) sort on a subset of data.
-	if ( 'name' == $orderby )
-		uksort( $counts, 'strnatcasecmp' );
-	else
-		asort( $counts );
-
-	if ( 'DESC' == $order )
-		$counts = array_reverse( $counts, true );
-	elseif ( 'RAND' == $order ) {
-		$keys = array_rand( $counts, count( $counts ) );
-		foreach ( $keys as $key )
-			$temp[$key] = $counts[$key];
-		$counts = $temp;
-		unset( $temp );
-	}
-
 	$a = array();
 
 	$rel = ( is_object( $wp_rewrite ) && $wp_rewrite->using_permalinks() ) ? ' rel="tag"' : '';
 
-	foreach ( $counts as $key => $count ) {
-		$tag_link = clean_url( $tags[ $key ]->link );
-		$tag_id = $tags[ $key ]->id;
+	foreach ( $tags as $key => $tag ) {
+		$count = $counts[ $key ];
+		$tag_link = clean_url( $tag->link );
+		$tag_id = isset($tags[ $key ]->id) ? $tags[ $key ]->id : $key;
 		$tag_name = $tags[ $key ]->name;
 		$a[] = "<a href='$tag_link' class='tag-link-$tag_id' title='" . attribute_escape( sprintf( __ngettext( $single_text, $multiple_text, $count ), $count ) ) . "'$rel style='font-size: " .
 			( $smallest + ( ( $count - $min_count ) * $font_step ) )

@@ -1,5 +1,16 @@
 <?php
+/**
+ * Edit page form for inclusion in the administration panels.
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
 
+/**
+ * Post ID global
+ * @name $post_ID
+ * @var int
+ */
 if ( ! isset( $post_ID ) )
 	$post_ID = 0;
 
@@ -46,7 +57,6 @@ $user_ID = (int) $user_ID;
 <?php endif; ?>
 
 <?php
-
 function page_custom_meta_box($post){
 ?>
 <div id="postcustomstuff">

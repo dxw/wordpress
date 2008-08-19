@@ -1,4 +1,12 @@
 <?php
+/**
+ * Media Library administration panel.
+ *
+ * @package WordPress
+ * @subpackage Administration
+ */
+
+/** WordPress Administration Bootstrap */
 require_once('admin.php');
 add_thickbox();
 wp_enqueue_script('media-upload');
