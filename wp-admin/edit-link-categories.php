@@ -11,31 +11,20 @@ if ( isset($_GET['action']) && isset($_GET['delete']) ) {
 	if ( $_GET['action'] == 'delete' ) {
 		foreach( (array) $_GET['delete'] as $cat_ID ) {
 			$cat_name = get_term_field('name', $cat_ID, 'link_category');
+			$default_cat_id = get_option('default_link_category');
 
 			// Don't delete the default cats.
-			if ( $cat_ID == get_option('default_link_category') )
+			if ( $cat_ID == $default_cat_id )
 				wp_die(sprintf(__("Can&#8217;t delete the <strong>%s</strong> category: this is the default one"), $cat_name));
-		$default_cat_id = get_option('default_link_category');
 
-<<<<<<< .working
-			wp_delete_term($cat_ID, 'link_category');
+			wp_delete_term($cat_ID, 'link_category', array('default' => $default_cat_id));
 		}
-=======
-		// Don't delete the default cats.
-		if ( $cat_ID == $default_cat_id )
-			wp_die(sprintf(__("Can&#8217;t delete the <strong>%s</strong> category: this is the default one"), $cat_name));
->>>>>>> .merge-right.r8619
 
-<<<<<<< .working
 		$location = 'edit-link-categories.php';
 		if ( $referer = wp_get_referer() ) {
 			if ( false !== strpos($referer, 'edit-link-categories.php') )
 				$location = $referer;
 		}
-=======
-		wp_delete_term($cat_ID, 'link_category', array('default' => $default_cat_id));
-	}
->>>>>>> .merge-right.r8619
 
 		$location = add_query_arg('message', 6, $location);
 		wp_redirect($location);

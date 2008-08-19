@@ -20,15 +20,13 @@ $link_added = ( isset($_GET['added']) && '' != $_POST['link_name'] ) ?
 
 $fixed_bar = true;
 require('admin-header.php');
+?>
 
-<<<<<<< .working
-=======
 <?php if ( isset( $_GET['added'] ) && '' != $_POST['link_name']) : ?>
 <div id="message" class="updated fade"><p><?php _e('Link added.'); ?></p></div>
 <?php endif; ?>
 
 <?php
->>>>>>> .merge-right.r8619
 $link = get_default_link_to_edit();
 include('edit-link-form.php');
 

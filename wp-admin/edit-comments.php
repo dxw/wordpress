@@ -187,13 +187,10 @@ if ( $page_links )
 </select>
 <?php do_action('manage_comments_nav', $comment_status); ?>
 <?php wp_nonce_field('bulk-comments'); ?>
-<<<<<<< .working
 <input type="submit" name="doaction" value="Apply" class="button-secondary apply" />
-=======
 <?php if ( isset($_GET['apage']) ) { ?>
 	<input type="hidden" name="apage" value="<?php echo absint( $_GET['apage'] ); ?>" />
 <?php } ?>
->>>>>>> .merge-right.r8619
 </div>
 
 <br class="clear" />
