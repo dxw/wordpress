@@ -50,14 +50,7 @@ if ( 0 == $post_ID ) {
 
 <?php
 
-<<<<<<< .working
 // All meta boxes should be defined and added before the first do_meta_boxes() call (or potentially during the do_meta_boxes action).
-=======
-if ( 0 == $post_ID)
-	wp_nonce_field('add-post');
-else
-	wp_nonce_field('update-post_' .  $post_ID);
->>>>>>> .merge-right.r8619
 
 function post_tags_meta_box($post) {
 ?>
@@ -68,27 +61,9 @@ function post_tags_meta_box($post) {
 }
 add_meta_box('tagsdiv', __('Tags'), 'post_tags_meta_box', 'post', 'side', 'core');
 
-<<<<<<< .working
 //crazyhorse
 function post_media_meta_box($post) {
 	echo "<p><small><em>This feature isn't fully functional in this prototype.</em></small></p>";
-=======
-<input type="hidden" id="user-id" name="user_ID" value="<?php echo (int) $user_ID ?>" />
-<input type="hidden" id="hiddenaction" name="action" value="<?php echo $form_action ?>" />
-<input type="hidden" id="originalaction" name="originalaction" value="<?php echo $form_action ?>" />
-<input type="hidden" id="post_author" name="post_author" value="<?php echo attribute_escape( $post->post_author ); ?>" />
-<input type="hidden" id="post_type" name="post_type" value="<?php echo $post->post_type ?>" />
-<input type="hidden" id="original_post_status" name="original_post_status" value="<?php echo $post->post_status ?>" />
-<input name="referredby" type="hidden" id="referredby" value="<?php
-if ( !empty($_REQUEST['popupurl']) )
-	echo clean_url(stripslashes($_REQUEST['popupurl']));
-else if ( strpos( wp_get_referer(), '/wp-admin/' ) === false && $post_ID && url_to_postid(wp_get_referer()) == $post_ID  )
-	echo 'redo';
-else
-	echo clean_url(stripslashes(wp_get_referer()));
-?>" />
-<?php if ( 'draft' != $post->post_status ) wp_original_referer_field(true, 'previous'); ?>
->>>>>>> .merge-right.r8619
 
 	if ( empty( $post->ID ) )
 		return;
@@ -114,91 +89,16 @@ else
 		}
 		echo "<h4>$att->post_title</h4>";
 
-<<<<<<< .working
 		echo "<a href='#' class='no-crazy'>Remove</a> | ";
 		echo "<a href='media.php?action=edit&amp;attachment_id=$att->ID'>Edit</a>";
-=======
-<p><strong><label for='post_status'><?php _e('Publish Status') ?></label></strong></p>
-<p>
-<select name='post_status' id='post_status' tabindex='4'>
-<?php
-// only show the publish menu item if they are allowed to publish posts or they are allowed to edit this post (accounts for 'edit_published_posts' capability)
-if ( current_user_can('publish_posts') OR ( $post->post_status == 'publish' AND current_user_can('edit_post', $post->ID) ) ) :
-?>
-<option<?php selected( $post->post_status, 'publish' ); selected( $post->post_status, 'private' );?> value='publish'><?php _e('Published') ?></option>
-<?php if ( 'future' == $post->post_status ) : ?>
-<option<?php selected( $post->post_status, 'future' ); ?> value='future'><?php _e('Scheduled') ?></option>
-<?php endif; ?>
-<?php endif; ?>
-<option<?php selected( $post->post_status, 'pending' ); ?> value='pending'><?php _e('Pending Review') ?></option>
-<option<?php selected( $post->post_status, 'draft' ); ?> value='draft'><?php _e('Unpublished') ?></option>
-</select>
-</p>
->>>>>>> .merge-right.r8619
 
-<<<<<<< .working
 		echo "<br class='clear' />";
-=======
-<?php if ( current_user_can( 'publish_posts' ) ) : ?>
-<p id="private-checkbox"><label for="post_status_private" class="selectit"><input id="post_status_private" name="post_status" type="checkbox" value="private" <?php checked($post->post_status, 'private'); ?> tabindex="4" /> <?php _e('Keep this post private') ?></label></p>
-	<?php if ( current_user_can( 'edit_others_posts' ) ) : ?>
-		<p id="sticky-checkbox"><label for="sticky" class="selectit"><input id="sticky" name="sticky" type="checkbox" value="sticky" <?php checked(is_sticky($post->ID), true); ?> tabindex="4" /> <?php _e('Stick this post to the front page') ?></label></p>
-	<?php endif; ?>
-<?php endif; ?>
-<?php
-if ( 0 != $post_ID ) {
-	if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
-		$stamp = __('Scheduled for:<br />%1$s at %2$s');
-	} else if ( 'publish' == $post->post_status ) { // already published
-		$stamp = __('Published on:<br />%1$s at %2$s');
-	} else if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
-		$stamp = __('Publish immediately');
-	} else { // draft, 1 or more saves, date specified
-		$stamp = __('Publish on:<br />%1$s at %2$s');
->>>>>>> .merge-right.r8619
 	}
 
 
 
 }
 add_meta_box( 'mediadiv', __('Media added to this Post' ), 'post_media_meta_box', 'post', 'side', 'core' );
-
-<<<<<<< .working
-=======
-if ( ( 'edit' == $action) && current_user_can('delete_post', $post_ID) )
-	echo "<a class='submitdelete' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post_ID", 'delete-post_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;post') . "</a>";
-?>
-<br class="clear" />
-<?php if ( 0 != $post_ID ): ?>
-<?php if ( $last_id = get_post_meta($post_ID, '_edit_last', true) ) {
-	$last_user = get_userdata($last_id);
-	printf(__('Last edited by %1$s on %2$s at %3$s'), wp_specialchars( $last_user->display_name ), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
-} else {
-	printf(__('Last edited on %1$s at %2$s'), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
-}
-?>
-<br class="clear" />
-<?php endif; ?>
-<span id="autosave"></span>
-<span id="wp-word-count"></span>
-</p>
->>>>>>> .merge-right.r8619
-
-
-<<<<<<< .working
-=======
-<ul>
-<?php if ( 0 != $post_ID ): ?>
-<li><a href="edit.php?p=<?php echo $post_ID ?>"><?php _e('See Comments on this Post') ?></a></li>
-<?php endif; ?>
-<li><a href="edit-comments.php"><?php _e('Manage All Comments') ?></a></li>
-<li><a href="edit.php"><?php _e('Manage All Posts') ?></a></li>
-<li><a href="categories.php"><?php _e('Manage All Categories') ?></a></li>
-<li><a href="edit-tags.php"><?php _e('Manage All Tags') ?></a></li>
-<li><a href="edit.php?post_status=draft"><?php _e('View Drafts'); ?></a></li>
-<?php do_action('post_relatedlinks_list'); ?>
-</ul>
->>>>>>> .merge-right.r8619
 
 function post_categories_meta_box($post) {
 ?>
@@ -332,15 +232,11 @@ add_meta_box('commentstatusdiv', __('Comments on this Post'), 'post_comment_stat
 
 function post_password_meta_box($post) {
 ?>
-<<<<<<< .working
 <p>
 	<input id="post_status_private" name="post_status" type="checkbox" value="private" <?php checked($post->post_status, 'private'); ?> tabindex="4" /> <?php _e('Keep this post private') ?></label>
 </p>
 <h4><?php _e( 'Post Password' ); ?></h4>
 <p><label class="hidden" for="post_password"><?php _e('Password Protect This Post') ?></label><input name="post_password" type="text" size="25" id="post_password" value="<?php echo attribute_escape( $post->post_password ); ?>" /></p>
-=======
-<p><label class="hidden" for="post_password"><?php _e('Password Protect This Post') ?></label><input name="post_password" type="text" size="25" id="post_password" value="<?php if ( isset( $post->post_password ) ) : echo attribute_escape( $post->post_password ); endif; ?>" /></p>
->>>>>>> .merge-right.r8619
 <p><?php _e('Setting a password will require people who visit your blog to enter the above password to view this post and its comments.'); ?></p>
 <?php
 }
@@ -409,7 +305,7 @@ endif;
 
 <?php
 
-if ( !isset($post_ID) || 0 == $post_ID)
+if ( 0 == $post_ID)
 	wp_nonce_field('add-post');
 else
 	wp_nonce_field('update-post_' .  $post_ID);
@@ -428,14 +324,7 @@ $saveasdraft = '<input name="save" type="submit" id="save" class="button" tabind
 <input type="hidden" id="post_author" name="post_author" value="<?php echo attribute_escape( $post->post_author ); ?>" />
 <input type="hidden" id="post_type" name="post_type" value="<?php echo $post->post_type ?>" />
 <input type="hidden" id="original_post_status" name="original_post_status" value="<?php echo $post->post_status ?>" />
-<input name="referredby" type="hidden" id="referredby" value="<?php
-if ( !empty($_REQUEST['popupurl']) )
-	echo clean_url(stripslashes($_REQUEST['popupurl']));
-else if ( strpos( wp_get_referer(), '/wp-admin/' ) === false && $post_ID && url_to_postid(wp_get_referer()) === $post_ID  )
-	echo 'redo';
-else
-	echo clean_url(stripslashes(wp_get_referer()));
-?>" />
+<input name="referredby" type="hidden" id="referredby" value="<?php echo clean_url(stripslashes(wp_get_referer())); ?>" />
 <?php if ( 'draft' != $post->post_status ) wp_original_referer_field(true, 'previous'); ?>
 
 <?php echo $form_extra ?>

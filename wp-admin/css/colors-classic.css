@@ -340,11 +340,7 @@ ul#widget-list li.widget-list-item h4.widget-title {
 	background-color: #07273E;
 }
 
-<<<<<<< .working
-div#media-upload-header {
-=======
-#adminmenu, div#media-upload-header, div#plugin-information-header {
->>>>>>> .merge-right.r8619
+div#media-upload-header, div#plugin-information-header {
 	background-color: #14568a;
 	border-bottom-color: #07273e;
 }

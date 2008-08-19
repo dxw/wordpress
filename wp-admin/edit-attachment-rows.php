@@ -127,11 +127,7 @@ foreach($posts_columns as $column_name=>$column_display_name) {
 					$title = $parent_title;
 			}
 			?>
-<<<<<<< .working
-			<td><strong><a href="post.php?action=edit&amp;post=<?php echo $post->post_parent; ?>"><?php echo $title ?></a></strong>, <?php echo get_the_time(__('Y/m/d')); ?></td>
-=======
-			<td><strong><a href="<?php echo get_edit_post_link( $post->post_parent ); ?>"><?php echo $title ?></a></strong></td>
->>>>>>> .merge-right.r8619
+			<td><strong><a href="<?php echo get_edit_post_link( $post->post_parent ); ?>"><?php echo $title ?></a></strong>, <?php echo get_the_time(__('Y/m/d')); ?></td>
 			<?php
 		} else {
 			?>

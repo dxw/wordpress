@@ -1657,13 +1657,6 @@ td.action-links, th.action-links {
 	text-align: right;
 }
 
-<<<<<<< .working
-=======
-#poststuff h3, #poststuff .closed h3 {
-	cursor: pointer;
-}
-
->>>>>>> .merge-right.r8619
 .hide-if-no-js {
 	display: none;
 }

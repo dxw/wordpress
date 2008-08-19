@@ -746,12 +746,6 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 	if ( current_user_can( 'edit_post', $post->ID ) ) {
 		$post_link = "<a href='" . get_comment_link() . "'>";
 		$post_link .= get_the_title($comment->comment_post_ID) . '</a>';
-<<<<<<< .working
-=======
-
-		$edit_link_start = "<a class='row-title' href='comment.php?action=editcomment&amp;c={$comment->comment_ID}' title='" . __('Edit comment') . "'>";
-		$edit_link_end = '</a>';
->>>>>>> .merge-right.r8619
 	} else {
 		$post_link = get_the_title($comment->comment_post_ID);
 	}
@@ -779,29 +773,9 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 <?php if ( $checkbox ) : ?>
     <td class="check-column"><?php if ( current_user_can('edit_post', $comment->comment_post_ID) ) { ?><input type="checkbox" name="delete_comments[]" value="<?php echo $comment->comment_ID; ?>" /><?php } ?></td>
 <?php endif; ?>
-<<<<<<< .working
     <td class="comment-column">
     <?php if ( 'detail' == $mode || 'single' == $mode ) comment_text(); ?>
     
-=======
-    <td class="comment">
-    <p class="comment-author"><strong><?php echo $edit_link_start; comment_author(); echo $edit_link_end; ?></strong><br />
-    <?php if ( !empty($author_url) ) : ?>
-    <a href="<?php echo $author_url ?>"><?php echo $author_url_display; ?></a> |
-    <?php endif; ?>
-    <?php if ( current_user_can( 'edit_post', $post->ID ) ) : ?>
-    <?php if ( !empty($comment->comment_author_email) ): ?>
-    <?php comment_author_email_link() ?> |
-    <?php endif; ?>
-    <a href="edit-comments.php?s=<?php comment_author_IP() ?>&amp;mode=detail"><?php comment_author_IP() ?></a>
-	<?php endif; //current_user_can?>
-    </p>
-   	<?php if ( 'detail' == $mode ) comment_text(); ?>
-   	<p><?php printf(__('From %1$s, %2$s'), $post_link, $ptime) ?></p>
-    </td>
-    <td><?php comment_date(__('Y/m/d')); ?></td>
-    <td class="action-links">
->>>>>>> .merge-right.r8619
 <?php
 	$actions = array();
 
@@ -1206,10 +1180,6 @@ function wp_remember_old_slug() {
 function add_meta_box($id, $title, $callback, $page, $context = 'advanced', $priority = 'default') {
 	global $wp_meta_boxes;
 
-<<<<<<< .working
-=======
-
->>>>>>> .merge-right.r8619
 	if  ( !isset($wp_meta_boxes) )
 		$wp_meta_boxes = array();
 	if ( !isset($wp_meta_boxes[$page]) )
@@ -1266,7 +1236,6 @@ function do_meta_boxes($page, $context, $object) {
 
 	echo "<div id='$context-sortables' class='meta-box-sortables'>\n";
 
-<<<<<<< .working
 	$i = 0;
 	do { 
 		// Grab the ones the user has manually sorted.  Pull them out of their previous context/priority and into the one the user chose
@@ -1275,21 +1244,6 @@ function do_meta_boxes($page, $context, $object) {
 				foreach ( explode(',', $ids) as $id )
 					if ( $id )
 						add_meta_box( $id, null, null, $page, $box_context, 'sorted' );
-=======
-	foreach ( array('high', 'core', 'default', 'low') as $priority ) {
-		if ( ! isset( $wp_meta_boxes[$page][$context][$priority] ) )
-			continue;
-
-		foreach ( (array) $wp_meta_boxes[$page][$context][$priority] as $box ) {
-			if ( false === $box )
-				continue;
-			echo '<div id="' . $box['id'] . '" class="postbox ' . postbox_classes($box['id'], $page) . '">' . "\n";
-			echo "<h3>{$box['title']}</h3>\n";
-			echo '<div class="inside">' . "\n";
-			call_user_func($box['callback'], $object, $box);
-			echo "</div>\n";
-			echo "</div>\n";
->>>>>>> .merge-right.r8619
 		}
 		$already_sorted = true;
 

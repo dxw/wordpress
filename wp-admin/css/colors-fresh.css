@@ -320,11 +320,7 @@ h3.dashboard-widget-title small a:hover {
 	background-color: #264761;
 }
 
-<<<<<<< .working
-div#media-upload-header {
-=======
-#adminmenu, div#media-upload-header, div#plugin-information-header {
->>>>>>> .merge-right.r8619
+div#media-upload-header, div#plugin-information-header {
 	background-color: #e4f2fd;
 	border-bottom-color: #c6d9e9;
 }
