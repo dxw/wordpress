@@ -63,6 +63,105 @@ if ( 0 == $post_ID ) {
 
 // All meta boxes should be defined and added before the first do_meta_boxes() call (or potentially during the do_meta_boxes action).
 
+function post_submit_meta_box($post) {
+?>
+<div class="submitbox" id="submitpost">
+
+<div id="previewview">
+<?php if ( 'publish' == $post->post_status ) { ?>
+<a href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank" tabindex="4"><?php _e('View this Post'); ?></a>
+<?php } elseif ( 'edit' == $action ) { ?>
+<a href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank"  tabindex="4"><?php _e('Preview this Post'); ?></a>
+<?php } ?>
+</div>
+
+<div class="inside">
+
+<p><strong><label for='post_status'><?php _e('Publish Status') ?></label></strong></p>
+<p>
+<select name='post_status' id='post_status' tabindex='4'>
+<?php
+// only show the publish menu item if they are allowed to publish posts or they are allowed to edit this post (accounts for 'edit_published_posts' capability)
+if ( current_user_can('publish_posts') OR ( $post->post_status == 'publish' AND current_user_can('edit_post', $post->ID) ) ) :
+?>
+<option<?php selected( $post->post_status, 'publish' ); selected( $post->post_status, 'private' );?> value='publish'><?php _e('Published') ?></option>
+<?php if ( 'future' == $post->post_status ) : ?>
+<option<?php selected( $post->post_status, 'future' ); ?> value='future'><?php _e('Scheduled') ?></option>
+<?php endif; ?>
+<?php endif; ?>
+<option<?php selected( $post->post_status, 'pending' ); ?> value='pending'><?php _e('Pending Review') ?></option>
+<option<?php selected( $post->post_status, 'draft' ); ?> value='draft'><?php _e('Unpublished') ?></option>
+</select>
+</p>
+
+<?php if ( current_user_can( 'publish_posts' ) ) : ?>
+<p id="private-checkbox"><label for="post_status_private" class="selectit"><input id="post_status_private" name="post_status" type="checkbox" value="private" <?php checked($post->post_status, 'private'); ?> tabindex="4" /> <?php _e('Keep this post private') ?></label></p>
+	<?php if ( current_user_can( 'edit_others_posts' ) ) : ?>
+		<p id="sticky-checkbox"><label for="sticky" class="selectit"><input id="sticky" name="sticky" type="checkbox" value="sticky" <?php checked(is_sticky($post->ID), true); ?> tabindex="4" /> <?php _e('Stick this post to the front page') ?></label></p>
+	<?php endif; ?>
+<?php endif; ?>
+<?php
+if ( 0 != $post->ID ) {
+	if ( 'future' == $post->post_status ) { // scheduled for publishing at a future date
+		$stamp = __('Scheduled for:<br />%1$s at %2$s');
+	} else if ( 'publish' == $post->post_status ) { // already published
+		$stamp = __('Published on:<br />%1$s at %2$s');
+	} else if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
+		$stamp = __('Publish immediately');
+	} else { // draft, 1 or more saves, date specified
+		$stamp = __('Publish on:<br />%1$s at %2$s');
+	}
+	$date = mysql2date(get_option('date_format'), $post->post_date);
+	$time = mysql2date(get_option('time_format'), $post->post_date);
+} else { // draft (no saves, and thus no date specified)
+	$stamp = __('Publish immediately');
+	$date = mysql2date(get_option('date_format'), current_time('mysql'));
+	$time = mysql2date(get_option('time_format'), current_time('mysql'));
+}
+?>
+<?php if ( current_user_can( 'publish_posts' ) ) : // Contributors don't get to choose the date of publish ?>
+<p class="curtime"><?php printf($stamp, $date, $time); ?>
+&nbsp;<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex='4'><?php _e('Edit') ?></a></p>
+
+<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
+<?php endif; ?>
+
+</div>
+
+<p class="submit">
+<?php do_action('post_submitbox_start'); ?>
+<input type="submit" name="save" id="save-post" value="<?php _e('Save'); ?>" tabindex="4" class="button button-highlighted" />
+<?php
+if ( !in_array( $post->post_status, array('publish', 'future') ) || 0 == $post->ID ) {
+?>
+<?php if ( current_user_can('publish_posts') ) : ?>
+	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Publish') ?>" />
+<?php else : ?>
+	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Submit for Review') ?>" />
+<?php endif; ?>
+<?php
+}
+
+if ( ( 'edit' == $action) && current_user_can('delete_post', $post->ID) )
+	echo "<a class='submitdelete' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post->ID", 'delete-post_' . $post->ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;post') . "</a>";
+?>
+<br class="clear" />
+<?php if ( 0 != $post->ID ): ?>
+<?php if ( $last_id = get_post_meta($post->ID, '_edit_last', true) ) {
+	$last_user = get_userdata($last_id);
+	printf(__('Last edited by %1$s on %2$s at %3$s'), wp_specialchars( $last_user->display_name ), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
+} else {
+	printf(__('Last edited on %1$s at %2$s'), mysql2date(get_option('date_format'), $post->post_modified), mysql2date(get_option('time_format'), $post->post_modified));
+}
+?>
+<br class="clear" />
+<?php endif; ?>
+</p>
+</div>
+<?php
+}
+add_meta_box('submitdiv', __('Publish'), 'post_submit_meta_box', 'post', 'side', 'core');
+
 function post_tags_meta_box($post) {
 ?>
 <p id="jaxtag"><label class="hidden" for="newtag"><?php _e('Tags'); ?></label><input type="text" name="tags_input" class="tags-input" id="tags-input" size="40" tabindex="3" value="<?php echo get_tags_to_edit( $post->ID ); ?>" /></p>
@@ -72,7 +171,6 @@ function post_tags_meta_box($post) {
 }
 add_meta_box('tagsdiv', __('Tags'), 'post_tags_meta_box', 'post', 'side', 'core');
 
-//crazyhorse
 function post_media_meta_box($post) {
 	echo "<p><small><em>This feature isn't fully functional in this prototype.</em></small></p>";
 
@@ -440,78 +538,7 @@ do_action('dbx_post_sidebar');
 </div><!-- /poststuff -->
 
 </div>
-<br class="clear" /></div><!-- wpbody-content (fixedbar) -->
-
-<div id="fixedbar">
-<table id="fixedbar-wrap"><tbody><tr>
-<td id="preview-link">&nbsp;
-<span>
-<?php if ( 'publish' == $post->post_status ) { ?>
-<a href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank" tabindex="4"><?php _e('View this Post'); ?></a>
-<?php } elseif ( 'edit' == $action ) { ?>
-<a href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank"  tabindex="4"><?php _e('Preview this Post'); ?></a>
-<?php } ?>
-</span>
-</td>
-
-<td id="submitpost" class="submitbox">
-<div id="post-time-info" class="alignleft">
-<?php
-	if ( current_user_can( 'publish_posts' ) ) : // Contributors don't get to choose the date of publish
-		$stamp = __( 'Timestamp: <span class="timestamp">%1$s%3$s</span>' );
-		$edit = '&nbsp;(<a href="#edit_timestamp" class="edit-timestamp hide-if-no-js" tabindex="4">' . __('Change') . '</a>)';
-		if ($post_ID) {
-			if ( '0000-00-00 00:00:00' == $post->post_date ) { // draft, 1 or more saves, no date specified
-				$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
-				$date = mysql2date(get_option('date_format'), current_time('mysql'));
-				$time = mysql2date(get_option('time_format'), current_time('mysql'));
-			} else {
-				$date = mysql2date(get_option('date_format'), $post->post_date);
-				$time = mysql2date(get_option('time_format'), $post->post_date);
-			}
-		} else { // draft (no saves, and thus no date specified)
-			$stamp = __( 'Timestamp: <span class="timestamp">Today, %1$s%3$s</span>' );
-			$date = mysql2date(get_option('date_format'), current_time('mysql'));
-			$time = mysql2date(get_option('time_format'), current_time('mysql'));
-		}
-?>
-	<p id="curtime"><?php printf($stamp, $date, $time, $edit); ?></p>
-	<div id='timestampdiv' class='hide-if-js'><?php touch_time(($action == 'edit'),1,4); ?></div>
-
-<?php
-	endif;
-?>
-</div>
-<p class="submit alignright">
-<?php
-
-	if ( ( 'edit' == $action ) && current_user_can('delete_post', $post_ID) )
-		echo "<a class='submitdelete' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post_ID", 'delete-post_' . $post_ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;post') . "</a>";
-	elseif ( 'edit' != $action )
-		echo "<a class='submitdelete' href='index.php' onclick=\"if ( confirm('" . js_escape( __("You are about to delete this post\n  'Cancel' to stop, 'OK' to delete.")) . "') ) { return true;}return false;\">" . __('Cancel&nbsp;post') . "</a>";
-?>
-
-	<input type="submit" name="save" id="save-post" value="<?php _e('Save'); ?>" tabindex="4" class="button button-highlighted" />
-
-<?php
-	if ( !in_array( $post->post_status, array('publish', 'future') ) || 0 == $post_ID ) :
-		if ( current_user_can('publish_posts') ) :
-?>
-
-	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Publish') ?>" />
-
-<?php	else : ?>
-
-	<input name="publish" type="submit" class="button" id="publish" tabindex="5" accesskey="p" value="<?php _e('Submit for Review') ?>" />
-
-<?php
-
-		endif;
-	endif;
-
-?>
-</p>
-</td></tr></tbody></table>
+<br class="clear" />
 </div>
 
 </form>
