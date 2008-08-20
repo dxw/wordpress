@@ -294,7 +294,7 @@ h3.dashboard-widget-title small a:hover {
 }
 
 /* Because we don't want visited on these links */
-#adminmenu li.current a, body.press-this .ui-tabs-selected a, body.press-this .ui-tabs-selected a:hover {
+#adminmenu li.current a, #sidemenu a.current, body.press-this .ui-tabs-selected a, body.press-this .ui-tabs-selected a:hover {
 	background-color: #fff;
 	border-color: #c6d9e9;
 	border-bottom-color: #fff;
@@ -718,11 +718,7 @@ table.diff .diff-addedline ins {
 	background-color: #99ff99;
 }
 
-
-
-
 #adminmenu,
-#html-upload-ui,
 #att-info {
 	background-color: #E4F2FD;
 }
@@ -761,4 +757,11 @@ table.diff .diff-addedline ins {
 
 #timestampdiv {
 	color: #ccc;
+}
+
+/* media popup 0819 */
+#sidemenu a {
+	background-color: #e4f2fd;
+	border-bottom-color: #c6d9e9;
+	border-top-color: #e4f2fd;
 }

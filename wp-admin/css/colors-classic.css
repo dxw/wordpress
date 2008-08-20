@@ -308,7 +308,7 @@ ul#widget-list li.widget-list-item h4.widget-title {
 }
 
 /* Because we don't want visited on these links */
-#adminmenu li.current a, body.press-this .ui-tabs-selected a, body.press-this .ui-tabs-selected a:hover {
+#adminmenu li.current a, #sidemenu a.current, body.press-this .ui-tabs-selected a, body.press-this .ui-tabs-selected a:hover {
 	background-color: #fff;
 	border-color: #07273e;
 	border-bottom-color: #fff;
@@ -728,4 +728,12 @@ table.diff .diff-addedline {
 }
 table.diff .diff-addedline ins {
 	background-color: #99ff99;
+}
+
+/* media popup 0819 */
+#sidemenu a {
+	background-color: #14568a;
+	border-bottom-color: #07273e;
+	border-top-color: #14568a;
+	color: #cfebf6;
 }

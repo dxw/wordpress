@@ -39,14 +39,14 @@ else
 if ( isset($_GET['tab']) )
 	$tab = strval($_GET['tab']);
 else
-	$tab = apply_filters('media_upload_default_tab', 'library');
+	$tab = apply_filters('media_upload_default_tab', 'type');
 
 $body_id = 'media-upload';
 
 // let the action code decide how to handle the request
-if ( isset($_POST['html-upload']) || 'single' == $tab )
-	do_action("media_upload_image");
+if ( $tab == 'type' )
+	do_action("media_upload_$type");
 else
-	do_action("media_upload_library");
+	do_action("media_upload_$tab");
 
 ?>

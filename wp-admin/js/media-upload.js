@@ -19,19 +19,17 @@ function send_to_editor(h) {
 jQuery(function($) {
 	tb_position = function() {
 		var tbWindow = $('#TB_window');
-		var w = $(window).width();
-		var h = $(window).height();
-		var H = ( 340 < h ) ? 340 : h;
-		var W = ( 385 < w ) ? 385 : w;
+		var width = $(window).width();
+		var H = $(window).height();
+		var W = ( 720 < width ) ? 720 : width;
 
 		if ( tbWindow.size() ) {
 			tbWindow.width( W - 50 ).height( H - 45 );
 			$('#TB_iframeContent').width( W - 50 ).height( H - 75 );
 			tbWindow.css({'margin-left': '-' + parseInt((( W - 50 ) / 2),10) + 'px'});
 			if ( typeof document.body.style.maxWidth != 'undefined' )
-				tbWindow.css({'margin-top': '-' + parseInt((( H - 10 ) / 2),10) + 'px'});
+				tbWindow.css({'top':'20px','margin-top':'0'});
 			$('#TB_title').css({'background-color':'#222','color':'#cfcfcf'});
-			$('#TB_ajaxWindowTitle').text('Add Media').css({'fontSize':'16px','fontWeight':'bold','paddingTop':'3px'});
 		};
 
 		return $('a.thickbox').each( function() {
@@ -50,6 +48,6 @@ jQuery(function($) {
 		}
 	});
 
-//	$(window).resize( function() { tb_position() } );
+	$(window).resize( function() { tb_position() } );
 });
 
