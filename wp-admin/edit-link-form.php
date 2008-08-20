@@ -37,7 +37,33 @@ function xfn_check($class, $value = '', $deprecated = '') {
 }
 ?>
 
-<?php function link_categories_meta_box($link) { ?>
+<?php function link_submit_meta_box($link) { ?>
+<div class="submitbox" id="submitlink">
+
+<div id="previewview">
+<?php if ( !empty($link->link_id) ) { ?>
+<a href="<?php echo $link->link_url; ?>" target="_blank"><?php _e('Visit Link'); ?></a>
+<?php } ?>
+</div>
+
+<div class="inside">
+<p><label for="link_private" class="selectit"><input id="link_private" name="link_visible" type="checkbox" value="N" <?php checked($link->link_visible, 'N'); ?> /> <?php _e('Keep this link private') ?></label></p>
+</div>
+
+<p class="submit">
+<input type="submit" class="button button-highlighted" name="save" value="<?php _e('Save'); ?>" tabindex="4" />
+<?php
+if ( ( 'edit' == $action) && current_user_can('manage_links') )
+	echo "<a class='submitdelete' href='" . wp_nonce_url("link.php?action=delete&amp;link_id=$link->link_id", 'delete-bookmark_' . $link->link_id) . "' onclick=\"if ( confirm('" . js_escape( sprintf( __("You are about to delete this link '%s'\n'Cancel' to stop, 'OK' to delete."), $link->link_name )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;link') . "</a>";
+?>
+</p>
+<?php do_action('submitlink_box'); ?>
+</div>
+<?php
+}
+add_meta_box('linksubmitdiv', __('Save'), 'link_submit_meta_box', 'link', 'side', 'core');
+
+function link_categories_meta_box($link) { ?>
 <div id="category-adder" class="wp-hidden-children">
 	<h4><a id="category-add-toggle" href="#category-add"><?php _e( '+ Add New Category' ); ?></a></h4>
 	<p id="link-category-add" class="wp-hidden-child">
@@ -336,29 +362,7 @@ if ( $link_id ) : ?>
 
 </div>
 
-<br class="clear" /></div><!-- wpbody-content (fixedbar) -->
-
-<div id="fixedbar">
-<table id="fixedbar-wrap"><tbody><tr>
-
-<td id="preview-link">&nbsp;
-<span>
-<?php if ( !empty($link_id) ) { ?>
-<a href="<?php echo $link->link_url; ?>" target="_blank"><?php _e('Visit Link'); ?></a>
-<?php } ?>
-</span>
-</td>
-
-<td id="submitlink" class="submitbox">
-<p class="submit alignright">
-<?php
-if ( ( 'edit' == $action) && current_user_can('manage_links') )
-	echo "<a class='submitdelete' href='" . wp_nonce_url("link.php?action=delete&amp;link_id=$link_id", 'delete-bookmark_' . $link_id) . "' onclick=\"if ( confirm('" . js_escape( sprintf( __("You are about to delete this link '%s'\n'Cancel' to stop, 'OK' to delete."), $link->link_name )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;link') . "</a>&nbsp;";
-?>
-<input type="submit" class="button button-highlighted" name="save" value="<?php _e('Save'); ?>" tabindex="4" />
-</p>
-</td>
-</tr></tbody></table>
-</div><!-- /fixedbar -->
+<br class="clear" />
+</div>
 
 </form>

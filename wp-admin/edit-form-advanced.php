@@ -64,6 +64,7 @@ if ( 0 == $post_ID ) {
 // All meta boxes should be defined and added before the first do_meta_boxes() call (or potentially during the do_meta_boxes action).
 
 function post_submit_meta_box($post) {
+	global $action;
 ?>
 <div class="submitbox" id="submitpost">
 
@@ -399,16 +400,6 @@ endif;
 	else
 		printf( __( '<a href="%s">Posts</a> / Edit Post' ), 'edit.php' );
 ?></h2>
-
-<!--<p id="big-add-button">
-<span id="previewview">
-<?php if ( 'publish' == $post->post_status ) { ?>
-<a class="button" href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank" tabindex="4"><?php _e('View this Post'); ?></a>
-<?php } elseif ( 'edit' == $action ) { ?>
-<a class="button" href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank"  tabindex="4"><?php _e('Preview this Post'); ?></a>
-<?php } ?>
-</span>
-</p>-->
 
 <?php
 
