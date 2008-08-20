@@ -1218,6 +1218,11 @@ table.form-table td .updated {
 	border-style: solid;
 }
 
+#poststuff .inside {
+	font-size:11px;
+	margin:0 12px 12px;
+}
+
 #titlediv, #poststuff .postarea {
 	margin-bottom: 20px;
 }
@@ -1984,10 +1989,6 @@ p#post-search-prep {
 }
 
 #previewview a {
-	-moz-border-radius: 3px;
-	-khtml-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
 	display:block;
 	font-size:16px;
 	font-weight:normal;
