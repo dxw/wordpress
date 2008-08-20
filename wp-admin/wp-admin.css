@@ -617,7 +617,7 @@ a.view-comment-post-link {
 	border-style: solid;
 }
 
-#wphead a, #dashmenu a, #adminmenu a, #taglist a, #catlist a {
+#wphead a, #dashmenu a, #adminmenu a, #sidemenu a, #taglist a, #catlist a {
 	text-decoration: none;
 }
 
@@ -1091,18 +1091,46 @@ table.form-table td .updated {
 	border: none;
 }
 
+#submitdiv div.inside {
+	padding: 0;
+	margin: 0;
+}
+
 .submitbox {
 /*	margin: 1em 0; */
 }
 
 .submitbox p {
-	padding: 0;
-	margin: 0;
+/*	padding: 0;
+	margin: 0; */
 }
 
 .submitbox .submit {
+	text-align: left;
+	padding: 12px 10px 10px;
+	font-size: 11px;
+}
+
+.submitbox .submitdelete {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	text-decoration: none;
+	margin-left: 8px;
+	padding-bottom: 1px;
+}
+
+.submitbox .submit a:hover {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+.submitbox .submit input {
+	margin-bottom: 8px;
+	margin-right: 3px;
+	padding: 6px 4px;
 	border: none;
 }
+
 
 #tagchecklist {
 	margin-left: 10px;
@@ -1216,7 +1244,7 @@ table.form-table td .updated {
 	border-style: solid;
 }
 
-#poststuff .inside {
+#poststuff .inside-submitbox {
 	margin: 0 12px 12px;
 	font-size: 11px;
 }
@@ -1457,7 +1485,7 @@ ul.categorychecklist li {
 	line-height: 19px;
 }
 
-/* pasitioning etc. */
+/* positioning etc. */
 form#tags-filter {
         position: relative;
 }
@@ -1620,7 +1648,7 @@ ul.view-switch li.current {
 	text-decoration: none;
 }
 
-#submitpost p#curtime {
+#submitpost p.curtime {
 	background-image: url(images/date-button.gif);
 	background-repeat: no-repeat;
 	background-position: left 4px;
@@ -1948,4 +1976,23 @@ p#post-search-prep {
 
 #sidemenu li a .count-0 {
 	display: none;
+}
+
+#previewview {
+	float:right;
+	margin-top:-53px;
+}
+
+#previewview a {
+	-moz-border-radius: 3px;
+	-khtml-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	display:block;
+	font-size:16px;
+	font-weight:normal;
+	padding:4px 8px;
+	text-align:center;
+	text-decoration:none;
+	width:200px;
 }

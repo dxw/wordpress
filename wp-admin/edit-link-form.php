@@ -40,13 +40,7 @@ function xfn_check($class, $value = '', $deprecated = '') {
 <?php function link_submit_meta_box($link) { ?>
 <div class="submitbox" id="submitlink">
 
-<div id="previewview">
-<?php if ( !empty($link->link_id) ) { ?>
-<a href="<?php echo $link->link_url; ?>" target="_blank"><?php _e('Visit Link'); ?></a>
-<?php } ?>
-</div>
-
-<div class="inside">
+<div class="inside-submitbox">
 <p><label for="link_private" class="selectit"><input id="link_private" name="link_visible" type="checkbox" value="N" <?php checked($link->link_visible, 'N'); ?> /> <?php _e('Keep this link private') ?></label></p>
 </div>
 
@@ -276,6 +270,12 @@ add_meta_box('linkadvanceddiv', __('Advanced'), 'link_advanced_meta_box', 'link'
 
 <div class="wrap">
 <h2><?php echo $heading; ?></h2>
+
+<?php if ( !empty($link->link_id) ) { ?>
+<div id="previewview">
+<a class="button" href="<?php echo $link->link_url; ?>" target="_blank"><?php _e('Visit Link'); ?></a>
+</div>
+<?php } ?>
 
 <!--
 <p id="big-add-button">

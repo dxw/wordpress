@@ -21,6 +21,11 @@ $form_extra = "' />\n<input type='hidden' name='comment_ID' value='" . $comment-
 <?php wp_nonce_field('update-comment_' . $comment->comment_ID) ?>
 <div class="wrap">
 <h2><?php echo $toprow_title; ?></h2>
+
+<div id="previewview">
+<a class="button" href="<?php echo get_comment_link(); ?>" target="_blank"><?php _e('View this Comment'); ?></a>
+</div>
+
 <input type="hidden" name="user_ID" value="<?php echo (int) $user_ID ?>" />
 <input type="hidden" name="action" value='<?php echo $form_action . $form_extra ?>' />
 <?php
@@ -29,12 +34,7 @@ $form_extra = "' />\n<input type='hidden' name='comment_ID' value='" . $comment-
 function comment_submit_meta_box($comment) {
 ?>
 <div class="submitbox" id="submitcomment">
-
-<div id="previewview">
-<a href="<?php echo get_comment_link(); ?>" target="_blank"><?php _e('View this Comment'); ?></a>
-</div>
-
-<div class="inside">
+<div class="inside-submitbox">
 
 <p><strong><label for='comment_status'><?php _e('Approval Status') ?></label></strong></p>
 <p>

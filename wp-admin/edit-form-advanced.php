@@ -68,15 +68,9 @@ function post_submit_meta_box($post) {
 ?>
 <div class="submitbox" id="submitpost">
 
-<div id="previewview">
-<?php if ( 'publish' == $post->post_status ) { ?>
-<a href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank" tabindex="4"><?php _e('View this Post'); ?></a>
-<?php } elseif ( 'edit' == $action ) { ?>
-<a href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank"  tabindex="4"><?php _e('Preview this Post'); ?></a>
-<?php } ?>
-</div>
 
-<div class="inside">
+
+<div class="inside-submitbox">
 
 <p><strong><label for='post_status'><?php _e('Publish Status') ?></label></strong></p>
 <p>
@@ -147,6 +141,8 @@ if ( ( 'edit' == $action) && current_user_can('delete_post', $post->ID) )
 	echo "<a class='submitdelete' href='" . wp_nonce_url("post.php?action=delete&amp;post=$post->ID", 'delete-post_' . $post->ID) . "' onclick=\"if ( confirm('" . js_escape(sprintf( ('draft' == $post->post_status) ? __("You are about to delete this draft '%s'\n  'Cancel' to stop, 'OK' to delete.") : __("You are about to delete this post '%s'\n  'Cancel' to stop, 'OK' to delete."), $post->post_title )) . "') ) { return true;}return false;\">" . __('Delete&nbsp;post') . "</a>";
 ?>
 <br class="clear" />
+
+<!-- moved under the editor
 <?php if ( 0 != $post->ID ): ?>
 <?php if ( $last_id = get_post_meta($post->ID, '_edit_last', true) ) {
 	$last_user = get_userdata($last_id);
@@ -157,6 +153,8 @@ if ( ( 'edit' == $action) && current_user_can('delete_post', $post->ID) )
 ?>
 <br class="clear" />
 <?php endif; ?>
+-->
+
 </p>
 </div>
 <?php
@@ -400,6 +398,14 @@ endif;
 	else
 		printf( __( '<a href="%s">Posts</a> / Edit Post' ), 'edit.php' );
 ?></h2>
+
+<div id="previewview">
+<?php if ( 'publish' == $post->post_status ) { ?>
+<a class="button" href="<?php echo clean_url(get_permalink($post->ID)); ?>" target="_blank" tabindex="4"><?php _e('View this Post'); ?></a>
+<?php } elseif ( 'edit' == $action ) { ?>
+<a class="button" href="<?php echo clean_url(apply_filters('preview_post_link', add_query_arg('preview', 'true', get_permalink($post->ID)))); ?>" target="_blank"  tabindex="4"><?php _e('Preview this Post'); ?></a>
+<?php } ?>
+</div>
 
 <?php
 
