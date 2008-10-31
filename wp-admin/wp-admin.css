@@ -659,7 +659,7 @@ p.pagenav {
 
 .tablenav a.button-secondary {
 	display: block;
-	margin: 1px 8px 0 0;
+	margin: 8px 8px 0 0;
 }
 
 .tablenav {
@@ -1936,23 +1936,29 @@ body.wp-admin {
 	color: #999;
 }
 
-#the-comment-list .comment-action-link {
-	width: 6em;
-	display: inline-block;
+#the-comment-list p.comment-author {
+	height: 40px;
 }
 
-#the-comment-list p.comment-author {
-	height: 2.8em;
+#the-comment-list p.comment-author a, #the-comment-list p.comment-actions a {
+	text-decoration: none;
+}
+
+#the-comment-list p.comment-actions {
+	margin-top: 1em;
 }
 
 #the-comment-list li.comment-list-item {
-	padding: 0 1.2em 1em;
-	border-bottom: 1px solid #ccc;
+	padding: 1em 58px;
+	border: 1px solid #ddd;
+	border-bottom: none;
+	margin-bottom: 0;
 }
 
 #the-comment-list p.comment-author img {
 	float: left;
-	margin-right: 8px;
+	margin-left: -46px;
+	margin-top: 1px;
 }
 
 #the-comment-list p.comment-author strong a {

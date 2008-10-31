@@ -314,12 +314,13 @@ $(document).ready(function(){
 				$('form#comments-form')[0].submit();
 			}
 		};
-		$.table_hotkeys($('table.widefat'),['a', 'u', 's', 'd', 'r', 'q', ['e', edit_comment],
+		$.table_hotkeys($('#the-comment-list'),['a', 'u', 's', 'd', 'r', 'q', ['e', edit_comment],
 				['shift+a', make_bulk('approve')], ['shift+s', make_bulk('markspam')],
 				['shift+d', make_bulk('delete')], ['shift+x', toggle_all],
 				['shift+u', make_bulk('unapprove')]],
 				{highlight_first: adminCommentsL10n.hotkeys_highlight_first, highlight_last: adminCommentsL10n.hotkeys_highlight_last,
-				prev_page_link_cb: make_hotkeys_redirect('prev'), next_page_link_cb: make_hotkeys_redirect('next')}
+				prev_page_link_cb: make_hotkeys_redirect('prev'), next_page_link_cb: make_hotkeys_redirect('next'),
+				start_row_index: 0}
 		);
 	}
 });

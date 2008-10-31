@@ -81,7 +81,7 @@ $post_id = isset($_GET['p']) ? (int) $_GET['p'] : 0;
 $search_dirty = ( isset($_GET['s']) ) ? $_GET['s'] : '';
 $search = attribute_escape( $search_dirty ); ?>
 
-<?php screen_options('comment') ?>
+<?php // screen_options('comment') ?>
 
 <?php
 if ( isset( $_GET['approved'] ) || isset( $_GET['deleted'] ) || isset( $_GET['spam'] ) ) {
@@ -190,6 +190,7 @@ if ( $page_links )
 ?>
 
 <div class="alignleft actions">
+<?php /*
 <select name="action">
 <option value="-1" selected="selected"><?php _e('Actions') ?></option>
 <?php if ( empty($comment_status) || 'approved' == $comment_status ): ?>
@@ -204,6 +205,7 @@ if ( $page_links )
 <option value="delete"><?php _e('Delete'); ?></option>
 </select>
 <input type="submit" name="doaction" id="doaction" value="<?php _e('Apply'); ?>" class="button-secondary apply" />
+*/ ?>
 <?php wp_nonce_field('bulk-comments'); ?>
 
 <?php if ( $comment_status ) echo "<input type='hidden' name='comment_status' value='$comment_status' />\n"; ?>

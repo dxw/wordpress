@@ -1845,8 +1845,6 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 	if ( 'http://' == $author_url )
 		$author_url = '';
 	$author_url_display = $author_url;
-	if ( strlen($author_url_display) > 50 )
-		$author_url_display = substr($author_url_display, 0, 49) . '...';
 
 	$ptime = date('G', strtotime( $comment->comment_date ) );
 	if ( ( abs(time() - $ptime) ) < 86400 )
@@ -1862,7 +1860,7 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 <li id='comment-<?php echo $comment->comment_ID; ?>' class='<?php echo $the_comment_status; ?> comment-list-item'>
 <p class="comment-author"><strong><?php comment_author(); ?></strong> 
 <?php if ( current_user_can( 'edit_post', $post->ID ) && !empty( $comment->comment_author_email ) ) { echo ' | '; comment_author_email_link(); } ?> 
-<span class="sepa">|</span> <a href="edit-comments.php?s=<?php comment_author_IP(); ?>"><?php comment_author_IP(); ?></a> <span class="sepa">|</span> <a href="<?php echo get_permalink( $post->ID ) . '#comment-' . $comment->comment_ID; ?>" style="text-decoration: none;">#</a><br />
+<span class="sepa">|</span> <a href="edit-comments.php?s=<?php comment_author_IP(); ?>"><?php comment_author_IP(); ?></a> <span class="sepa">|</span> <a href="<?php echo get_permalink( $post->ID ) . '#comment-' . $comment->comment_ID; ?>"><?php echo get_comment_date( __('Y/m/d \a\t g:ia') ); ?></a><br />
 <?php if ( !empty($author_url) ) echo "<a href='$author_url'>$author_url_display</a>"; ?>
 </p>
 
@@ -1874,11 +1872,11 @@ function _wp_comment_row( $comment_id, $mode, $comment_status, $checkbox = true 
 <div class="author-url"><?php echo attribute_escape( $comment->comment_author_url ); ?></div>
 <div class="comment_status"><?php echo $comment->comment_approved; ?></div>
 </div>
-
+<p class="comment-actions">
 <?php
 // TODO: I don't think checkboxes really matter anymore
-// if ( $checkbox && current_user_can( 'edit_post', $comment->comment_post_ID ) )
-//	echo "<input type='checkbox' name='delete_comments[]' value='$comment->comment_ID' />";
+//if ( $checkbox && current_user_can( 'edit_post', $comment->comment_post_ID ) )
+//	echo "<input type='checkbox' name='delete_comments[]' value='$comment->comment_ID' /> &nbsp;";
 ?>
 
 <?php
@@ -1919,7 +1917,7 @@ if ( current_user_can('edit_post', $comment->comment_post_ID) ) {
 	}
 }
 ?>
- &nbsp;<span class="sepa">&#8212;</span>&nbsp; <?php echo get_comment_date( __('Y/m/d \a\t g:ia') ); ?> <span class="sepa">|</span> <a href="<?php echo get_permalink( $post->ID ); ?>" style="text-decoration: none;">&para;</a> <?php echo $post_link; ?>
+ &nbsp;<span class="sepa">&#8212;</span>&nbsp; <a href="<?php echo get_permalink( $post->ID ); ?>" style="text-decoration: none;">&para;</a> <?php echo $post_link; ?> <a href="edit.php?p=<?php echo $post->ID; ?>">(<?php echo number_format( $post->comment_count ); ?>)</a></p>
 </li>
 <?php
 }
