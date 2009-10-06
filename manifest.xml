@@ -1,0 +1,9 @@
+<!-- wp-version 2.8.4 -->
+<MSDeploy.iisApp>
+	<iisApp path="wordpress"/>
+	<dbmysql path="install.sql" />
+	<setAcl path="wordpress/wp-content"
+		setAclUser="anonymousAuthenticationUser"
+		setAclAccess="Modify" />
+	<alias from="wordpress/wp-config-sample.php" to="wordpress/wp-config.php" />
+</MSDeploy.iisApp>

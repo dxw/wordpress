@@ -1,0 +1,305 @@
+<parameters>
+<!--  WordPress parameters.xml file
+	This file has been updated to incorporate a number of
+	improvements since the original was released with the WebPI and
+	WebDeploy Release Candidates.  These improvements will be
+	available with the RTW versions of the WebPI and WebDeploy.
+
+	There will be commentary at each section to describe the changes
+	and why they were made.  All of the additional functionality
+	described here, and available with the RTW, is documented as
+	part of the updated Web Application Packaging Guide.
+-->
+
+<!--  One of the new features provides for localization of text
+	strings within the parameters.xml file.  This localization can
+	be applied to "description" and "friendlyName" attributes of a
+	parameter.
+
+	There are ten (10) well known parameters which are identified by
+	their tags.  For these ten (10) parameters, the Web Deployment
+	Tool will automatically generate the correct description and
+	friendly name for each of ten (10) locales.  These locales and
+	the details of the translation mechanism are documented in the
+	updated Packaging Guide.
+
+	NOTE: If a well known parameter has a description or a
+	friendlyName set, the Web Deployment Tool will not apply any
+	default text.
+
+	NOTE: There are a few parameters for WordPress which are not
+	in the list of well known parameters.  These parameters have
+	English descriptions and friendlyNames only.  Please refer to
+	the updated Packaging Guide for information on providing
+	additional translations for these parameters.
+-->
+
+
+<!--  The Application Path parameter is one of the ten well known
+	parameters which have descriptions and friendly names
+	automatically available.
+-->
+
+<parameter
+	name="AppPath"
+	defaultValue="Default Web Site/wordpress"
+	tags="iisapp"
+	>
+	<parameterEntry
+	type="ProviderPath"
+	scope="iisapp"
+	match="wordpress"
+	/>
+</parameter>
+
+
+<!-- Database Parameters
+	The tags provided here tells the UI being used what type of
+	parameter this is.  The UI can then construct an appropriate
+	dialog for the database parameters, or fill them in if the user
+	doesn't need to provide them
+-->
+
+<!-- This parameter prompts the user for the database server name.
+	Note that this parameter has only one parameterEntry element.
+	This parameter is used with the configuration file and the
+	connection string.  It is not used within the SQL script itself
+	like some of the other parameters are.
+-->
+
+
+<parameter
+	name="DbServer"
+	defaultValue="localhost"
+	tags="MySQL,dbServer"
+	>
+	<parameterEntry
+	type="TextFile"
+	scope="wordpress\\wp-config.php"
+	match="localhost"
+	/>
+</parameter>
+
+<!-- This parameter prompts the user for the database name. We have
+	set a validation RegEx on this parameter, as MySQL will not accept
+	a username that has more than 16 characters.
+-->
+<parameter
+	name="DbName"
+	defaultValue="wordpress"
+	tags="MySQL,dbName"
+	>
+	<parameterValidation
+	type="RegularExpression"
+	validationString="^\w{1,16}$"
+	/>
+	<parameterEntry
+	type="TextFile"
+	scope="install.sql"
+	match="PlaceholderForDbName"
+	/>
+	<parameterEntry
+	type="TextFile"
+	scope="wordpress\\wp-config.php"
+	match="putyourdbnamehere"
+	/>
+</parameter>
+
+<!-- This parameter prompts the user for the database username. We
+	have set a validation RegEx on this parameter, as MySQL will not
+	accept a username that has more than 16 characters.
+-->
+<parameter
+	name="DbUsername"
+	defaultValue="wordpressuser"
+	tags="MySQL,DbUsername"
+	>
+	<parameterValidation
+	type="RegularExpression"
+	validationString="^\w{1,16}$"
+	/>
+	<parameterEntry
+	type="TextFile"
+	scope="install.sql"
+	match="PlaceholderForDbUsername"
+	/>
+	<parameterEntry
+	type="TextFile"
+	scope="wordpress\\wp-config.php"
+	match="usernamehere"
+	/>
+</parameter>
+
+<!-- This parameter prompts the user for the database user's password.
+-->
+<parameter
+	name="DbPassword"
+	tags="New,Password,MySQL,DbUserPassword"
+	>
+	<parameterEntry
+	type="TextFile"
+	scope="install.sql"
+	match="PlaceholderForDbPassword"
+	/>
+	<parameterEntry
+	type="TextFile"
+	scope="wordpress\\wp-config.php"
+	match="yourpasswordhere"
+	/>
+</parameter>
+
+<!-- Prompts for the admin creds and uses it for the administrator
+	connection string. This is used to create a login and assign
+	permissions. The MySQL tag indicates it is a parameter required
+	for MySQL.  The DbAdminUsername tag indicates it should be used
+	when the user is creating a new database. If they're not, it
+	can be filled in with the DbUsername value.  The UI should be
+	able to figure out whether or not the user needs to be prompted
+	for this.
+-->
+
+<parameter
+	name="DbAdminUsername"
+	defaultValue="root"
+	tags="MySQL,DbAdminUsername"
+	>
+</parameter>
+
+<!-- Prompts for the admin password and uses it for the administrator
+	 connection string.
+-->
+<parameter
+	name="DbAdminPassword"
+	description="Password for the database administrator account."
+	tags="Password,MySQL,DbAdminPassword"
+	>
+</parameter>
+
+<!-- This is the hidden admin connection string used to run the
+	database scripts.  Note that this connection string is just
+	used here, and will probably be different from the connection
+	string that is used by the application itself.
+
+	The "Validate" tag tells the WebPI to validate that this
+	Connection String works prior to performing the rest of the
+	installation.
+-->
+
+<parameter
+	name="Connection String"
+	defaultValue="Server={DbServer};Database={DbName};uid={DbAdminUsername};Pwd={DbAdminPassword};"
+	tags="Hidden,MySQLConnectionString,Validate,MySQL"
+	>
+	<parameterEntry
+	type="ProviderPath"
+	scope="dbmysql"
+	match="install.sql"
+	/>
+</parameter>
+
+
+<!-- WordPress specific parameters -->
+
+<!-- There were a number of parameters which relied on the
+	TextFilePosition parameterEntry type to define the section of a
+	file to be replaced.  The TextFilePosition type is considered
+	fragile, as any change to the target file that occurs before the
+	text to be replaced will invalidate the position.
+
+	We are now using TextFile, which relies on a Regular Expression
+	(RegEx) to identify the text to change.  There are some
+	parameters, where the text to be replaced is not unique enough
+	to target on it's own.  In those cases, we used  RegExes with
+	Lookbehind constructs to uniquely identify the text segment
+	to be replaced.
+-->
+
+<parameter
+	name="Key1"
+	friendlyName="Unique Key for Passwords"
+	description="Unique phrase used to strengthen your password."
+	defaultValue="put your unique phrase here"
+	tags="PHP"
+	>
+	<parameterValidation
+	type="RegularExpression"
+	validationString="^[^&#039;\\]+$"
+	/>
+	<parameterEntry
+	type="TextFile"
+	match="(?&lt;=AUTH_KEY&#039;, &#039;)put your unique phrase here"
+	scope="wordpress\\wp-config.php"
+	/>
+</parameter>
+
+<parameter
+	name="Key2"
+	friendlyName="Unique Key for Secure Passwords"
+	description="Different unique phrase used to strengthen SSL passwords."
+	defaultValue="put your unique phrase here"
+	tags="PHP"
+	>
+	<parameterValidation
+	type="RegularExpression"
+	validationString="^[^&#039;\\]+$"
+	/>
+	<parameterEntry
+	type="TextFile"
+	scope="wordpress\\wp-config.php"
+	match="(?&lt;=SECURE_AUTH_KEY&#039;, &#039;)put your unique phrase here"
+	/>
+</parameter>
+
+<parameter
+	name="Key3"
+	friendlyName="Unique Key for Authentication"
+	description="Different unique phrase used to strengthen authentication."
+	defaultValue="put your unique phrase here"
+	tags="PHP"
+	>
+	<parameterValidation
+	type="RegularExpression"
+	validationString="^[^&#039;\\]+$"
+	/>
+	<parameterEntry
+	type="TextFile"
+	scope="wordpress\\wp-config.php"
+	match="(?&lt;=LOGGED_IN_KEY&#039;, &#039;)put your unique phrase here"
+	/>
+</parameter>
+
+<parameter
+	name="Key4"
+	friendlyName="Second Unique Key for Authentication"
+	description="Another unique phrase used to strengthen authentication."
+	defaultValue="put your unique phrase here"
+	tags="PHP"
+	>
+	<parameterValidation
+	type="RegularExpression"
+	validationString="^[^&#039;\\]+$"
+	/>
+	<parameterEntry
+	type="TextFile"
+	scope="wordpress\\wp-config.php"
+	match="(?&lt;=NONCE_KEY&#039;, &#039;)put your unique phrase here"
+	/>
+</parameter>
+
+
+<!-- Set the correct path for the ACL based on the AppPath selected
+	by the user.
+-->
+
+<parameter
+	name="SetAclParameter1"
+	defaultValue="{AppPath}/wp-content"
+	tags="Hidden"
+	>
+	<parameterEntry
+	type="ProviderPath"
+	scope="setAcl"
+	match="wordpress/wp-content"
+	/>
+</parameter>
+</parameters>
