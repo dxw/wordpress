@@ -1,4 +1,4 @@
-<!-- wp-version 2.8.4 -->
+<!-- wp-version 2.8.5 -->
 <MSDeploy.iisApp>
 	<iisApp path="wordpress"/>
 	<dbmysql path="install.sql" />
