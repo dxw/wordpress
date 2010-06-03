@@ -227,7 +227,7 @@
 	/>
 	<parameterEntry
 	type="TextFile"
-	match="(?&lt;=AUTH_KEY&#039;, &#039;)put your unique phrase here"
+	match="(?&lt;=AUTH_KEY&#039;,[ ]+&#039;)put your unique phrase here"
 	scope="wordpress\\wp-config.php"
 	/>
 </parameter>
@@ -246,7 +246,7 @@
 	<parameterEntry
 	type="TextFile"
 	scope="wordpress\\wp-config.php"
-	match="(?&lt;=SECURE_AUTH_KEY&#039;, &#039;)put your unique phrase here"
+	match="(?&lt;=SECURE_AUTH_KEY&#039;,[ ]+&#039;)put your unique phrase here"
 	/>
 </parameter>
 
@@ -264,7 +264,7 @@
 	<parameterEntry
 	type="TextFile"
 	scope="wordpress\\wp-config.php"
-	match="(?&lt;=LOGGED_IN_KEY&#039;, &#039;)put your unique phrase here"
+	match="(?&lt;=LOGGED_IN_KEY&#039;,[ ]+&#039;)put your unique phrase here"
 	/>
 </parameter>
 
@@ -282,82 +282,9 @@
 	<parameterEntry
 	type="TextFile"
 	scope="wordpress\\wp-config.php"
-	match="(?&lt;=NONCE_KEY&#039;, &#039;)put your unique phrase here"
+	match="(?&lt;=NONCE_KEY&#039;,[ ]+&#039;)put your unique phrase here"
 	/>
 </parameter>
-
-<parameter
-	name="Key5"
-	friendlyName="Unique Salt for Passwords"
-	description="Unique phrase used to strengthen your password hash."
-	defaultValue="put your unique phrase here"
-	tags="PHP"
-	>
-	<parameterValidation
-	type="RegularExpression"
-	validationString="^[^&#039;\\]+$"
-	/>
-	<parameterEntry
-	type="TextFile"
-	match="(?&lt;=AUTH_SALT&#039;, &#039;)put your unique phrase here"
-	scope="wordpress\\wp-config.php"
-	/>
-</parameter>
-
-<parameter
-	name="Key6"
-	friendlyName="Unique Salt for Secure Passwords"
-	description="Different unique phrase used to strengthen SSL password hashes."
-	defaultValue="put your unique phrase here"
-	tags="PHP"
-	>
-	<parameterValidation
-	type="RegularExpression"
-	validationString="^[^&#039;\\]+$"
-	/>
-	<parameterEntry
-	type="TextFile"
-	scope="wordpress\\wp-config.php"
-	match="(?&lt;=SECURE_AUTH_SALT&#039;, &#039;)put your unique phrase here"
-	/>
-</parameter>
-
-<parameter
-	name="Key7"
-	friendlyName="Unique Salt for Authentication"
-	description="Different unique phrase used to strengthen authentication."
-	defaultValue="put your unique phrase here"
-	tags="PHP"
-	>
-	<parameterValidation
-	type="RegularExpression"
-	validationString="^[^&#039;\\]+$"
-	/>
-	<parameterEntry
-	type="TextFile"
-	scope="wordpress\\wp-config.php"
-	match="(?&lt;=LOGGED_IN_SALT&#039;, &#039;)put your unique phrase here"
-	/>
-</parameter>
-
-<parameter
-	name="Key8"
-	friendlyName="Second Unique Salt for Authentication"
-	description="Another unique phrase used to strengthen authentication."
-	defaultValue="put your unique phrase here"
-	tags="PHP"
-	>
-	<parameterValidation
-	type="RegularExpression"
-	validationString="^[^&#039;\\]+$"
-	/>
-	<parameterEntry
-	type="TextFile"
-	scope="wordpress\\wp-config.php"
-	match="(?&lt;=NONCE_SALT&#039;, &#039;)put your unique phrase here"
-	/>
-</parameter>
-
 
 <!-- Set the correct path for the ACL based on the AppPath selected
 	by the user.
