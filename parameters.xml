@@ -72,11 +72,16 @@
 	name="DbServer"
 	defaultValue="localhost"
 	tags="MySQL,dbServer"
+	/>
+<parameter
+	name="Automatic Database Server PHP File"
+	defaultValue="define('DB_HOST', '{DbServer}');"
+	tags="Hidden, MySQL"
 	>
-	<parameterEntry
+	<parameterEntry 
 	type="TextFile"
-	scope="wordpress\\wp-config.php"
-	match="localhost"
+	scope="wp-config.php$"
+	match="define\('DB_HOST', '[^']*'\);"
 	/>
 </parameter>
 
@@ -98,10 +103,16 @@
 	scope="install.sql"
 	match="PlaceholderForDbName"
 	/>
+</parameter>
+<parameter 
+	name="Automatic Database Name PHP File"
+	defaultValue="define('DB_NAME', '{DbName}');"
+	tags="Hidden, MySQL"
+	>
 	<parameterEntry
 	type="TextFile"
-	scope="wordpress\\wp-config.php"
-	match="database_name_here"
+	scope="wp-config.php$"
+	match="define\('DB_NAME', '[^']*'\);"
 	/>
 </parameter>
 
@@ -123,10 +134,16 @@
 	scope="install.sql"
 	match="PlaceholderForDbUsername"
 	/>
+</parameter>
+<parameter
+	name="Automatic Database Username PHP File"
+	defaultValue="define('DB_USER', '{DbUsername}');"
+	tags="Hidden,MySQL"
+	>
 	<parameterEntry
 	type="TextFile"
-	scope="wordpress\\wp-config.php"
-	match="username_here"
+	scope="wp-config.php$"
+	match="define\('DB_USER', '[^']*'\);"
 	/>
 </parameter>
 
@@ -141,12 +158,19 @@
 	scope="install.sql"
 	match="PlaceholderForDbPassword"
 	/>
+</parameter>
+<parameter
+	name="Automatic Database Password PHP File"
+	defaultValue="define('DB_PASSWORD', '{DbPassword}');"
+	tags="Hidden, MySQL"
+	>
 	<parameterEntry
 	type="TextFile"
-	scope="wordpress\\wp-config.php"
-	match="password_here"
+	scope="wp-config.php$"
+	match="define\('DB_PASSWORD', '[^']*'\);"
 	/>
 </parameter>
+
 
 <!-- Prompts for the admin creds and uses it for the administrator
 	connection string. This is used to create a login and assign
@@ -219,7 +243,7 @@
 	friendlyName="Unique Key for Passwords"
 	description="Unique phrase used to strengthen your password."
 	defaultValue="put your unique phrase here"
-	tags="PHP"
+	tags="NoStore"
 	>
 	<parameterValidation
 	type="RegularExpression"
@@ -227,7 +251,7 @@
 	/>
 	<parameterEntry
 	type="TextFile"
-	match="(?&lt;=AUTH_KEY&#039;,[ ]+&#039;)put your unique phrase here"
+	match="(?&lt;=&#039;AUTH_KEY&#039;,[ ]+&#039;)put your unique phrase here"
 	scope="wordpress\\wp-config.php"
 	/>
 </parameter>
@@ -237,7 +261,7 @@
 	friendlyName="Unique Key for Secure Passwords"
 	description="Different unique phrase used to strengthen SSL passwords."
 	defaultValue="put your unique phrase here"
-	tags="PHP"
+	tags="NoStore"
 	>
 	<parameterValidation
 	type="RegularExpression"
@@ -255,7 +279,7 @@
 	friendlyName="Unique Key for Authentication"
 	description="Different unique phrase used to strengthen authentication."
 	defaultValue="put your unique phrase here"
-	tags="PHP"
+	tags="NoStore"
 	>
 	<parameterValidation
 	type="RegularExpression"
@@ -273,7 +297,7 @@
 	friendlyName="Second Unique Key for Authentication"
 	description="Another unique phrase used to strengthen authentication."
 	defaultValue="put your unique phrase here"
-	tags="PHP"
+	tags="NoStore"
 	>
 	<parameterValidation
 	type="RegularExpression"
