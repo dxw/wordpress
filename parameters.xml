@@ -322,7 +322,7 @@
 	<parameterEntry
 	type="ProviderPath"
 	scope="setAcl"
-	match="wordpress/wp-content"
+	match="wordpress/wp-content$"
 	/>
 </parameter>
 </parameters>
