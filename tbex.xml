@@ -1,0 +1,797 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebPlatform>
+  <Links>
+    <AddLink InDashboard="True" InLearn="True">
+      <Title>The WordPress Codex</Title>
+      <Description>The Codex is the encyclopedia of all things WordPress. It is the most comprehensive source of information for WordPress available.</Description>
+      <Uri>http://codex.wordpress.org/</Uri>
+      <Uri xml:lang="es">http://codex.wordpress.org/es:Main_Page</Uri>
+      <Uri xml:lang="fr">http://codex.wordpress.org/fr:Accueil</Uri>
+      <ImageUri>http://www.microsoft.com/web/handlers/webpi.ashx?command=getimage&amp;guid=f67accd3-8455-4830-b1d7-eef8959c0325</ImageUri>
+    </AddLink>
+    <AddLink InDashboard="True" InLearn="True">
+      <Title>The WordPress Blog</Title>
+      <Description>This is where you'll find the latest updates and news related to WordPress. Recent WordPress news appears in your administrative dashboard by default.</Description>
+      <Uri>http://wordpress.org/news/</Uri>
+      <ImageUri>http://www.microsoft.com/web/handlers/webpi.ashx?command=getimage&amp;guid=f67accd3-8455-4830-b1d7-eef8959c0325</ImageUri>
+    </AddLink>
+    <AddLink InDashboard="True">
+      <Title>WordPress Support Forums</Title>
+      <Description>If you've looked everywhere and still can't find an answer, the support forums are very active and have a large community ready to help. To help them help you be sure to use a descriptive thread title and describe your question in as much detail as possible.</Description>
+      <Uri>http://wordpress.org/support/</Uri>
+      <ImageUri>http://www.microsoft.com/web/handlers/webpi.ashx?command=getimage&amp;guid=f67accd3-8455-4830-b1d7-eef8959c0325</ImageUri>
+    </AddLink>
+    <AddLink InLearn="True">
+      <Title>Getting Started with WordPress</Title>
+      <Description>A collection of links for people who are new to WordPress.</Description>
+      <Uri>http://codex.wordpress.org/Getting_Started_with_WordPress</Uri>
+      <ImageUri>http://www.microsoft.com/web/handlers/webpi.ashx?command=getimage&amp;guid=f67accd3-8455-4830-b1d7-eef8959c0325</ImageUri>
+    </AddLink>
+    <AddLink InLearn="True">
+      <Title>WordPress Lessons</Title>
+      <Description>A collection of tutorials for performing common WordPress tasks.</Description>
+      <Uri>http://codex.wordpress.org/WordPress_Lessons</Uri>
+      <ImageUri>http://www.microsoft.com/web/handlers/webpi.ashx?command=getimage&amp;guid=f67accd3-8455-4830-b1d7-eef8959c0325</ImageUri>
+    </AddLink>
+  </Links>
+
+  <Ribbon>
+    <AddRibbonButton>
+      <Label>.ORG</Label>
+      <Uri>http://wordpress.org/</Uri>
+      <ImageUri>http://www.microsoft.com/web/media/gallery/apps-screenshots/webmatrix-stack-6-256.png</ImageUri>
+    </AddRibbonButton>
+    <AddRibbonButton>
+      <Label>.COM</Label>
+      <Uri>http://wordpress.com/</Uri>
+      <ImageUri>http://www.microsoft.com/web/media/gallery/apps-screenshots/webmatrix-stack-6-256.png</ImageUri>
+    </AddRibbonButton>
+  </Ribbon>
+
+  <PathProtection>
+    <AllowPath>
+      <RelativePath>wp-content</RelativePath>
+    </AllowPath>
+    <AllowPath AllowNested="False">
+      <RelativePath>wp-config.php</RelativePath>
+    </AllowPath>
+    <ProtectPath>
+      <RelativePath>*</RelativePath>
+    </ProtectPath>
+  </PathProtection>
+
+<CodeCompletion>
+<php version="5.3" schemaversion="1.0">
+  <relformatstring>http://codex.wordpress.org/Function_Reference/{0}</relformatstring>
+  <globalfunctions>
+    <iconurl>http://s.wordpress.org/about/images/wpmini-blue.png</iconurl>
+    <items>
+            <item name="get_header">
+                <description>Includes the header.php template file from your current theme&apos;s directory. if a name is specified then a specialised header header-{name}.php will be included.&#13;&#10;If the theme contains no header.php file then the header from the default theme wp-includes/theme-compat/header.php will be included.</description>
+                <signature>get_header( $name )</signature>
+                <docrelurl>get_header</docrelurl>
+            </item>
+            <item name="get_footer">
+                <description>Includes the footer.php template file from your current theme&apos;s directory. if a name is specified then a specialised footer footer-{name}.php will be included.&#13;&#10;If the theme contains no footer.php file then the footer from the default theme wp-includes/theme-compat/footer.php will be included.</description>
+                <signature>get_footer( $name )</signature>
+                <docrelurl>get_footer</docrelurl>
+            </item>
+            <item name="get_sidebar">
+                <description>Includes the sidebar.php template file from your current theme&apos;s directory. If a name ($name) is specified then a specialized sidebar sidebar-{name}.php will be included.&#13;&#10;If the theme contains no sidebar.php file then the sidebar from the default theme wp-includes/theme-compat/sidebar.php will be included.</description>
+                <signature>get_sidebar( $name )</signature>
+                <docrelurl>get_sidebar</docrelurl>
+            </item>
+            <item name="get_template_part">
+                <description>Load a template part into a template (other than header, sidebar, footer). Makes it easy for a theme to reuse sections of code in an easy to overload way for child themes.&#13;&#10;Includes the named template part for a theme or if a name is specified then a specialized part will be included. If the theme contains no {slug}.php file then no template will be included.&#13;&#10;For the parameter, if the file is called &quot;{slug}-{name}.php&quot;.</description>
+                <signature>get_template_part( $slug, $name )</signature>
+                <docrelurl>get_template_part</docrelurl>
+            </item>
+            <item name="get_search_form">
+                <description>Display search form using searchform.php Theme file.</description>
+                <signature>get_search_form( $echo )</signature>
+                <docrelurl>get_search_form</docrelurl>
+            </item>
+            <item name="wp_loginout">
+                <description>Displays a login link, or if a user is logged in, displays a logout link. An optional, redirect argument can be used to redirect the user upon login or logout.</description>
+                <signature>wp_loginout( $redirect, $echo )</signature>
+                <docrelurl>wp_loginout</docrelurl>
+            </item>
+            <item name="wp_logout_url">
+                <description>This Template Tag returns the URL that allows the user to log out of the site.</description>
+                <signature>wp_logout_url( $redirect )</signature>
+                <docrelurl>wp_logout_url</docrelurl>
+            </item>
+            <item name="wp_login_url">
+                <description>This Template Tag returns the URL that allows the user to log in to the site.</description>
+                <signature>wp_login_url( $redirect )</signature>
+                <docrelurl>wp_login_url</docrelurl>
+            </item>
+            <item name="wp_login_form">
+                <description>Provides a simple login form for use anywhere within WordPress. By default, it echoes the HTML immediately. Pass array(&apos;echo&apos; =&gt; false) to return the string instead.</description>
+                <signature>wp_login_form( $args )</signature>
+                <docrelurl>wp_login_form</docrelurl>
+            </item>
+            <item name="wp_lostpassword_url">
+                <description>This Template Tag returns the URL that allows the user to retrieve the lost password.</description>
+                <signature>wp_lostpassword_url( $redirect )</signature>
+                <docrelurl>wp_lostpassword_url</docrelurl>
+            </item>
+            <item name="wp_register">
+                <description>This tag displays either the &quot;Site Admin&quot; link if the user is logged in or &quot;Register&quot; link if the user is not logged in.&#13;&#10;The &quot;Register&quot; link is not offered if the Administration &gt; Settings &gt; General &gt; Membership: Anyone can register box is not checked.&#13;&#10;This tag does not function as intended on WordPress µ.</description>
+                <signature>wp_register( $before, $after, $echo)</signature>
+                <docrelurl>wp_register</docrelurl>
+            </item>
+            <item name="wp_meta">
+                <description>Theme container function for the &apos;wp_meta&apos; action.&#13;&#10;The &apos;wp_meta&apos; action can have several purposes, depending on how you use it, but one purpose might have been to allow for theme switching.</description>
+                <signature>wp_meta()</signature>
+                <docrelurl>wp_meta</docrelurl>
+            </item>
+            <item name="bloginfo">
+                <description>Displays information about your blog, mostly gathered from the information you supply in your User Profile and General Options from the WordPress Administration panels (Settings → General). It can be used anywhere within a page template. This always prints a result to the browser.  If you need the values for use in PHP, use get_bloginfo().</description>
+                <signature>bloginfo( $show )</signature>
+                <docrelurl>bloginfo</docrelurl>
+            </item>
+            <item name="get_bloginfo">
+                <description>The get_bloginfo() function returns information about your site which can then be used elsewhere in your PHP code. This function, as well as bloginfo(), can also be used to display your site information.</description>
+                <signature>get_bloginfo( $show, $filter )</signature>
+                <docrelurl>get_bloginfo</docrelurl>
+            </item>
+            <item name="get_current_blog_id">
+                <description>Retrieve the current blog id.</description>
+                <signature>get_current_blog_id()</signature>
+                <docrelurl>get_current_blog_id</docrelurl>
+            </item>
+            <item name="wp_title">
+                <description>Displays or returns the title of the page.  A separator string can be defined, and beginning with Version 2.5, that separator can be designated to print before or after the title of the page.&#13;&#10;This tag can be used anywhere within a template as long as it&apos;s outside The Loop on the main page, though is typically used in the &lt;title&gt; element for the head of a page.&#13;&#10;The title text depends on the query:</description>
+                <signature>wp_title( $sep, $echo, $seplocation )</signature>
+                <docrelurl>wp_title</docrelurl>
+            </item>
+            <item name="single_post_title">
+                <description>Displays or returns the title of the post when on a single post page (permalink page). This tag can be useful for displaying post titles outside The Loop.</description>
+                <signature>single_post_title( $prefix, $display )</signature>
+                <docrelurl>single_post_title</docrelurl>
+            </item>
+            <item name="post_type_archive_title">
+                <description>Display or retrieve title for a post type archive.&#13;&#10;This is optimized for archive.php and archive-{posttype}.php template files for displaying the title of the post type.</description>
+                <signature>post_type_archive_title( $prefix, $display )</signature>
+                <docrelurl>post_type_archive_title</docrelurl>
+            </item>
+            <item name="single_cat_title">
+                <description>Displays or returns the category title for the current page. For pages displaying WordPress tags rather than categories (e.g. &quot;/tag/geek&quot;) the name of the tag is displayed instead of the category. Can be used only outside The Loop.</description>
+                <signature>single_cat_title( $prefix, $display )</signature>
+                <docrelurl>single_cat_title</docrelurl>
+            </item>
+            <item name="single_tag_title">
+                <description>Displays or returns the tag title for the current archive page.</description>
+                <signature>single_tag_title( $prefix, $display )</signature>
+                <docrelurl>single_tag_title</docrelurl>
+            </item>
+            <item name="single_term_title">
+                <description>Displays or returns the term title for the current page.</description>
+                <signature>single_term_title( $prefix, $display )</signature>
+                <docrelurl>single_term_title</docrelurl>
+            </item>
+            <item name="single_month_title">
+                <description>Displays or returns the month and year title for the current page. This tag only works when the m or archive month argument has been passed by WordPress to the current page (this occurs when viewing a monthly archive page).&#13;&#10;Note: This tag works only on date archive pages, not on category templates or others.&#13;&#10;It does not support placing the separator after the title, but by leaving the prefix parameter empty, you can set the title separator manually. The prefix does not automatically place a space between the prefix, so if there should be a space, the parameter value will need to have it at the end.</description>
+                <signature>single_month_title( $prefix, $display )</signature>
+                <docrelurl>single_month_title</docrelurl>
+            </item>
+            <item name="get_archives_link">
+                <description>Retrieve archive link content based on predefined or custom code.&#13;&#10;The format can be one of four styles. The &apos;link&apos; for head element, &apos;option&apos; for use in the select element, &apos;html&apos; for use in list (either ol or ul HTML elements). Custom content is also supported using the before and after parameters.&#13;&#10;The &apos;link&apos; format uses the link HTML element with the archives relationship. The before and after parameters are not used. The text parameter is used to describe the link.&#13;&#10;The &apos;option&apos; format uses the option HTML element for use in select element. The value is the url parameter and the before and after parameters are used between the text description.&#13;&#10;The &apos;html&apos; format, which is the default, uses the li HTML element for use in the list HTML elements. The before parameter is before the link and the after parameter is after the closing link.&#13;&#10;The custom format uses the before parameter before the link (&apos;a&apos; HTML element) and the after parameter after the closing link tag. If the above three values for the format are not used, then custom format is assumed.</description>
+                <signature>get_archives_link( $url, $text, $format, $before, $after )</signature>
+                <docrelurl>get_archives_link</docrelurl>
+            </item>
+            <item name="wp_get_archives">
+                <description>This function displays a date-based archives list. This tag can be used anywhere within a template.</description>
+                <signature>wp_get_archives( $args )</signature>
+                <docrelurl>wp_get_archives</docrelurl>
+            </item>
+            <item name="get_calendar">
+                <description>Displays the calendar (defaults to current month/year). Days with posts are styled as such.  This tag can be used anywhere within a template.</description>
+                <signature>get_calendar( $initial )</signature>
+                <docrelurl>get_calendar</docrelurl>
+            </item>
+            <item name="edit_bookmark_link">
+                <description>Displays a link to edit the current bookmark, if the user is logged in and allowed to edit the bookmark. It must be within The Loop.</description>
+                <signature>edit_bookmark_link( $link, $before, $after, $bookmark )</signature>
+                <docrelurl>edit_bookmark_link</docrelurl>
+            </item>
+            <item name="edit_comment_link">
+                <description>Displays a link to edit the current comment, if the user is logged in and allowed to edit the comment. It must be within The Loop, and within a comment loop.&#13;&#10;Use get_edit_comment_link to retrieve the url.</description>
+                <signature>edit_comment_link( $link, $before, $after )</signature>
+                <docrelurl>edit_comment_link</docrelurl>
+            </item>
+            <item name="edit_post_link">
+                <description>Displays a link to edit the current post, if a user is logged in and allowed to edit the post. It must be within The Loop.&#13;&#10;Use get_edit_post_link to retrieve the url.</description>
+                <signature>edit_post_link( $link, $before, $after, $id )</signature>
+                <docrelurl>edit_post_link</docrelurl>
+            </item>
+            <item name="edit_tag_link">
+                <description>Displays a link to edit the current tag, if the user is logged in and allowed to edit the tag. It must be within The Loop.&#13;&#10;Use get_edit_tag_link to retrieve the url to edit.</description>
+                <signature>edit_tag_link( $link, $before, $after, $tag )</signature>
+                <docrelurl>edit_tag_link</docrelurl>
+            </item>
+            <item name="get_admin_url">
+                <description>Retrieve the url to the admin area for a given site.</description>
+                <signature>get_admin_url( $blog_id, $path, $scheme )</signature>
+                <docrelurl>get_admin_url</docrelurl>
+            </item>
+            <item name="get_home_url">
+                <description>The get_home_url template tag retrieves the home url for a given site. Returns the &apos;home&apos; option with the appropriate protocol,  &apos;https&apos; if is_ssl() and &apos;http&apos; otherwise. If scheme is &apos;http&apos; or &apos;https&apos;, is_ssl() is overridden.</description>
+                <signature>get_home_url( $blog_id, $path, $scheme )</signature>
+                <docrelurl>get_home_url</docrelurl>
+            </item>
+            <item name="get_site_url">
+                <description>The get_site_url() template tag retrieve the site url for a given site. Returns the &apos;siteurl&apos; option with the appropriate protocol,  &apos;https&apos; if is_ssl() and &apos;http&apos; otherwise. If $scheme is &apos;http&apos; or &apos;https&apos;, is_ssl() is overridden.</description>
+                <signature>get_site_url( $blog_id, $path, $scheme )</signature>
+                <docrelurl>get_site_url</docrelurl>
+            </item>
+            <item name="home_url">
+                <description>The home_url template tag retrieves the home url for the current site with the appropriate protocol, &apos;https&apos; if is_ssl() and &apos;http&apos; otherwise. If scheme is &apos;http&apos; or &apos;https&apos;, is_ssl() is overridden.&#13;&#10;In case of Wordpress Network setup, use network_home_url() instead.</description>
+                <signature>home_url( $path, $scheme )</signature>
+                <docrelurl>home_url</docrelurl>
+            </item>
+            <item name="site_url">
+                <description>The site_url template tag retrieves the site url for the current site (where the WordPress core files) with the appropriate protocol, &apos;https&apos; if is_ssl() and &apos;http&apos; otherwise. If scheme is &apos;http&apos; or &apos;https&apos;, is_ssl() is overridden.&#13;&#10;In case of WordPress Network setup, use network_site_url() instead.</description>
+                <signature>site_url( $path, $scheme )</signature>
+                <docrelurl>site_url</docrelurl>
+            </item>
+            <item name="get_search_link">
+                <description>Retrieve permalink for search.</description>
+                <signature>get_search_link( $query )</signature>
+                <docrelurl>get_search_link</docrelurl>
+            </item>
+            <item name="get_search_query">
+                <description>The search query string is passed through {@link esc_attr()} to ensure that it is safe for placing in an html attribute.
+This function is used to get the query string when a user performs a search on the site. It returns the query string rather than displaying it, as the the_search_query() function does.</description>
+                <signature>get_search_query()</signature>
+                <docrelurl>get_search_query</docrelurl>
+            </item>
+            <item name="the_author">
+                <description>The author of a post can be displayed by using this Template Tag.  This tag must be used within The Loop.&#13;&#10;To return to PHP rather than displaying, use get_the_author.</description>
+                <signature>the_author()</signature>
+                <docrelurl>the_author</docrelurl>
+            </item>
+            <item name="get_the_author">
+                <description>Retrieve the post author. This tag must be used within The Loop.&#13;&#10;To display a page for authors which have no posts, see this discussion.</description>
+                <signature>get_the_author()</signature>
+                <docrelurl>get_the_author</docrelurl>
+            </item>
+            <item name="the_author_link">
+                <description>This tag displays a link to the Website for the author of a post.  The Website field is set in the user&apos;s profile (Administration &gt; Profile &gt; Your Profile).  The text for the link is the author&apos;s Profile Display name publicly as field. This tag must be used within The Loop.</description>
+                <signature>the_author_link()</signature>
+                <docrelurl>the_author_link</docrelurl>
+            </item>
+            <item name="get_the_author_link">
+                <description>This tag returns a link to the Website for the author of a post.  The Website field is set in the user&apos;s profile (Administration &gt; Users &gt; Your Profile).  The text for the link is the author&apos;s Profile Display name publicly as field. This tag must be used within The Loop.</description>
+                <signature>get_the_author_link()</signature>
+                <docrelurl>get_the_author_link</docrelurl>
+            </item>
+            <item name="the_author_meta">
+                <description>The the_author_meta Template Tag displays the desired meta data for a user. If this tag is used within The Loop, the user ID value need not be specified, and the displayed data is that of the current post author. A user ID can be specified if this tag is used outside The Loop.&#13;&#10;NOTE: Use get_the_author_meta() if you need to return (not display) the information.</description>
+                <signature>the_author_meta( $field, $userID )</signature>
+                <docrelurl>the_author_meta</docrelurl>
+            </item>
+            <item name="the_author_posts">
+                <description>Displays the total number of posts an author has published. Drafts and private posts aren&apos;t counted. This tag must be used within The Loop.</description>
+                <signature>the_author_posts()</signature>
+                <docrelurl>the_author_posts</docrelurl>
+            </item>
+            <item name="the_author_posts_link">
+                <description>Displays a link to all posts by an author. The link text is the user&apos;s Display name publicly as field. The results of clicking on the presented link will be controlled by the Template Hierarchy of Author Templates.  This tag must be used within The Loop.</description>
+                <signature>the_author_posts_link()</signature>
+                <docrelurl>the_author_posts_link</docrelurl>
+            </item>
+            <item name="wp_dropdown_users">
+                <description>Create dropdown HTML content of users.</description>
+                <signature>wp_dropdown_users( $args )</signature>
+                <docrelurl>wp_dropdown_users</docrelurl>
+            </item>
+            <item name="wp_list_authors">
+                <description>Displays a list of the sites&apos;s authors (users), and if the user has authored any posts, the author name is displayed as a link to their posts.  Optionally this tag displays each author&apos;s post count and RSS feed link.</description>
+                <signature>wp_list_authors( $args )</signature>
+                <docrelurl>wp_list_authors</docrelurl>
+            </item>
+            <item name="get_author_posts_url">
+                <description>Gets the url to the author page of the author of the current post.</description>
+                <signature>get_author_posts_url()</signature>
+                <docrelurl>get_author_posts_url</docrelurl>
+            </item>
+            <item name="wp_list_bookmarks">
+                <description>Displays bookmarks found in the Administration &gt; Links panel.  This Template Tag allows the user to control how the bookmarks are sorted and displayed.&#13;&#10;NOTE: wp_list_bookmarks() intended to replace the deprecated Template tags get_links_list() and get_links().</description>
+                <signature>wp_list_bookmarks( $args )</signature>
+                <docrelurl>wp_list_bookmarks</docrelurl>
+            </item>
+            <item name="category_description">
+                <description>Returns the description of a category defined in the category settings screen for the current category (Posts &gt; Categories).&#13;&#10;If used in the archive.php template, place this function within the is_category() conditional statement. Otherwise, this function will stop the processing of the page for monthly and other archive pages.</description>
+                <signature>category_description( $category_id )</signature>
+                <docrelurl>category_description</docrelurl>
+            </item>
+            <item name="the_category">
+                <description>Displays a link to the category or categories a post belongs to. This tag must be used within The Loop.</description>
+                <signature>the_category( $separator, $parents, $post_id )</signature>
+                <docrelurl>the_category</docrelurl>
+            </item>
+            <item name="the_category_rss">
+                <description>Display the post categories in the feed.</description>
+                <signature>the_category_rss( $type )</signature>
+                <docrelurl>the_category_rss</docrelurl>
+            </item>
+            <item name="wp_dropdown_categories">
+                <description>Display or retrieve the HTML dropdown list of categories.</description>
+                <signature>wp_dropdown_categories( $args )</signature>
+                <docrelurl>wp_dropdown_categories</docrelurl>
+            </item>
+            <item name="tag_description">
+                <description>First available with WordPress Version 2.8, this template tag returns the description of a tag.  A tag ID can be passed as a parameter, but if no tag ID is passed, the description current queried tag will be returned.</description>
+                <signature>tag_description( $tag_id )</signature>
+                <docrelurl>tag_description</docrelurl>
+            </item>
+            <item name="the_tags">
+                <description>This template tag displays a link to the tag or tags a post belongs to. If no tags are associated with the current entry, the associated category is displayed instead. This tag should be used within The Loop.</description>
+                <signature>the_tags( $before, $separator, $after )</signature>
+                <docrelurl>the_tags</docrelurl>
+            </item>
+            <item name="wp_generate_tag_cloud">
+                <description>Returns an HTML string that makes a tag cloud.</description>
+                <signature>wp_generate_tag_cloud( $tags, $args )</signature>
+                <docrelurl>wp_generate_tag_cloud</docrelurl>
+            </item>
+            <item name="wp_tag_cloud">
+                <description>Available with WordPress Version 2.3, the wp_tag_cloud() function displays a list of tags in what is called a &apos;tag cloud&apos;, where the size of each tag is determined by how many times that particular tag has been assigned to posts.  Beginning with Version 2.8, the taxonomy parameter was added so that any taxonomy could be used as the basis of generating the cloud.  That means that a cloud for Categories or any other Custom Taxonomies can be presented to visitors.</description>
+                <signature>wp_tag_cloud( $args )</signature>
+                <docrelurl>wp_tag_cloud</docrelurl>
+            </item>
+            <item name="term_description">
+                <description>First available with WordPress Version 2.8, this template tag returns the description of a given term.  A term ID and taxonomy are as parameters.  If no term ID is passed, the description current queried term (e.g. post category or tag) will be returned.</description>
+                <signature>term_description( $term_id, $taxonomy )</signature>
+                <docrelurl>term_description</docrelurl>
+            </item>
+            <item name="get_the_term_list">
+                <description>Returns an HTML string of taxonomy terms associated with a post and given taxonomy. Terms are linked to their respective term listing pages.</description>
+                <signature>get_the_term_list( $id, $taxonomy, $before, $sep, $after )</signature>
+                <docrelurl>get_the_term_list</docrelurl>
+            </item>
+            <item name="the_terms">
+                <description>Displays the terms of a custom taxonomy.</description>
+                <signature>the_terms( $id, $taxonomy, $before, $sep, $after )</signature>
+                <docrelurl>the_terms</docrelurl>
+            </item>
+            <item name="the_taxonomies">
+                <description>This template tag can be used within The Loop to display the taxonomies for a post without specifying the Post ID. You can also use it outside The Loop to display the taxonomies for a specific post.</description>
+                <signature>the_taxonomies( $args )</signature>
+                <docrelurl>the_taxonomies</docrelurl>
+            </item>
+            <item name="cancel_comment_reply_link">
+                <description>Displays a link which cancels the replying to a previous comment (a nested comment) and resets the comment form back to the default state.</description>
+                <signature>cancel_comment_reply_link(&apos;text&apos;)</signature>
+                <docrelurl>cancel_comment_reply_link</docrelurl>
+            </item>
+            <item name="comment_author">
+                <description>Displays the comment author name; that is, the one supplied by the commenter. If no name is provided (and &quot;User must fill out name and email&quot; is not enabled under Discussion Options), WordPress will assign &quot;Anonymous&quot; as comment author.&#13;&#10;Use get_comment_author to retrieve the value.</description>
+                <signature>comment_author( $comment_ID )</signature>
+                <docrelurl>comment_author</docrelurl>
+            </item>
+            <item name="comment_author_email">
+                <description>Displays the comment author&apos;s email address, not linked. An email address must be provided if &quot;User must fill out name and email&quot; is enabled under Discussion Options.&#13;&#10;Use get_comment_author_email to retrieve the value.</description>
+                <signature>comment_author_email( $comment_ID )</signature>
+                <docrelurl>comment_author_email</docrelurl>
+            </item>
+            <item name="comment_author_email_link">
+                <description>Displays the comment author&apos;s email address, as a mailto link. An email address must be provided if &quot;User must fill out name and email&quot; is enabled under Discussion Options. This tag must be within The Loop, or a comment loop.&#13;&#10;Note: Displaying email addresses is not recommended, as it provides spam collection tools the opportunity to cull them from your site.&#13;&#10;Use get_comment_author_email_link to retrieve the value.</description>
+                <signature>comment_author_email_link(&apos;linktext&apos;, &apos;before&apos;, &apos;after&apos;)</signature>
+                <docrelurl>comment_author_email_link</docrelurl>
+            </item>
+            <item name="comment_author_IP">
+                <description>Displays the comment author&apos;s IP address. This tag must be within The Loop, or a comment loop.&#13;&#10;Use get_comment_author_IP to retrieve the value.</description>
+                <signature>comment_author_IP($comment_ID)</signature>
+                <docrelurl>comment_author_IP</docrelurl>
+            </item>
+            <item name="comment_author_link">
+                <description>Displays the comment author&apos;s name linked to his/her URL, if one was provided.&#13;&#10;Use get_comment_author_link to retrieve the value.</description>
+                <signature>comment_author_link( $comment_ID )</signature>
+                <docrelurl>comment_author_link</docrelurl>
+            </item>
+            <item name="comment_author_rss">
+                <description>Display the current comment author in the feed.</description>
+                <signature>comment_author_rss()</signature>
+                <docrelurl>comment_author_rss</docrelurl>
+            </item>
+            <item name="comment_author_url">
+                <description>Displays the comment author&apos;s URL (usually their web site), not linked.&#13;&#10;If the author provided no URL, this will display the URL of the current page instead. The tag get_comment_author_url returns an empty string in this case.</description>
+                <signature>comment_author_url( $comment_ID )</signature>
+                <docrelurl>comment_author_url</docrelurl>
+            </item>
+            <item name="comment_author_url_link">
+                <description>Displays the comment author&apos;s URL (usually their web site), linked, if one was provided. This tag must be within The Loop, or a comment loop.&#13;&#10;Use get_comment_author_url_link to retrieve the value.</description>
+                <signature>comment_author_url_link(&apos;linktext&apos;, &apos;before&apos;, &apos;after&apos;)</signature>
+                <docrelurl>comment_author_url_link</docrelurl>
+            </item>
+            <item name="comment_class">
+                <description></description>
+                <signature>comment_class()</signature>
+                <docrelurl>comment_class</docrelurl>
+            </item>
+            <item name="comment_date">
+                <description>Displays the date a comment was posted.&#13;&#10;Use get_comment_date to retrieve the value.</description>
+                <signature>comment_date( &apos;d&apos;, $comment_ID )</signature>
+                <docrelurl>comment_date</docrelurl>
+            </item>
+            <item name="comment_excerpt">
+                <description>Displays an excerpt (maximum of 20 words) of a comment&apos;s text.&#13;&#10;Use get_comment_excerpt to retrieve the value.</description>
+                <signature>comment_excerpt( $comment_ID )</signature>
+                <docrelurl>comment_excerpt</docrelurl>
+            </item>
+            <item name="comment_form_title">
+                <description>Displays text based on comment reply status. This only affects users with Javascript disabled or pages without the comment-reply.js JavaScript loaded. This tag is normally used directly below &lt;div id=&quot;respond&quot;&gt; and before the comment form.</description>
+                <signature>comment_form_title( $noreplytext, $replytext, $linktoparent )</signature>
+                <docrelurl>comment_form_title</docrelurl>
+            </item>
+            <item name="comment_form">
+                <description>This tag outputs a complete commenting form for use within a template.&#13;&#10;Most strings and form fields may be controlled through the $args array passed into the function, while you may also choose to use the comment_form_default_fields filter to modify the array of default fields if you&apos;d just like to add a new one or remove a single field. All fields are also individually passed through a filter of the form comment_form_field_$name where $name is the key used in the array of fields.</description>
+                <signature>comment_form( $args, $post_id )</signature>
+                <docrelurl>comment_form</docrelurl>
+            </item>
+            <item name="comment_ID">
+                <description>Displays the numeric ID of the current comment. This tag must be within The Loop, or a comment loop.&#13;&#10;Use get_comment_ID to retrieve the value.</description>
+                <signature>comment_ID()</signature>
+                <docrelurl>comment_ID</docrelurl>
+            </item>
+            <item name="comment_id_fields">
+                <description>Generates two hidden inputs for the comment form to identify the comment_post_ID and comment_parent for threaded comments. This tag must be within the &lt;form&gt; section of comments.php. New since WordPress version 2.7.</description>
+                <signature>comment_id_fields()</signature>
+                <docrelurl>comment_id_fields</docrelurl>
+            </item>
+            <item name="comment_reply_link">
+                <description>Displays a link that lets users post a comment in reply to a specific comment.&#13;&#10;If JavaScript is enabled and the comment-reply.js JavaScript is loaded the link moves the comment form to just below the comment.</description>
+                <signature>comment_reply_link( $args, $comment, $post )</signature>
+                <docrelurl>comment_reply_link</docrelurl>
+            </item>
+            <item name="comment_text">
+                <description>Displays the text of a comment.&#13;&#10;Use get_comment_text to retrieve the value.</description>
+                <signature>comment_text( $comment_ID )</signature>
+                <docrelurl>comment_text</docrelurl>
+            </item>
+            <item name="comment_text_rss">
+                <description>Display the current comment content for use in the feeds.</description>
+                <signature>comment_text_rss()</signature>
+                <docrelurl>comment_text_rss</docrelurl>
+            </item>
+            <item name="comment_time">
+                <description>Displays the time a comment was posted. This tag must be within The Loop, or a comment loop.&#13;&#10;Use get_comment_time to retrieve the value.</description>
+                <signature>comment_time(&apos;d&apos;)</signature>
+                <docrelurl>comment_time</docrelurl>
+            </item>
+            <item name="comment_type">
+                <description>Displays the type of comment (regular comment, Trackback or Pingback) a comment entry is. This tag must be within The Loop, or a comment loop.&#13;&#10;Use get_comment_type to retrieve the value.</description>
+                <signature>comment_type(&apos;comment&apos;, &apos;trackback&apos;, &apos;pingback&apos;)</signature>
+                <docrelurl>comment_type</docrelurl>
+            </item>
+            <item name="comments_link">
+                <description>The comments_link template tag displays the URL to the current post&apos;s comments. This tag must be within The Loop, or the loop set up for comments.&#13;&#10;Use get_comments_link to retrieve the value.</description>
+                <signature>comments_link()</signature>
+                <docrelurl>comments_link</docrelurl>
+            </item>
+            <item name="comments_number">
+                <description>Displays the total number of comments, Trackbacks, and Pingbacks for the current post. This tag must be within The Loop.&#13;&#10;Use get_comments_number() to retrieve the value.</description>
+                <signature>comments_number( $zero, $one, $more )</signature>
+                <docrelurl>comments_number</docrelurl>
+            </item>
+            <item name="comments_popup_link">
+                <description>Displays a link to the comments popup window if comments_popup_script() is used, otherwise it displays a normal link to comments. This tag must be within The Loop, or a comment loop, and it does nothing if  is_single() or  is_page() is true (even when within The Loop).</description>
+                <signature>comments_popup_link( $zero, $one, $more, $css_class, $none )</signature>
+                <docrelurl>comments_popup_link</docrelurl>
+            </item>
+            <item name="comments_popup_script">
+                <description>Outputs the JavaScript code for a comments popup window. Used in tandem with comments_popup_link(), this tag can be used anywhere within a template, though is typically placed within the &lt;head&gt; portion of a page.</description>
+                <signature>comments_popup_script(width, height, &apos;file&apos;)</signature>
+                <docrelurl>comments_popup_script</docrelurl>
+            </item>
+            <item name="comments_rss_link">
+                <description>This function has been deprecated, please use post_comments_feed_link().&#13;&#10;Much like an RSS feed for your WordPress blog, this feature will display a link to the RSS feed for a given post&apos;s comments. By implementing the feature, your readers will be able to track the comment thread for a given post, perhaps encouraging them to stay connected to the conversation.&#13;&#10;This tag must be within The Loop, or the loop set up for comments.</description>
+                <signature>comments_rss_link(&apos;text&apos;, &apos;file&apos;)</signature>
+                <docrelurl>comments_rss_link</docrelurl>
+            </item>
+            <item name="get_avatar">
+                <description>Retrieve the avatar for a user who provided a user ID or email address. Most commonly used in the comments section.&#13;&#10;This function is pluggable, however plugin authors wishing to change the gravatar output should use the get_avatar filter instead, for compatibility purposes.</description>
+                <signature>get_avatar( $id_or_email, $size, $default, $alt )</signature>
+                <docrelurl>get_avatar</docrelurl>
+            </item>
+            <item name="next_comments_link">
+                <description>Display link to next comments pages.</description>
+                <signature>next_comments_link( $label, $max_page )</signature>
+                <docrelurl>next_comments_link</docrelurl>
+            </item>
+            <item name="paginate_comments_links">
+                <description>Create pagination links for the comments on the current post.&#13;&#10;Basically this is a macro to  paginate_links() which sets the functional options of paginate_links() to make it work for comments. But you may use all the parameters of paginate_links() to style the output of paginate_comments_links().</description>
+                <signature>paginate_comments_links( $args )</signature>
+                <docrelurl>paginate_comments_links</docrelurl>
+            </item>
+            <item name="permalink_comments_rss">
+                <description>Displays the permalink to the post to which a comment belongs, formatted for RSS. Typically used in the RSS comment feed template. This tag must be within The Loop, or a comment loop.</description>
+                <signature>permalink_comments_rss()</signature>
+                <docrelurl>permalink_comments_rss</docrelurl>
+            </item>
+            <item name="previous_comments_link">
+                <description>Display the previous comments page link.</description>
+                <signature>previous_comments_link( $label )</signature>
+                <docrelurl>previous_comments_link</docrelurl>
+            </item>
+            <item name="wp_list_comments">
+                <description>Displays all comments for a post or Page based on a variety of parameters including ones set in the administration area.&#13;&#10;See also: Migrating Plugins and Themes to 2.7</description>
+                <signature>wp_list_comments( $args )</signature>
+                <docrelurl>wp_list_comments</docrelurl>
+            </item>
+            <item name="the_permalink">
+                <description>Displays the URL for the permalink to the post currently being processed in The Loop. This tag must be within The Loop, and is generally used to display the permalink for each post, when the posts are being displayed. Since this template tag is limited to displaying the permalink for the post that is being processed, you cannot use it to display the permalink to an arbitrary post on your weblog. Refer to get_permalink() if you want to get the permalink for a post, given its unique post id.</description>
+                <signature>the_permalink()</signature>
+                <docrelurl>the_permalink</docrelurl>
+            </item>
+            <item name="permalink_anchor">
+                <description>Outputs a permalink anchor identifier or id (&lt;a id=&quot;....) for a post. This is useful for linking to a particular post on a page displaying several posts, such as an archive page. This tag must be within The Loop.</description>
+                <signature>permalink_anchor( $type )</signature>
+                <docrelurl>permalink_anchor</docrelurl>
+            </item>
+            <item name="get_permalink">
+                <description>Returns the permalink to a post for use in PHP. It does NOT display the permalink and can be used outside of The Loop. On failure returns false.&#13;&#10;Note that when used outside The Loop on a posts page (index, archive, etc.) without the ID parameter, it will return the URL of the last post in The Loop, not the permalink for the current page. See: http://core.trac.wordpress.org/ticket/9963</description>
+                <signature>get_permalink( $id )</signature>
+                <docrelurl>get_permalink</docrelurl>
+            </item>
+            <item name="get_post_permalink">
+                <description>The get_post_permalink template tag retrieves the permalink for a post with a custom post type.</description>
+                <signature>get_post_permalink( $id, $leavename, $sample )</signature>
+                <docrelurl>get_post_permalink</docrelurl>
+            </item>
+            <item name="post_permalink">
+                <description>Returns the permalink for a post with a custom post type.</description>
+                <signature>post_permalink()</signature>
+                <docrelurl>post_permalink</docrelurl>
+            </item>
+            <item name="get_page_link">
+                <description>Retrieves the permalink for the current page (if in The Loop) or any arbitrary page ID if passed as the first argument. All arguments are optional. All arguments default to false.&#13;&#10;If $id is passed, it will be the id of the page whose link is returned.&#13;&#10;$leavename can be used to toggle off the switching out of &quot;%pagename%&quot; in permalinks.&#13;&#10;$sample returns a sample permalink.</description>
+                <signature>get_page_link($id, $leavename, $sample)</signature>
+                <docrelurl>get_page_link</docrelurl>
+            </item>
+            <item name="get_attachment_link">
+                <description>Returns the URI of the page for an attachment.</description>
+                <signature>get_attachment_link($id)</signature>
+                <docrelurl>get_attachment_link</docrelurl>
+            </item>
+            <item name="get_bookmark">
+                <description>Retrieve Bookmark data based on bookmark link ID.</description>
+                <signature>get_bookmark( $bookmark, $output, $filter )</signature>
+                <docrelurl>get_bookmark</docrelurl>
+            </item>
+            <item name="get_bookmark_field">
+                <description>Retrieve single bookmark data item or field.</description>
+                <signature>get_bookmark_field( $field, $bookmark, $context )</signature>
+                <docrelurl>get_bookmark_field</docrelurl>
+            </item>
+            <item name="get_bookmarks">
+                <description>This function returns an array of bookmarks found in the Administration &gt; Links &gt; Edit panel.  This Template Tag allows the user to retrieve the bookmark information directly.</description>
+                <signature>get_bookmarks( $args )</signature>
+                <docrelurl>get_bookmarks</docrelurl>
+            </item>
+            <item name="body_class">
+                <description>Themes have a template tag for the body tag which will help theme authors to style more effectively with CSS. The Template Tag is called body_class. This function gives the body element different classes and can be added, typically, in the header.php&apos;s HTML body tag.</description>
+                <signature>body_class( $class )</signature>
+                <docrelurl>body_class</docrelurl>
+            </item>
+            <item name="next_image_link">
+                <description>This creates a link to the next image attached to the current post.</description>
+                <signature>next_image_link( $size, $text )</signature>
+                <docrelurl>next_image_link</docrelurl>
+            </item>
+            <item name="next_post_link">
+                <description>Used on single post permalink pages, this template tag displays a link to the next post which exists in chronological order from the current post.&#13;&#10;This tag must be used in The Loop.</description>
+                <signature>next_post_link(&apos;format&apos;, &apos;link&apos;, &apos;in_same_cat&apos;, &apos;excluded_categories&apos;)</signature>
+                <docrelurl>next_post_link</docrelurl>
+            </item>
+            <item name="next_posts_link">
+                <description>Prints a link to the next set of posts within the current query.&#13;&#10;If you need the values for use in PHP, use get_next_posts_link().&#13;&#10;Because post queries are usually sorted in reverse chronological order, next_posts_link() usually points to older entries (toward the end of the set) and prev_posts_link() usually points to newer entries (toward the beginning of the set).</description>
+                <signature>next_posts_link( $label , $max_pages )</signature>
+                <docrelurl>next_posts_link</docrelurl>
+            </item>
+            <item name="post_class">
+                <description>WordPress Themes have a template tag for the post HTML tag which will help theme authors to style more effectively with CSS. The Template Tag is called post_class. This function prints out different post container classes which can be added, typically, in the index.php, single.php, and other template files featuring post content, typically in the HTML &lt;div id=&quot;post&quot;&gt; tag. If you don&apos;t want the post classes to be echoed use  get_post_class().&#13;&#10;The post_class template tag creates CSS selectors to style content only within the post content area. For information on styling entire pages based upon a distinctive CSS selector, see  body_class().</description>
+                <signature>post_class()</signature>
+                <docrelurl>post_class</docrelurl>
+            </item>
+            <item name="post_password_required">
+                <description>Whether post requires password and correct password has been provided.</description>
+                <signature>post_password_required( $post )</signature>
+                <docrelurl>post_password_required</docrelurl>
+            </item>
+            <item name="posts_nav_link">
+                <description>Displays links for next and previous pages. Useful for providing &quot;paged&quot; navigation of index, category and archive pages.&#13;&#10;For displaying next and previous pages of posts see next_posts_link and previous_posts_link().&#13;&#10;For displaying next and previous post navigation on individual posts, see next_post_link() and previous_post_link().</description>
+                <signature>posts_nav_link( $sep, $prelabel, $nextlabel )</signature>
+                <docrelurl>posts_nav_link</docrelurl>
+            </item>
+            <item name="previous_image_link">
+                <description>This creates a link to the previous image attached to the current post.</description>
+                <signature>previous_image_link( $size, $text )</signature>
+                <docrelurl>previous_image_link</docrelurl>
+            </item>
+            <item name="previous_post_link">
+                <description>Used on single post permalink pages, this template tag displays a link to the previous post which exists in chronological order from the current post.&#13;&#10;This tag must be used in The Loop.</description>
+                <signature>previous_post_link($format, $link, $in_same_cat = false, $excluded_categories = &apos;&apos;)</signature>
+                <docrelurl>previous_post_link</docrelurl>
+            </item>
+            <item name="previous_posts_link">
+                <description>Prints a link to the previous set of posts within the current query.&#13;&#10;If you need the values for use in PHP, use get_previous_posts_link().&#13;&#10;Because post queries are usually sorted in reverse chronological order, next_posts_link() usually points to older entries (toward the end of the set) and previous_posts_link() usually points to newer entries (toward the beginning of the set).</description>
+                <signature>previous_posts_link( $label , $max_pages )</signature>
+                <docrelurl>previous_posts_link</docrelurl>
+            </item>
+            <item name="sticky_class">
+                <description>Displays the Sticky Posts class on a post if applicable. This tag must be within The Loop.</description>
+                <signature>sticky_class()</signature>
+                <docrelurl>sticky_class</docrelurl>
+            </item>
+            <item name="the_content">
+                <description>Displays the contents of the current post. This tag must be within The_Loop.&#13;&#10;If the quicktag &lt;!--more--&gt; is used in a post to designate the &quot;cut-off&quot; point for the post to be excerpted, the_content() tag will only show the excerpt up to the &lt;!--more--&gt; quicktag point on non-single/non-permalink post pages.  By design, the_content() tag includes a parameter for formatting the &lt;!--more--&gt; content and look, which creates a link to &quot;continue reading&quot; the full post.</description>
+                <signature>the_content( $more_link_text, $strip_teaser )</signature>
+                <docrelurl>the_content</docrelurl>
+            </item>
+            <item name="the_content_rss">
+                <description>Display the post content for the feed.&#13;&#10;For encoding the html or the $encode_html parameter, there are three possible values. &apos;0&apos; will make urls footnotes and use make_url_footnote(). &apos;1&apos; will encode special characters and automatically display all of the content. The value of &apos;2&apos; will strip all HTML tags from the content.&#13;&#10;Also note that you cannot set the amount of words and not set the html encoding. If that is the case, then the html encoding will default to 2, which will strip all HTML tags.&#13;&#10;To restrict the amount of words of the content, you can use the cut parameter. If the content is less than the amount, then there won&apos;t be any dots added to the end. If there is content left over, then dots will be added and the rest of the content will be removed.</description>
+                <signature>the_content_rss( $more_link_text, $stripteaser, $more_file, $cut, $encode_html )</signature>
+                <docrelurl>the_content_rss</docrelurl>
+            </item>
+            <item name="the_excerpt">
+                <description>Displays the excerpt of the current post with [...] at the end, which is not a &quot;read more&quot; link.  If you do not provide an explicit excerpt to a post (in the post editor&apos;s optional excerpt field), it will display an automatic excerpt which refers to the first 55 words of the post&apos;s content. Also in the latter case, HTML tags and graphics are stripped from the excerpt&apos;s content. This tag must be within The Loop.&#13;&#10;Note: If the current post is an attachment, such as in the attachment.php and image.php template loops, then the attachment caption is displayed.  Captions do not include the excerpt [...] marks.</description>
+                <signature>the_excerpt()</signature>
+                <docrelurl>the_excerpt</docrelurl>
+            </item>
+            <item name="the_excerpt_rss">
+                <description>Display the post excerpt for the feed.</description>
+                <signature>the_excerpt_rss()</signature>
+                <docrelurl>the_excerpt_rss</docrelurl>
+            </item>
+            <item name="the_ID">
+                <description>Displays the numeric ID of the current post. This tag must be within The Loop.&#13;&#10;Note: This function displays the ID of the post, to return the ID use get_the_ID().</description>
+                <signature>the_ID()</signature>
+                <docrelurl>the_ID</docrelurl>
+            </item>
+            <item name="the_meta">
+                <description>This is a simple built-in function for displaying custom fields for the current post, known as the &quot;post-meta&quot; (stored in the wp_postmeta table).  It formats the data into an unordered list (see output below).&#13;&#10;It must be used from within The Loop or in a theme file that handles data from a single post (e.g. single.php). the_meta() will ignore meta_keys (i.e. field names) that begin with an underscore.&#13;&#10;For more information on this tag, see Custom Fields.</description>
+                <signature>the_meta()</signature>
+                <docrelurl>the_meta</docrelurl>
+            </item>
+            <item name="the_shortlink">
+                <description>Used on single post permalink pages, this template tag displays a &quot;URL shortening&quot; link for the current post.  By default, this will mean the URL has a format of /?p=1234, and will only appear if pretty permalinks are enabled.&#13;&#10;However, this feature is limited by design and intended to be leveraged by plugins that may offer links in a different format, a custom format, or even a format provided by a third-party URL shortening service. Refer to get_permalink() if you want to return the permalink to a post for use in PHP.&#13;&#10;This tag can be used outside of The Loop.&#13;&#10;Note: This function outputs the complete shortlink for the post, to return the shortlink use wp_get_shortlink().</description>
+                <signature>the_shortlink( $text, $title, $before, $after )</signature>
+                <docrelurl>the_shortlink</docrelurl>
+            </item>
+            <item name="the_title">
+                <description>Displays or returns the title of the current post. This tag must be within The Loop. If the post is protected or private, this will be noted by the words &quot;Protected: &quot; or &quot;Private: &quot; prepended to the title.</description>
+                <signature>the_title( $before, $after, $echo )</signature>
+                <docrelurl>the_title</docrelurl>
+            </item>
+            <item name="the_title_attribute">
+                <description>Displays or returns the title of the current post. It somewhat duplicates the functionality of the_title(), but provides a &apos;clean&apos; version of the title for use in HTML attributes by stripping HTML tags and converting certain characters (including quotes) to their character entity equivalent; it also uses  query-string style parameters. This tag must be within The Loop.</description>
+                <signature>the_title_attribute( $args )</signature>
+                <docrelurl>the_title_attribute</docrelurl>
+            </item>
+            <item name="the_title_rss">
+                <description>Display the post title in the feed.</description>
+                <signature>the_title_rss()</signature>
+                <docrelurl>the_title_rss</docrelurl>
+            </item>
+            <item name="wp_link_pages">
+                <description>Displays page-links for paginated posts (i.e. includes the &lt;!--nextpage--&gt;  Quicktag one or more times). This works in much the same way as link_pages() (deprecated), the difference being that arguments are given in query string format. This tag must be within The_Loop.</description>
+                <signature>wp_link_pages( $args )</signature>
+                <docrelurl>wp_link_pages</docrelurl>
+            </item>
+            <item name="wp_get_attachment_link">
+                <description>Returns an HTML hyperlink to an attachment file or page, containing either</description>
+                <signature>wp_get_attachment_link($id, $size, $permalink, $icon, $text)</signature>
+                <docrelurl>wp_get_attachment_link</docrelurl>
+            </item>
+            <item name="the_attachment_link">
+                <description>Outputs an HTML hyperlink to an attachment file or page, containing either</description>
+                <signature>the_attachment_link( $id, $fullsize, $deprecated, $permalink)</signature>
+                <docrelurl>the_attachment_link</docrelurl>
+            </item>
+            <item name="the_search_query">
+                <description>Displays the search query for the current request, if a search was made.&#13;&#10;This function can be used safely within HTML attributes (as in the &quot;search box&quot; example, below).&#13;&#10;Use get_search_query to retrieve the value.</description>
+                <signature>the_search_query()</signature>
+                <docrelurl>the_search_query</docrelurl>
+            </item>
+            <item name="is_attachment">
+                <description>This Conditional Tag checks if an attachment is being displayed. An attachment is an image or other file uploaded through the post editor&apos;s upload utility. Attachments can be displayed on their own &apos;page&apos; or template. For more information, see Using Image and File Attachments.&#13;&#10;This is a boolean function, meaning it returns either TRUE or FALSE.</description>
+                <signature>is_attachment()</signature>
+                <docrelurl>is_attachment</docrelurl>
+            </item>
+            <item name="wp_attachment_is_image">
+                <description>This function determines if a post&apos;s attachment is an image. It returns TRUE if the attachment is an image, FALSE if not. The accepted file extensions/mime types are: .jpg, .jpeg, .gif, .png.</description>
+                <signature>wp_attachment_is_image( $post_id )</signature>
+                <docrelurl>wp_attachment_is_image</docrelurl>
+            </item>
+            <item name="wp_get_attachment_image">
+                <description>Returns an HTML image element representing an attachment file, if there is any, otherwise an empty string.</description>
+                <signature>wp_get_attachment_image( $attachment_id, $size, $icon )</signature>
+                <docrelurl>wp_get_attachment_image</docrelurl>
+            </item>
+            <item name="wp_get_attachment_image_src">
+                <description>Returns an array with the image attributes &quot;url&quot;, &quot;width&quot; and &quot;height&quot;, of an image attachment file.
+Note: For just the image src, use the first element in the returned array.</description>
+                <signature>wp_get_attachment_image_src( $attachment_id, $size, $icon )</signature>
+                <docrelurl>wp_get_attachment_image_src</docrelurl>
+            </item>
+            <item name="wp_get_attachment_metadata">
+                <description>Retrieve attachment meta field for attachment ID.</description>
+                <signature>wp_get_attachment_metadata( $post_id, $unfiltered )</signature>
+                <docrelurl>wp_get_attachment_metadata</docrelurl>
+            </item>
+            <item name="get_the_date">
+                <description>The get_the_date template tag retrieves the date the current $post was written. Unlike the_date() this tag will always return the date. Modify output with &apos;get_the_date&apos; filter.</description>
+                <signature>get_the_date( $d )</signature>
+                <docrelurl>get_the_date</docrelurl>
+            </item>
+            <item name="the_date">
+                <description>Displays or returns the date of a post, or a set of posts if published on the same day.</description>
+                <signature>the_date( $format, $before, $after, $echo )</signature>
+                <docrelurl>the_date</docrelurl>
+            </item>
+            <item name="the_date_xml">
+                <description>Displays the date of the post in YYYY-MM-DD format (ex: 2004-09-24).  This tag must be used within The Loop.</description>
+                <signature>the_date_xml()</signature>
+                <docrelurl>the_date_xml</docrelurl>
+            </item>
+            <item name="the_modified_author">
+                <description>The author who last modified a post can be displayed by using this Template Tag.  This tag must be used within The Loop.  Note: the_modified_author was first available with Version 2.8.</description>
+                <signature>the_modified_author()</signature>
+                <docrelurl>the_modified_author</docrelurl>
+            </item>
+            <item name="the_modified_date">
+                <description>This tag displays the date (and time) a post was last modified.  This tag works just like the_modified_time(), which also displays the time/date a post was last modified.  This tag must be used within The Loop.  If no format parameter is specified, the Default date format (please note that says Date format) setting from Administration &gt; Settings &gt; General is used for the display format.&#13;&#10;If the post or page is not yet modified, the modified date is the same as the creation date.&#13;&#10;Use get_the_modified_date to retrieve the value.</description>
+                <signature>the_modified_date( $d, $before, $after, $echo )</signature>
+                <docrelurl>the_modified_date</docrelurl>
+            </item>
+            <item name="the_modified_time">
+                <description>This tag displays the time (and date) a post was last modified and is similar to the functionality of the_time(), which displays the time (and date) a post was created.  This tag must be used within The Loop.  If no format parameter is specified, the Default date format (please note that says Date format) setting from Administration &gt; Settings &gt; General is used for the display format.&#13;&#10;If the post or page is not yet modified, the modified time is the same as the creation time.&#13;&#10;If you want to display both the modified time and the creation time, you may want to use an if statement (e.g. if (get_the_modified_time() != get_the_time())) to avoid showing the same time/date twice.&#13;&#10;Use get_the_modified_time to retrieve the value.</description>
+                <signature>the_modified_time( $d )</signature>
+                <docrelurl>the_modified_time</docrelurl>
+            </item>
+            <item name="the_time">
+                <description>Displays the time of the current post.  This tag must be used within The Loop.</description>
+                <signature>the_time( $d )</signature>
+                <docrelurl>the_time</docrelurl>
+            </item>
+            <item name="wp_get_shortlink">
+                <description>Returns the Short Link to a post for use in PHP. It does NOT display the short link.</description>
+                <signature>wp_get_shortlink()</signature>
+                <docrelurl>wp_get_shortlink</docrelurl>
+            </item>
+            <item name="has_post_thumbnail">
+                <description>Returns a boolean if a post has a Post Thumbnail attached (true) or not (false).&#13;&#10;Note: To enable post thumbnails, the current theme must include add_theme_support( &apos;post-thumbnails&apos; ); in its functions.php file. See also Post Thumbnails.</description>
+                <signature>has_post_thumbnail( $post_id )</signature>
+                <docrelurl>has_post_thumbnail</docrelurl>
+            </item>
+            <item name="get_post_thumbnail_id">
+                <description>Note: To enable post thumbnails, the current theme must include add_theme_support( &apos;post-thumbnails&apos; ); in its functions.php file. See also Post Thumbnails.</description>
+                <signature>get_post_thumbnail_id( $post_id )</signature>
+                <docrelurl>get_post_thumbnail_id</docrelurl>
+            </item>
+            <item name="the_post_thumbnail">
+                <description>Display Post Thumbnail as set in post&apos;s edit screen. This tag must be within The Loop.&#13;&#10;Note: To enable post thumbnails, the current theme must include add_theme_support( &apos;post-thumbnails&apos; ); in its functions.php file. See also Post Thumbnails.</description>
+                <signature>the_post_thumbnail( $size, $attr )</signature>
+                <docrelurl>the_post_thumbnail</docrelurl>
+            </item>
+            <item name="get_the_post_thumbnail">
+                <description>Gets Post Thumbnail as set in post&apos;s or page&apos;s edit screen and returns an HTML image element representing a Post Thumbnail, if there is any, otherwise an empty string.&#13;&#10;Note: To enable Post Thumbnails, the current theme must include add_theme_support( &apos;post-thumbnails&apos; ); in its functions.php file. See also Post Thumbnails.</description>
+                <signature>get_the_post_thumbnail( $id, $size, $attr )</signature>
+                <docrelurl>get_the_post_thumbnail</docrelurl>
+            </item>
+            <item name="wp_nav_menu">
+                <description>Displays a navigation menu created in the Appearance → Menus panel.&#13;&#10;Given a theme_location parameter, the function displays the menu assigned to that location, or nothing if no such location exists or no menu is assigned to it.&#13;&#10;If not given a theme_location parameter, the function displays</description>
+                <signature>wp_nav_menu($args)</signature>
+                <docrelurl>wp_nav_menu</docrelurl>
+            </item>
+
+    </items>
+  </globalfunctions>
+  </php>
+</CodeCompletion>
+
+</WebPlatform>
