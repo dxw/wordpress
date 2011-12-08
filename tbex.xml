@@ -21,13 +21,13 @@
       <Uri>http://wordpress.org/support/</Uri>
       <ImageUri>http://www.microsoft.com/web/handlers/webpi.ashx?command=getimage&amp;guid=f67accd3-8455-4830-b1d7-eef8959c0325</ImageUri>
     </AddLink>
-    <AddLink InLearn="True">
-      <Title>Getting Started with WordPress</Title>
-      <Description>A collection of links for people who are new to WordPress.</Description>
-      <Uri>http://codex.wordpress.org/Getting_Started_with_WordPress</Uri>
+    <AddLink InDashboard="True" InLearn="True">
+      <Title>First Steps with WordPress</Title>
+      <Description>If you need help getting started, check out the documentation on first steps with WordPress.</Description>
+      <Uri>http://codex.wordpress.org/First_Steps_With_WordPress</Uri>
       <ImageUri>http://www.microsoft.com/web/handlers/webpi.ashx?command=getimage&amp;guid=f67accd3-8455-4830-b1d7-eef8959c0325</ImageUri>
     </AddLink>
-    <AddLink InLearn="True">
+    <AddLink InDashboard="True" InLearn="True">
       <Title>WordPress Lessons</Title>
       <Description>A collection of tutorials for performing common WordPress tasks.</Description>
       <Uri>http://codex.wordpress.org/WordPress_Lessons</Uri>
