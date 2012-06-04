@@ -85,19 +85,13 @@
 	/>
 </parameter>
 
-<!-- This parameter prompts the user for the database name. We have
-	set a validation RegEx on this parameter, as MySQL will not accept
-	a username that has more than 16 characters.
+<!-- This parameter prompts the user for the database name.
 -->
 <parameter
 	name="DbName"
 	defaultValue="wordpress"
 	tags="MySQL,dbName"
 	>
-	<parameterValidation
-	type="RegularExpression"
-	validationString="^\w{1,16}$"
-	/>
 	<parameterEntry
 	type="TextFile"
 	scope="install.sql"
