@@ -457,7 +457,7 @@
         <description>Retrieve URL for an attachment thumbnail. </description>
         <signature>wp_get_attachment_thumb_url( $post_id ); </signature>
         <docrelurl>wp_get_attachment_thumb_url</docrelurl>
-      </item>  
+      </item>
         <item name= "wp_get_attachment_url">
           <description>Returns a full URI for an attachment file or false on failure. </description>
           <signature>wp_get_attachment_url( $id ); </signature>
@@ -579,11 +579,6 @@
           <signature>get_all_category_ids() </signature>
           <docrelurl>get_all_category_ids</docrelurl>
         </item>
-        <item name= "get_ancestors">
-          <description>Returns an array containing the parents of the given object. </description>
-          <signature>get_ancestors( 208, 'category' ); </signature>
-          <docrelurl>get_ancestors</docrelurl>
-        </item>
         <item name= "get_cat_ID">
           <description>Retrieve the ID of a category from its name. </description>
           <signature>get_cat_ID( $cat_name ) </signature>
@@ -593,25 +588,6 @@
           <description>Retrieve the name of a category from its ID. </description>
           <signature>get_cat_name( $cat_id ) </signature>
           <docrelurl>get_cat_name</docrelurl>
-        </item>
-        <item name= "get_categories">
-          <description>Returns an array of category objects matching the query parameters. Arguments are pretty much the same as wp_list_categories and can be passed as either array or in query syntax. </description>
-          <signature>
-            $args = array(
-            'type'                     => 'post',
-            'child_of'                 => 0,
-            'parent'                   => '',
-            'orderby'                  => 'name',
-            'order'                    => 'ASC',
-            'hide_empty'               => 1,
-            'hierarchical'             => 1,
-            'exclude'                  => '',
-            'include'                  => '',
-            'number'                   => '',
-            'taxonomy'                 => 'category',
-            'pad_counts'               => false );
-          </signature>
-          <docrelurl>get_categories</docrelurl>
         </item>
         <item name= "get_categories">
           <description>Returns an array of category objects matching the query parameters. Arguments are pretty much the same as wp_list_categories and can be passed as either array or in query syntax. </description>
@@ -939,11 +915,6 @@
           <signature></signature>
           <docrelurl>add_role</docrelurl>
         </item>
-        <item name= "add_role">
-          <description>Adds a new Role to WordPress. </description>
-          <signature></signature>
-          <docrelurl>add_role</docrelurl>
-        </item>
         <item name= "author_can">
           <description>Whether author of supplied post has capability or role. </description>
           <signature></signature>
@@ -963,20 +934,6 @@
           <description>Fetch a Role definition. </description>
           <signature></signature>
           <docrelurl>get_role</docrelurl>
-        </item>
-        <item name= "get_super_admins">
-          <description>Retrieve a list of super admins. Uses $super_admins Super admins global variable, if set. </description>
-          <signature>
-            $super_admins = get_super_admins();
-            echo 'List of super-admin users:<ul>
-              ';
-              foreach ($super_admins as $admin) {
-              echo '<li>' . $admin . '</li>';
-              }
-              echo '
-            </ul>';
-          </signature>
-          <docrelurl>get_super_admins</docrelurl>
         </item>
         <item name= "get_super_admins">
           <description>Retrieve a list of super admins. Uses $super_admins Super admins global variable, if set. </description>
@@ -1082,16 +1039,6 @@
           </signature>
           <docrelurl>get_userdata</docrelurl>
         </item>
-        <item name= "get_userdata">
-          <description>Returns a WP_User object with the information pertaining to the user whose ID is passed to it. Properties map directly to wp_users and wp_usermeta tables in the database (see Database Description). If the user does not exist, the function returns false. An alias of get_user_by('id'). </description>
-          <signature>
-            $user_info = get_userdata(1);
-            echo 'Username: ' . $user_info->user_login . "\n";
-            echo 'User level: ' . $user_info->user_level . "\n";
-            echo 'User ID: ' . $user_info->ID . "\n";
-          </signature>
-          <docrelurl>get_userdata</docrelurl>
-        </item>
         <item name= "get_usernumposts">
           <description>Returns the post count for the user whose ID is passed to it. Properties map directly to the wp_posts table in the database (see Database Description). </description>
           <signature>echo 'Posts made: ' . get_usernumposts(1); </signature>
@@ -1101,11 +1048,6 @@
           <description>Retrieves an array of users matching the criteria given in $args. </description>
           <signature></signature>
           <docrelurl>get_users</docrelurl>
-        </item>
-        <item name= "set_current_user">
-          <description>This function can be replaced via plugins. If plugins do not redefine these functions, then this will be used instead. Changes the current user by ID or name. Set $id to null and specify a name if you do not know a user's ID. </description>
-          <signature>set_current_user( $id, $name ) </signature>
-          <docrelurl>set_current_user</docrelurl>
         </item>
         <item name= "set_current_user">
           <description>This function can be replaced via plugins. If plugins do not redefine these functions, then this will be used instead. Changes the current user by ID or name. Set $id to null and specify a name if you do not know a user's ID. </description>
@@ -1672,7 +1614,7 @@
           <description>Executes a hook created by add_action. </description>
           <signature>do_action( 'i_am_hook', $a, $b );</signature>
           <docrelurl>do_action</docrelurl>
-        </item>      
+        </item>
         <item name= "do_action_ref_array">
           <description>Execute functions hooked on a specific action hook, specifying arguments in an array. This function is identical to do_action, but the arguments passed to the functions hooked to $tag are supplied using an array. </description>
           <signature></signature>
@@ -2722,21 +2664,6 @@
           <signature>$wp_admin_bar->get_nodes(); </signature>
           <docrelurl>get_nodes</docrelurl>
         </item>
-        <item name= "get_nodes">
-          <description>This function returns an array of all the Toolbar items on the current page. Toolbar items are also called "nodes". The Toolbar replaces the Admin Bar since WordPress Version 3.3. note: This function is a method of the WP_Admin_Bar class and $wp_admin_bar global object, which may not exist except during the 'admin_bar_menu' or 'wp_before_admin_bar_render' hooks. </description>
-          <signature>$wp_admin_bar->get_nodes(); </signature>
-          <docrelurl>get_nodes</docrelurl>
-        </item>
-        <item name= "get_nodes">
-          <description>This function returns an array of all the Toolbar items on the current page. Toolbar items are also called "nodes". The Toolbar replaces the Admin Bar since WordPress Version 3.3. note: This function is a method of the WP_Admin_Bar class and $wp_admin_bar global object, which may not exist except during the 'admin_bar_menu' or 'wp_before_admin_bar_render' hooks. </description>
-          <signature>$wp_admin_bar->get_nodes(); </signature>
-          <docrelurl>get_nodes</docrelurl>
-        </item>
-        <item name= "get_nodes">
-          <description>This function returns an array of all the Toolbar items on the current page. Toolbar items are also called "nodes". The Toolbar replaces the Admin Bar since WordPress Version 3.3. note: This function is a method of the WP_Admin_Bar class and $wp_admin_bar global object, which may not exist except during the 'admin_bar_menu' or 'wp_before_admin_bar_render' hooks. </description>
-          <signature>$wp_admin_bar->get_nodes(); </signature>
-          <docrelurl>get_nodes</docrelurl>
-        </item>
         <item name= "checked">
           <description>Compares two given values (for example, a saved option vs. one chosen in a form) and, if the values are the same, adds the checked attribute to the current radio button or checkbox. This is essentially the same as comparing values with if(), but results in more concise code. </description>
           <signature></signature>
@@ -2746,21 +2673,6 @@
           <description>Compares two given values (for example, a saved option vs. one chosen in a form) and, if the values are the same, adds the disabled attribute to a form input field. </description>
           <signature></signature>
           <docrelurl>disabled</docrelurl>
-        </item>
-        <item name= "selected">
-          <description>For use in dropdown form fields. Compares two given values (for example, a saved option vs. one chosen in a form) and, if the values are the same, adds the selected attribute to the current option tag. </description>
-          <signature></signature>
-          <docrelurl>selected</docrelurl>
-        </item>
-        <item name= "selected">
-          <description>For use in dropdown form fields. Compares two given values (for example, a saved option vs. one chosen in a form) and, if the values are the same, adds the selected attribute to the current option tag. </description>
-          <signature></signature>
-          <docrelurl>selected</docrelurl>
-        </item>
-        <item name= "selected">
-          <description>For use in dropdown form fields. Compares two given values (for example, a saved option vs. one chosen in a form) and, if the values are the same, adds the selected attribute to the current option tag. </description>
-          <signature></signature>
-          <docrelurl>selected</docrelurl>
         </item>
         <item name= "selected">
           <description>For use in dropdown form fields. Compares two given values (for example, a saved option vs. one chosen in a form) and, if the values are the same, adds the selected attribute to the current option tag. </description>
@@ -2841,11 +2753,6 @@
           <description>XMLRPC XML content without title and category elements. </description>
           <signature>xmlrpc_removepostdata( $content ) </signature>
           <docrelurl>xmlrpc_removepostdata</docrelurl>
-        </item>
-        <item name= "user_pass_ok">
-          <description>Check that the user login name and password is correct. </description>
-          <signature>user_pass_ok( $user_login, $user_pass ) </signature>
-          <docrelurl>user_pass_ok</docrelurl>
         </item>
         <item name= "__">
           <description>Retrieves the translated string from the translate(). </description>
