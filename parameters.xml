@@ -218,6 +218,210 @@
 
 <!-- WordPress specific parameters -->
 
+<!-- Authentication Unique Keys and Salts -->
+
+<!-- AUTH_KEY -->
+
+<!-- Single quotes and back slashes are not allowed in the key and salt values. Combination of $ with other characters are breaking the replacement in wp-config. Ex: $_ , $` , $+ . So adding the regex to validate $ symbol.  -->
+
+<parameter
+	name="Authentication Key"
+	defaultValue="put your unique phrase here"
+	description="Unique phrase used to strengthen your password. It should not contain single quotes, backslashes and dollar character."
+	tags="NoStore"
+	>
+	<parameterValidation
+		type="RegularExpression"
+		validationString="^[^\\'$]*$"
+		/>
+</parameter>
+<parameter
+	name="Automatic Auth Key PHP File"
+	defaultValue="define('AUTH_KEY',         '{Authentication Key}');"
+	tags="Hidden, NoStore"
+	>
+	<parameterEntry
+		type="TextFile"
+		scope="wp-config.php$"
+		match="define\('AUTH_KEY',\s*'[^']*'\);"
+		/>
+</parameter>
+
+<!-- SECURE_AUTH_KEY -->
+
+<parameter
+	name="Secure Authentication Key"
+	defaultValue="put your unique phrase here"
+	description="Unique phrase used to strengthen secure password. It should not contain single quotes, backslashes and dollar character."
+	tags="NoStore"
+	>
+	<parameterValidation
+		type="RegularExpression"
+		validationString="^[^\\'$]*$"
+		/>
+</parameter>
+<parameter
+	name="Automatic Secure Auth Key PHP File"
+	defaultValue="define('SECURE_AUTH_KEY',  '{Secure Authentication Key}');"
+	tags="Hidden, NoStore"
+	>
+	<parameterEntry
+		type="TextFile"
+		scope="wp-config.php$"
+		match="define\('SECURE_AUTH_KEY',\s*'[^']*'\);"
+		/>
+</parameter>
+
+<!-- LOGGED_IN_KEY -->
+
+<parameter 
+	name="Logged In Key"
+	defaultValue="put your unique phrase here"
+	description="Unique phrase used to strengthen authentication. It should not contain single quotes, backslashes and dollar character."
+	tags="NoStore"
+	>
+	<parameterValidation
+		type="RegularExpression"
+		validationString="^[^\\'$]*$"
+		/>
+</parameter>
+<parameter
+	name="Automatic Logged In Key PHP File"
+	defaultValue="define('LOGGED_IN_KEY',    '{Logged In Key}');"
+	tags="Hidden, NoStore"
+	>
+	<parameterEntry
+		type="TextFile"
+		scope="wp-config.php$"
+		match="define\('LOGGED_IN_KEY',\s*'[^']*'\);"
+		/>
+</parameter>
+
+<!-- NONCE_KEY -->
+
+<parameter
+	name="Nonce Key"
+	defaultValue="put your unique phrase here"
+	description="It is used to sign the nonce key which protects the nonce from being generated, protecting you from certain forms of attacks where a hacker attempts to guess the nonce. It should not contain single quotes, backslashes and dollar character."
+	tags="NoStore"
+	>
+	<parameterValidation
+		type="RegularExpression"
+		validationString="^[^\\'$]*$"
+		/>
+</parameter>
+<parameter
+	name="Automatic Nonce Key PHP File"
+	defaultValue="define('NONCE_KEY',        '{Nonce Key}');"
+	tags="Hidden, NoStore"
+	>
+	<parameterEntry
+		type="TextFile"
+		scope="wp-config.php$"
+		match="define\('NONCE_KEY',\s*'[^']*'\);"
+		/>
+</parameter>
+
+<!-- AUTH_SALT -->
+
+<parameter 
+	name="Authentication Salt"
+	defaultValue="put your unique phrase here"
+	description="Unique phrase used to strengthen your password. Salt is an addition to the secret keys. They work with the keys. It should not contain single quotes, backslashes and dollar character."
+	tags="NoStore"
+	>
+	<parameterValidation
+		type="RegularExpression"
+		validationString="^[^\\'$]*$"
+		/>
+</parameter>
+<parameter
+	name="Automatic Auth Salt PHP File"
+	defaultValue="define('AUTH_SALT',        '{Authentication Salt}');"
+	tags="Hidden, NoStore"
+	>
+	<parameterEntry
+		type="TextFile"
+		scope="wp-config.php$"
+		match="define\('AUTH_SALT',\s*'[^']*'\);"
+		/>
+</parameter>
+
+<!-- SECURE_AUTH_SALT -->
+
+<parameter
+	name="Secure Authentication Salt"
+	defaultValue="put your unique phrase here"
+	description="Unique phrase used to strengthen secure password. Salt is an addition to the secret keys. They work with the keys. It should not contain single quotes, backslashes and dollar character."
+	tags="NoStore"
+	>
+	<parameterValidation
+		type="RegularExpression"
+		validationString="^[^\\'$]*$"
+		/>
+</parameter>
+<parameter
+	name="Automatic Secure Auth Salt PHP File"
+	defaultValue="define('SECURE_AUTH_SALT', '{Secure Authentication Salt}');"
+	tags="Hidden, NoStore"
+	>
+	<parameterEntry
+		type="TextFile"
+		scope="wp-config.php$"
+		match="define\('SECURE_AUTH_SALT',\s*'[^']*'\);"
+		/>
+</parameter>
+
+<!-- LOGGED_IN_SALT -->
+
+<parameter
+	name="Logged In Salt"
+	defaultValue="put your unique phrase here"
+	description="Unique phrase used to strengthen authentication. Salt is an addition to the secret keys. They work with the keys. It should not contain single quotes, backslashes and dollar character."
+	tags="NoStore"
+	>
+	<parameterValidation
+		type="RegularExpression"
+		validationString="^[^\\'$]*$"
+		/>
+</parameter>
+<parameter
+	name="Automatic Logged In Salt PHP File"
+	defaultValue="define('LOGGED_IN_SALT',   '{Logged In Salt}');"
+	tags="Hidden, NoStore"
+	>
+	<parameterEntry
+		type="TextFile"
+		scope="wp-config.php$"
+		match="define\('LOGGED_IN_SALT',\s*'[^']*'\);"
+		/>
+</parameter>
+
+<!-- NONCE_SALT -->
+
+<parameter
+	name="Nonce Salt"
+	defaultValue="put your unique phrase here"
+	description="Unique phrase used to strengthen authentication. Salt is an addition to the secret keys. They work with the keys. It should not contain single quotes, backslashes and dollar character."
+	tags="NoStore"
+	>
+	<parameterValidation
+		type="RegularExpression"
+		validationString="^[^\\'$]*$"
+		/>
+</parameter>
+<parameter
+	name="Automatic Nonce Salt PHP File"
+	defaultValue="define('NONCE_SALT',       '{Nonce Salt}');"
+	tags="Hidden, NoStore"
+	>
+	<parameterEntry
+		type="TextFile"
+		scope="wp-config.php$"
+		match="define\('NONCE_SALT',\s*'[^']*'\);"
+		/>
+</parameter>
+
 <!-- Set the correct path for the ACL based on the AppPath selected
 	by the user.
 -->

@@ -6,4 +6,5 @@
 		setAclUser="anonymousAuthenticationUser"
 		setAclAccess="Modify" />
 	<alias from="wordpress/wp-config-sample.php" to="wordpress/wp-config.php" />
+	<alias from="web.config" to="wordpress/web.config" />
 </MSDeploy.iisApp>
